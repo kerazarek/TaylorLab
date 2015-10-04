@@ -1,18 +1,22 @@
 #!/usr/bin/env python
 
-##
-# 	(c) 10/3/15 9:42pm
-# 	For ligands (HETATM), not proteins (ATOM)
+##################################################
+###	PYTHONICALLY READ PDB(QT) FILES
+##################################################
+# (c) Zarek Siegel
+# created 10/03/15 21:42
+#
+#
+# 		For single molecules
+#
+#
+# updated 10/04/15 16:42
+#
+#
 
 import sys, re
 
 script, pdb_file_in = sys.argv
-
-
-
-
-# pdb, pdbqt, and pvrd_pdbqt
-
 
 class Residue:
 	def __init__(self, str):
@@ -160,11 +164,9 @@ class Pdb:
 
 		self.get_type()
 
-
 def main():
 	p = Pdb(pdb_file_in)
 	print(p.pvr_data)
 # 	for a in p.coords: print(a)
-
 
 if __name__ == "__main__": main()

@@ -1,16 +1,25 @@
 #!/usr/bin/env python
 
+##################################################
+###	post_tsop
+##################################################
+# (c) Zarek Siegel
+# created 10/04/15 16:44
+#
+#
+# 		defunct??
+#
+#
+# updated 10/04/15 16:44
+#
+#
+
 from __future__ import print_function
 from openpyxl import load_workbook
 import csv, re, sys
 from numpy import mean
 
-
 script, dock = sys.argv
-
-###
-# 	v1.0 10/2/15 10:57pm
-
 
 class Xlsx:
 	def __init__(self, address):
