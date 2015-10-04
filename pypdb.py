@@ -20,9 +20,9 @@ script, pdb_file_in = sys.argv
 
 class Residue:
 	def __init__(self, str):
-# 				String
+# 		String
 		self.str = str
-# 				Atom & Residue String
+# 		Atom & Residue String
 		if re.search(r'^[A-Z]+[0-9]+$', self.str):
 			self.atom = None
 			self.res_str = self.str
@@ -30,17 +30,18 @@ class Residue:
 			self.atom = re.sub(r'^[A-Z]+[0-9]+_', '', self.str)
 			self.res_str = re.sub(r'_[A-Z0-9]+$', '', self.str)
 		else: self.atom = None
-# 				Residue Index
+# 		Residue Index
 		self.resi = re.sub(r'^[A-Z]+|_?[^_]*$', '', self.str)
 		try:
 			self.resi = int(self.resi)
 		except ValueError:
 			self.resi = None
-# 				Residue Name
+# 		Residue Name
 		self.resn = re.sub(r'[0-9]+_?[^_]*$', '', self.str)
-# 				Dictionary of Props
+# 		Dictionary of Props
 		self.dic = {'str' : self.str, 'res_str' : self.res_str,
 			'resi' : self.resi, 'resn' : self.resn, 'atom' : self.atom}
+
 	def __str__(self):
 		return self.str
 
