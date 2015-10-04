@@ -87,13 +87,13 @@ class Csv:
 					dic_entry[keys[i]] = row[i]
 			self.dic[row[0]] = dic_entry
 
-class Pvrd():
-	def __init__(self, address):
-		self.pdbqt_str = open(address).read()
-		str = self.pdbqt_str
-		for line in open(address).read():
-			if re.search( 'HETATM', str ):
-				print(str)
+# class Pvrd():
+# 	def __init__(self, address):
+# 		self.pdbqt_str = open(address).read()
+# 		str = self.pdbqt_str
+# 		for line in open(address).read():
+# 			if re.search( 'HETATM', str ):
+# 				print(line)
 
 class Docking:
 	def basic_params(self):
