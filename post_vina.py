@@ -25,6 +25,7 @@ from __future__ import print_function
 import csv, re, sys
 from openpyxl import load_workbook
 from numpy import mean
+from os.path import isfile
 
 script, dock = sys.argv
 
@@ -37,6 +38,9 @@ class Xlsx: # input is a .xlsx file address
 		self.sheets_list = self.workbook.get_sheet_names()
 
 	def sheet(self, sheet):
+		_op = "sheet"
+# 		announce(_op)
+
 		self.active_sheet = self.workbook.get_sheet_by_name(sheet)
 # 		print(self.active_sheet.columns)
 
@@ -58,6 +62,9 @@ class Xlsx: # input is a .xlsx file address
 
 
 	def look_up(self, querysheet, queryrow, querycol):
+		_op = "look_up"
+# 		announce(_op)
+
 		self.sheet(querysheet)
 
 		rkey = self.row_keys[queryrow]
@@ -69,6 +76,9 @@ class Xlsx: # input is a .xlsx file address
 
 
 	def sheet_dic(self, sheet):
+		_op = "sheet_dic"
+# 		announce(_op)
+
 		self.sheet(sheet)
 		self.sheet_dic = {}
 		for row in self.active_sheet.rows:
@@ -134,6 +144,9 @@ class Residue: # input is a string of form 'RES123' or 'RES123_A1'
 
 class Pdb:  # input is a .pdb or .pdbqt file address which may or may not be pvr'd
 	def pdb(self):
+		_op = "pdb"
+# 		announce(_op)
+
 # 		print('PDB file')
 		coords = []
 		for line in self.pdb_lines:
@@ -156,6 +169,9 @@ class Pdb:  # input is a .pdb or .pdbqt file address which may or may not be pvr
 		self.coords = coords
 
 	def pdbqt(self):
+		_op = "pdbqt"
+# 		announce(_op)
+
 # 		print('PDBQT file')
 		coords = []
 		for line in self.pdb_lines:
@@ -179,6 +195,9 @@ class Pdb:  # input is a .pdb or .pdbqt file address which may or may not be pvr
 		self.coords = coords
 
 	def pvrd(self): # mine data from pvrd file
+		_op = "pvrd"
+# 		announce(_op)
+
 # 		print('File has been through ADT process_VinaResult.py')
 		contacts = []
 		for line in self.pdb_lines:
@@ -255,6 +274,9 @@ class Pdb:  # input is a .pdb or .pdbqt file address which may or may not be pvr
 		}
 
 	def res_list(self, atoms = False):
+		_op = "res_list"
+# 		announce(_op)
+
 		list = []
 		if atoms is False:
 			for atom in self.coords:
@@ -271,6 +293,9 @@ class Pdb:  # input is a .pdb or .pdbqt file address which may or may not be pvr
 
 
 	def get_type(self):
+		_op = "get_type"
+# 		announce(_op)
+
 # 		Detect if its been through ADT process_VinaResult.py
 		self.is_pvrd = False # by default
 		for line in self.pdb_lines:
@@ -329,6 +354,7 @@ class BindingSite:
 		self.a5res_pdb = self.dir+"a5res_pdbs/"+prot.baseprot+"_bs_"+bs+"_a5resis.pdb"
 
 		self.lig_pdb = Pdb(self.lig_pdb)
+# 		print(self.lig_pdb)
 		self.a5res_pdb = Pdb(self.a5res_pdb)
 		self.resis_list = self.a5res_pdb.res_list()
 		self.resis_atoms_list = self.a5res_pdb.res_list(atoms = True)
@@ -338,6 +364,9 @@ class BindingSite:
 
 class Docking: # input is a docking id e.g. a2 b34
 	def basic_params(self):
+		_op = "basic_params"
+# 		announce(_op)
+
 		if dock[:1] == "h":
 			self.prot = "hepi"
 		elif dock[:1] == "p":
@@ -356,16 +385,24 @@ class Docking: # input is a docking id e.g. a2 b34
 		self.n_cpus = docks_xlsx.look_up(self.prot, dock, "n_CPUS") # type?
 		self.notes = str(docks_xlsx.look_up(self.prot, dock, "notes"))
 
+		self.baseprot = docks_xlsx.look_up("pdbs", self.specprot, "baseprot")
+
 		self.params = {}
 		for bp in basic_params:
 			evalbp = "self."+bp
 			self.params[bp] = eval(evalbp)
 
 	def ligset_params(self):
+		_op = "ligset_params"
+# 		announce(_op)
+
 		self.ligset_list_sh = str(docks_xlsx.look_up("ligsets", self.ligset, "lig_list"))
 		self.ligset_list = sh_list_to_py(self.ligset_list_sh)
 
 	def box_params(self):
+		_op = "box_params"
+# 		announce(_op)
+
 		self.box_params = {}
 		self.box_params['name'] = str(docks_xlsx.look_up('gridboxes', self.box, 'name'))
 		self.box_params['description'] = str(docks_xlsx.look_up('gridboxes', self.box, 'description'))
@@ -381,34 +418,27 @@ class Docking: # input is a docking id e.g. a2 b34
 		self.box_params['name'] = str(docks_xlsx.look_up('gridboxes', self.box, 'name'))
 
 	def binding_site_params(self):
-		self.baseprot = docks_xlsx.look_up("pdbs", self.specprot, "baseprot")
+		_op = "binding_site_params"
+# 		announce(_op)
+
 		self.bs_list_sh = docks_xlsx.look_up("pdbs", self.specprot, "binding_sites")
 		self.bs_list = sh_list_to_py(self.bs_list_sh)
 
 		if self.prot == "p300":
 			self.bs_list = ["lys", "side", "coa_ado", "coa_adpp", "coa_pant", "allo1", "allo2"]
-# 		self.bs_list = ["ado", "pant", "side", "lys", "allo1", "allo2"] # !!placholder
-# 		self.bs_list = ["adph", "fdla", "allo"] # !!placholder
-# 		self.lig_pdbs_dic = {}
-# 		self.lig_csvs_dic = {}
-# 		self.lig_csvdics_dic = {}
-# 		self.a5res_pdbs_dic = {}
-# 		self.a5res_csvs_dic = {}
-# 		self.a5res_csvdics_dic = {}
-# 		self.a5res_lists_dic = {}
-# 		self.a5res_atom_lists_dic = {}
-# 		bs_dic_addresses = {
-# 			self.lig_pdbs_dic: self.bindingsites_dir+"lig_pdbs/"+self.baseprot+"_bs_"+bs
-# 			self.lig_csvs_dic: self.bindingsites_dir+"lig_csvs/"+self.baseprot+"_bs_"+bs
-# # 			self.lig_csvdics_dic: self.bindingsites_dir+"lig_csvdics/"+self.baseprot+"_bs_"+bs
-# 			self.a5res_pdbs_dic: self.bindingsites_dir+"a5res_pdbs/"+self.baseprot+"_bs_"+bs
-# 			self.a5res_csvs_dic: self.bindingsites_dir+"a5res_csvs/"+self.baseprot+"_bs_"+bs
-# # 			self.a5res_csvdics_dic: self.bindingsites_dir+"a5res_csvdics/"+self.baseprot+"_bs_"+bs
-# 			self.a5res_lists_dic: self.bindingsites_dir+"a5res_lists/"+self.baseprot+"_bs_"+bs
-# 			self.a5res_atom_lists_dic: self.bindingsites_dir+"a5res_atom_lists/"+self.baseprot+"_bs_"+bs
-# 		}
+
+		self.bs_resis_list_dic = {}
+		self.bs_resis_atoms_list_dic = {}
+		for bs in self.bs_list:
+			b = BindingSite(self, bs)
+			self.bs_resis_list_dic[bs] = b.resis_list
+			self.bs_resis_atoms_list_dic[bs] = b.resis_atoms_list
+
 
 	def file_addresses(self): # ALL DIRS END IN /
+		_op = "file_addresses"
+# 		announce(_op)
+
 		# Basic Directories
 		self.lab_dir = "/Users/zarek/lab/"
 		self.docking_dir = self.lab_dir+"Docking/"
@@ -426,21 +456,30 @@ class Docking: # input is a docking id e.g. a2 b34
 		self.post_analysis_csv_address = self.prot_dir+self.dock+"/"+self.dock+"_analysis.csv"
 
 	def fetch_params(self):
+		_op = "fetch_params"
+# 		announce(_op)
+
 		self.basic_params()
 		self.ligset_params()
 		self.box_params()
-		self.binding_site_params()
 		self.file_addresses()
+		self.binding_site_params()
 
 	def __init__(self, dock):
 		self.dock = dock
 		self.fetch_params()
 
-	def list_param(self, param):
-		exec_print_param = "print(self."+param+")"
-		exec(exec_print_param)
+# 	def generate_alldata_dic(self):
+# 		_op = "generate_alldata_dic"
+# 		announce(_op)
+#
+# 		exec_print_param = "print(self."+param+")"
+# 		exec(exec_print_param)
 
 	def load_vina_results(self):
+		_op = "load_vina_results"
+		announce(_op)
+
 		for lig in self.ligset_list:
 			print(lig)
 			res_pdbqt = self.res_dir+self.dock+"_"+lig+"_results.pdbqt"
@@ -452,48 +491,90 @@ class Docking: # input is a docking id e.g. a2 b34
 				except IOError:
 					pass
 
-	def bs_assign(self, bs):
-# 		print(bs)
-		pass
-
 	def generate_alldata_dic(self):
-# 		from alldata.csv file
-# 		self.alldata_dic = Csv(self.alldata_csv_address).dic
+		_op = "generate_alldata_dic"
+		announce(_op)
+
 		self.alldata_dic = {}
 		for l in self.ligset_list:
+			print("~~~[{}]~~~".format(l))
+
 			for m in range(1, (self.n_models + 1)):
+# 				print("[{}]".format(m))
 				pose = Pose(dock = self.dock, lig = l, model = m)
 				self.alldata_dic[pose.key] = {}
 
 				pvrd_pdbqt = self.pvrd_pdbqts_dir+pose.key+".pdbqt"
-				pvrd_obj = Pdb(pvrd_pdbqt)
+				if isfile(pvrd_pdbqt):
+					pvrd_obj = Pdb(pvrd_pdbqt)
+	# 				print(pvrd_pdbqt)
 
-				self.E = pvrd_obj.E
-				self.pvr_resis = pvrd_obj.pvr_resis
-				self.pvr_resis_atoms = pvrd_obj.pvr_resis_atoms
-				self.rmsd_ub = pvrd_obj.rmsd_ub
-				self.rmsd_lb = pvrd_obj.rmsd_lb
-				self.pvr_effic = pvrd_obj.pvr_effic
-				self.pvr_model = pvrd_obj.pvr_model
-				self.macro_close_ats = pvrd_obj.macro_close_ats
-				self.torsdof = pvrd_obj.torsdof
+					_lm_lig = l
+					_lm_model = m
+					_lm_LIG = l
+					_lm_MODEL = m
 
-				for pp in pvr_params:
-					pvrd_obj_pp = eval("pvrd_obj."+pp)
-					self_pp = "self."+pp
-					self.alldata_dic[pose.key][pp] = eval(self_pp)
+					_lm_E = pvrd_obj.E
+					_lm_pvr_resis = pvrd_obj.pvr_resis
+					_lm_pvr_resis_atoms = pvrd_obj.pvr_resis_atoms
+					_lm_rmsd_ub = pvrd_obj.rmsd_ub
+					_lm_rmsd_lb = pvrd_obj.rmsd_lb
+					_lm_pvr_effic = pvrd_obj.pvr_effic
+					_lm_pvr_model = pvrd_obj.pvr_model
+					_lm_macro_close_ats = pvrd_obj.macro_close_ats
+					_lm_torsdof = pvrd_obj.torsdof
 
-				if m != self.pvr_model:
-# 					print("!!! pvr model mismatch !!!")
-# 					print(m)
-# 					print(self.pvr_model)
-					pass
+# 					if m != _lm_pvr_model: print("!!! pvr model mismatch <{}_m{}> !!! ([pvr_model: {}; iter_model: {})".format(l, m, _lm_pvr_model, m))
 
+					_lm_bs_resis_scores = {}
+					_lm_bs_resis_atoms_scores = {}
+					_lm_bs_assignments = [] # resis
+					_lm_bs_atoms_assignments = [] # resis atoms
 
-				for bs in self.bs_list:
-					self.bs_assign(bs)
+					for bs in self.bs_list:
+						_lm_bs_resis_scores[bs] = 0
+						_lm_bs_resis_atoms_scores[bs] = 0
+						for r in self.bs_resis_list_dic[bs]:
+							if r in _lm_pvr_resis:
+								_lm_bs_resis_scores[bs] += 1
+						for r in self.bs_resis_atoms_list_dic[bs]:
+							if r in _lm_pvr_resis_atoms:
+								_lm_bs_resis_atoms_scores[bs] += 1
+
+						_lm_bs_resis_scores[bs] = r4(float(_lm_bs_resis_scores[bs]) / len(self.bs_resis_list_dic[bs]))
+						_lm_bs_resis_atoms_scores[bs] = r4(float(_lm_bs_resis_atoms_scores[bs]) / len(self.bs_resis_atoms_list_dic[bs]))
+
+						if _lm_bs_resis_scores[bs] >= bs_assign_threshold:
+							_lm_bs_assignments.append(bs)
+
+						if _lm_bs_resis_atoms_scores[bs] >= bs_assign_atom_threshold:
+							_lm_bs_atoms_assignments.append(bs)
+
+					for pp in pvr_params:
+						_lm_pp = "_lm_"+pp
+						self.alldata_dic[pose.key][pp] = eval(_lm_pp)
+						none_pp = "{} = None".format(_lm_pp)
+						exec none_pp
+
+					for kp in pose_params:
+						_lm_kp = "_lm_"+kp
+						self.alldata_dic[pose.key][kp] = eval(_lm_kp)
+						none_kp = "{} = None".format(_lm_kp)
+						exec none_kp
+
+					for bp in bs_params:
+						_lm_bp = "_lm_"+bp
+						self.alldata_dic[pose.key][bp] = eval(_lm_bp)
+						none_bp = "{} = None".format(_lm_bp)
+						exec none_bp
+
+				else:
+					print("Ligand {} m{} does pvrd_pdbqt does not exist".format(l, m))
 
 	def alldata_lig_subsets_dic(self):
+		_op = "alldata_lig_subsets_dic"
+		announce(_op)
+
 		self.generate_alldata_dic()
 		dic = {}
 		for lig in self.ligset_list:
@@ -502,6 +583,9 @@ class Docking: # input is a docking id e.g. a2 b34
 
 # 	is this one even useful?
 	def alldata_lig_E_lists_dic(self):
+		_op = "alldata_lig_E_lists_dic"
+		announce(_op)
+
 		dic = {}
 		for lig, subset_dic in self.alldata_lig_subsets_dic().items():
 			lig_E_list = []
@@ -511,31 +595,43 @@ class Docking: # input is a docking id e.g. a2 b34
 		return dic
 
 	def alldata_assign_bs(self, threshold = 0.10):
-		self.generate_alldata_dic()
-		new_alldata_dic = {}
-		for k, data in self.alldata_dic.items():
-# 			print(data)
-			bs_assignment_dic = {}
-			for bs in self.bs_list:
-				score_header = "resis_score_fraction_"+bs
-# 				print(data[score_header])
-				try:
-					if float(data[score_header]) < threshold:
-# 						print("{} = 0".format(bs))
-						bs_assignment_dic[bs] = False
-					elif float(data[score_header]) >= threshold:
-# 						print("{} = 1".format(bs))
-						bs_assignment_dic[bs] = True
-				except ValueError:
-					pass
-# 			print(k)
-			data['bs_assignments'] = bs_assignment_dic
-# 			print(data)
-			new_alldata_dic[k] = data
-# 		print(new_alldata_dic)
-		self.alldata_dic = new_alldata_dic
+		_op = "alldata_assign_bs"
+		announce(_op)
 
-	def bs_lig_E_list_dic(self):
+# 		self.generate_alldata_dic()
+# 		new_alldata_dic = {}
+# 		for k, data in self.alldata_dic.items():
+# # 			print(data)
+# 			bs_assignment_dic = {}
+# 			for bs in self.bs_list:
+# 				score_header = "resis_score_fraction_"+bs
+# # 				print(data[score_header])
+# 				try:
+# 					if float(data[score_header]) < threshold:
+# # 						print("{} = 0".format(bs))
+# 						bs_assignment_dic[bs] = False
+# 					elif float(data[score_header]) >= threshold:
+# # 						print("{} = 1".format(bs))
+# 						bs_assignment_dic[bs] = True
+# 				except ValueError:
+# 					pass
+# # 			print(k)
+# 			data['bs_assignments'] = bs_assignment_dic
+# # 			print(data)
+# 			new_alldata_dic[k] = data
+# # 		print(new_alldata_dic)
+# 		self.alldata_dic = new_alldata_dic
+
+		self.generate_alldata_dic()
+# 		for k, data in self.alldata_dic.items():
+# 			print(k)
+# 			print(data)
+
+
+	def make_bs_lig_E_list_dic(self):
+		_op = "make_bs_lig_E_list_dic"
+		announce(_op)
+
 		self.alldata_assign_bs()
 		dic = {}
 		for bs in self.bs_list:
@@ -548,17 +644,26 @@ class Docking: # input is a docking id e.g. a2 b34
 				list = []
 				for bs in self.bs_list:
 					try:
-						if (data['LIG'] == lig) and (data['bs_assignments'][bs] is True):
+						if (data['LIG'] == lig): # and (data['bs_assignments'][bs] is True):
 # 							print(data['E'])
 							dic[bs][lig].append(float(data['E']))
 # 						print(data)
+						else: print("hi")
 					except KeyError:
 						pass
-		return dic
+# 		return dic
+
+		self.bs_lig_E_list_dic = dic
+		print(self.bs_lig_E_list_dic)
+
 
 	def make_bs_lig_num_dic(self):
+		_op = "make_bs_lig_num_dic"
+		announce(_op)
+
 		dic = {}
-		for bs, lig_E_list in self.bs_lig_E_list_dic().items():
+
+		for bs, lig_E_list in self.bs_lig_E_list_dic.items():
 # 			print(bs)
 			dic[bs] = {}
 			for lig, E_list in lig_E_list.items():
@@ -569,8 +674,11 @@ class Docking: # input is a docking id e.g. a2 b34
 
 
 	def make_bs_lig_min_dic(self):
+		_op = "make_bs_lig_min_dic"
+		announce(_op)
+
 		dic = {}
-		for bs, lig_E_list in self.bs_lig_E_list_dic().items():
+		for bs, lig_E_list in self.bs_lig_E_list_dic.items():
 			dic[bs] = {}
 			for lig, E_list in lig_E_list.items():
 				try:
@@ -580,8 +688,11 @@ class Docking: # input is a docking id e.g. a2 b34
 		self.bs_lig_min_dic = dic
 
 	def make_bs_lig_avg_dic(self, threshold = 0.10 ):
+		_op = "make_bs_lig_avg_dic"
+		announce(_op)
+
 		dic = {}
-		for bs, lig_E_list in self.bs_lig_E_list_dic().items():
+		for bs, lig_E_list in self.bs_lig_E_list_dic.items():
 			dic[bs] = {}
 			for lig, E_list in lig_E_list.items():
 				try:
@@ -591,17 +702,22 @@ class Docking: # input is a docking id e.g. a2 b34
 		self.bs_lig_avg_dic = dic
 
 	def data_summary_by_lig(self):
+		_op = "data_summary_by_lig"
+		announce(_op)
 
 		minE_dic = {}
+
+		self.make_bs_lig_E_list_dic()
 
 		self.make_bs_lig_num_dic()
 		self.make_bs_lig_min_dic()
 		self.make_bs_lig_avg_dic()
 
 		for lig in self.ligset_list:
-			print("~~~~~~~~~~~~~~~~~~")
+			cr()
+			tline()
 			print(lig)
-			print("~~~~~~~~~~~~~~~~~~")
+			tline()
 
 			E_list = []
 			for pose, data in self.alldata_dic.items():
@@ -623,6 +739,9 @@ class Docking: # input is a docking id e.g. a2 b34
 				print("avgE-{}: {}".format(bs, self.bs_lig_avg_dic[bs][lig]))
 
 	def data_summary_by_lig_csv(self):
+		_op = "data_summary_by_lig_csv"
+		announce(_op)
+
 		self.make_bs_lig_num_dic()
 		self.make_bs_lig_min_dic()
 		self.make_bs_lig_avg_dic()
@@ -668,10 +787,25 @@ class Docking: # input is a docking id e.g. a2 b34
 docks_xlsx = Xlsx('/Users/zarek/lab/Docking/docks.xlsx')
 basic_params = {"dock", "date", "prot", "specprot", "ligset", "box",
 	"exhaust", "n_models", "n_cpus", "notes"}
+pose_params = {"lig", "LIG", "model", "MODEL"}
 pvr_params = {"E", "pvr_resis", "pvr_resis_atoms", "rmsd_ub", "rmsd_lb",
 	"pvr_effic", "pvr_model", "torsdof", "macro_close_ats"}
+bs_params = {"bs_resis_scores", "bs_resis_atoms_scores",
+	"bs_assignments", "bs_atoms_assignments"}
+bs_assign_threshold = 0.10
+bs_assign_atom_threshold = 0.10
 
 def cr(): print("")
+def dline(): print("--------------------")
+def tline(): print("~~~~~~~~~~~~~~~~~~~~")
+
+def announce(announcement):
+	cr()
+	dline()
+	print(announcement)
+	dline()
+
+def r4(x): return round(x, 4)
 
 def sh_list_to_py(sh_list):
 	py_list = re.sub(r' ', '\", \"', sh_list)
@@ -697,20 +831,28 @@ def dic_subset(dic, subset_key, subset_value = 0, gt_threshold = 0):
 
 
 def main():
+	announce_start = "START"
+	announce(announce_start)
+
 	d = Docking(dock)
 # 	print(d.bs_list)
 
-# 	bs = BindingSite(d, 'allo')
+# 	bs = BindingSite(d, 'allo1')
 
 # 	print((Pdb('/Users/zarek/lab/Docking/binding_sites/h1c/a5res_pdbs/h1c_bs_fdla_a5resis.pdb').res_list(atoms = False)))
 
+# 	d.generate_alldata_dic()
+# 	print(d.alldata_dic)
 
-	d.generate_alldata_dic()
+# 	d.make_bs_lig_E_list_dic()
+	d.data_summary_by_lig()
+
+
+
 # 	for x, y in d.alldata_dic.items():
 # 		print(x)
 # 		print(y)
 
-# 	print(d.alldata_dic)
 
 # 	p = Pose(key = 'p1_ne_m2')
 # 	p = Pose(dock = 'a1', lig = 'ghvbjnm', model = 6)
