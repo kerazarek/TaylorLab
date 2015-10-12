@@ -22,8 +22,8 @@
 #
 
 from __future__ import print_function
-from openpyxl import load_workbook
 import csv, re, sys
+from openpyxl import load_workbook
 from numpy import mean
 
 script, dock = sys.argv
@@ -142,11 +142,13 @@ class Pdb:  # input is a .pdb or .pdbqt file address which may or may not be pvr
 					'atomi' : int(line[6:11]),
 					'atomn' : line[12:16].replace(" ", ""),
 					'resn' : line[17:20].replace(" ", ""),
-					'resi' : (line[22:26]),
-					'x' : float(line[30:38]),
-					'y' : float(line[38:46]),
-					'z' : float(line[46:54]),
-					'xyz' : (float(line[30:38]), float(line[38:46]), float(line[46:54]) ),
+					'resi' : line[22:26].replace(" ", ""),
+					'x' : float(line[30:38].replace(" ", "")),
+					'y' : float(line[38:46].replace(" ", "")),
+					'z' : float(line[46:54].replace(" ", "")),
+					'xyz' : (float(line[30:38].replace(" ", "")),
+						float(line[38:46].replace(" ", "")),
+						float(line[46:54].replace(" ", "")) ),
 					'atom_type' : line[76:78].replace(" ", ""),
 					'charge' : line[78:80].replace(" ", "") # element
 				}
@@ -163,11 +165,13 @@ class Pdb:  # input is a .pdb or .pdbqt file address which may or may not be pvr
 					'atomi' : int(line[6:11]),
 					'atomn' : line[12:16].replace(" ", ""),
 					'resn' : line[17:20].replace(" ", ""),
-					'resi' : (line[22:26]),
-					'x' : float(line[30:38]),
-					'y' : float(line[38:46]),
-					'z' : float(line[46:54]),
-					'xyz' : (float(line[30:38]), float(line[38:46]), float(line[46:54]) ),
+					'resi' : line[22:26].replace(" ", ""),
+					'x' : float(line[30:38].replace(" ", "")),
+					'y' : float(line[38:46].replace(" ", "")),
+					'z' : float(line[46:54].replace(" ", "")),
+					'xyz' : (float(line[30:38].replace(" ", "")),
+						float(line[38:46].replace(" ", "")),
+						float(line[46:54].replace(" ", "")) ),
 					'charge' : line[70:76].replace(" ", ""), # partial charge
 					'atom_type' : line[77:79].replace(" ", "") # AD4 atom type
 				}
@@ -244,8 +248,27 @@ class Pdb:  # input is a .pdb or .pdbqt file address which may or may not be pvr
 			'rmsd_lb' : self.rmsd_lb,
 			'pvr_resis' : self.pvr_resis,
 			'pvr_resis_atoms' : self.pvr_resis_atoms,
-			'pvr_resis_objs' : self.pvr_resis_objs
+			'pvr_resis_objs' : self.pvr_resis_objs,
+			'torsdof' : self.torsdof,
+			'macro_close_ats' : self.macro_close_ats,
+			'pvr_model' : self.pvr_model
 		}
+
+	def res_list(self, atoms = False):
+		list = []
+		if atoms is False:
+			for atom in self.coords:
+				list.append(atom['resn']+atom['resi'])
+		elif atoms is True:
+			for atom in self.coords:
+				list.append(atom['resn']+atom['resi']+"_"+atom['atomn'])
+
+		nodup_list = set(list)
+		reslist = []
+		for n in nodup_list:
+			reslist.append(n)
+		return reslist
+
 
 	def get_type(self):
 # 		Detect if its been through ADT process_VinaResult.py
@@ -267,9 +290,13 @@ class Pdb:  # input is a .pdb or .pdbqt file address which may or may not be pvr
 
 	def __init__(self, pdb_file_in):
 		self.pdb_file_in = pdb_file_in
-		pdb_file_open = open(pdb_file_in)
-		with pdb_file_open as f:
-			self.pdb_lines = f.readlines()
+		try:
+			pdb_file_open = open(pdb_file_in)
+			with pdb_file_open as f:
+				self.pdb_lines = f.readlines()
+		except IOError:
+			pass
+
 
 		self.get_type()
 
@@ -294,6 +321,20 @@ class Pose:
 
 # 		print(self.key, self.dock, self.lig, self.model)
 
+class BindingSite:
+	def __init__(self, prot, bs):
+		self.name = bs
+		self.dir = prot.bindingsites_dir
+		self.lig_pdb = self.dir+"lig_pdbs/"+prot.baseprot+"_bs_"+bs+".pdb"
+		self.a5res_pdb = self.dir+"a5res_pdbs/"+prot.baseprot+"_bs_"+bs+"_a5resis.pdb"
+
+		self.lig_pdb = Pdb(self.lig_pdb)
+		self.a5res_pdb = Pdb(self.a5res_pdb)
+		self.resis_list = self.a5res_pdb.res_list()
+		self.resis_atoms_list = self.a5res_pdb.res_list(atoms = True)
+
+# 		print(self.name, self.dir, self.lig_pdb, self.a5res_pdb)
+# 		print(self.resis_list, self.resis_atoms_list)
 
 class Docking: # input is a docking id e.g. a2 b34
 	def basic_params(self):
@@ -343,18 +384,19 @@ class Docking: # input is a docking id e.g. a2 b34
 		self.baseprot = docks_xlsx.look_up("pdbs", self.specprot, "baseprot")
 		self.bs_list_sh = docks_xlsx.look_up("pdbs", self.specprot, "binding_sites")
 		self.bs_list = sh_list_to_py(self.bs_list_sh)
+
 		if self.prot == "p300":
 			self.bs_list = ["lys", "side", "coa_ado", "coa_adpp", "coa_pant", "allo1", "allo2"]
 # 		self.bs_list = ["ado", "pant", "side", "lys", "allo1", "allo2"] # !!placholder
 # 		self.bs_list = ["adph", "fdla", "allo"] # !!placholder
-		self.lig_pdbs_dic = {}
-		self.lig_csvs_dic = {}
-		self.lig_csvdics_dic = {}
-		self.a5res_pdbs_dic = {}
-		self.a5res_csvs_dic = {}
-		self.a5res_csvdics_dic = {}
-		self.a5res_lists_dic = {}
-		self.a5res_atom_lists_dic = {}
+# 		self.lig_pdbs_dic = {}
+# 		self.lig_csvs_dic = {}
+# 		self.lig_csvdics_dic = {}
+# 		self.a5res_pdbs_dic = {}
+# 		self.a5res_csvs_dic = {}
+# 		self.a5res_csvdics_dic = {}
+# 		self.a5res_lists_dic = {}
+# 		self.a5res_atom_lists_dic = {}
 # 		bs_dic_addresses = {
 # 			self.lig_pdbs_dic: self.bindingsites_dir+"lig_pdbs/"+self.baseprot+"_bs_"+bs
 # 			self.lig_csvs_dic: self.bindingsites_dir+"lig_csvs/"+self.baseprot+"_bs_"+bs
@@ -410,6 +452,10 @@ class Docking: # input is a docking id e.g. a2 b34
 				except IOError:
 					pass
 
+	def bs_assign(self, bs):
+# 		print(bs)
+		pass
+
 	def generate_alldata_dic(self):
 # 		from alldata.csv file
 # 		self.alldata_dic = Csv(self.alldata_csv_address).dic
@@ -437,7 +483,15 @@ class Docking: # input is a docking id e.g. a2 b34
 					self_pp = "self."+pp
 					self.alldata_dic[pose.key][pp] = eval(self_pp)
 
-				if m != self.pvr_model: print("!!! pvr model mismatch !!!")
+				if m != self.pvr_model:
+# 					print("!!! pvr model mismatch !!!")
+# 					print(m)
+# 					print(self.pvr_model)
+					pass
+
+
+				for bs in self.bs_list:
+					self.bs_assign(bs)
 
 	def alldata_lig_subsets_dic(self):
 		self.generate_alldata_dic()
@@ -640,13 +694,22 @@ def dic_subset(dic, subset_key, subset_value = 0, gt_threshold = 0):
 	else: print('subsetting requires proper criteria')
 ####################
 
+
+
 def main():
 	d = Docking(dock)
+# 	print(d.bs_list)
+
+# 	bs = BindingSite(d, 'allo')
+
+# 	print((Pdb('/Users/zarek/lab/Docking/binding_sites/h1c/a5res_pdbs/h1c_bs_fdla_a5resis.pdb').res_list(atoms = False)))
+
 
 	d.generate_alldata_dic()
-	for x, y in d.alldata_dic.items():
-		print(x)
-		print(y)
+# 	for x, y in d.alldata_dic.items():
+# 		print(x)
+# 		print(y)
+
 # 	print(d.alldata_dic)
 
 # 	p = Pose(key = 'p1_ne_m2')
