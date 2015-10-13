@@ -18,6 +18,7 @@
 #
 #
 # updated 10/04/15 18:50
+# updated 10/12/15 22:14
 #
 #
 
@@ -344,12 +345,13 @@ class Pose:
 			self.key = dock+"_"+lig+"_m"+str(model)
 		else: print("!!! ERROR GENERATING POSE !!!")
 
-# 		print(self.key, self.dock, self.lig, self.model)
+	def docking_extract(self):
+		pass
 
 class BindingSite:
 	def __init__(self, prot, bs):
 		self.name = bs
-		self.dir = prot.bindingsites_dir
+		self.dir = prot.bs_dir
 		self.lig_pdb = self.dir+"lig_pdbs/"+prot.baseprot+"_bs_"+bs+".pdb"
 		self.a5res_pdb = self.dir+"a5res_pdbs/"+prot.baseprot+"_bs_"+bs+"_a5resis.pdb"
 
@@ -443,7 +445,7 @@ class Docking: # input is a docking id e.g. a2 b34
 		self.lab_dir = "/Users/zarek/lab/"
 		self.docking_dir = self.lab_dir+"Docking/"
 		self.prot_dir = self.docking_dir+self.prot+"/"
-		self.bindingsites_dir = self.docking_dir+"binding_sites/"+self.baseprot+"/"
+		self.bs_dir = self.docking_dir+"binding_sites/"+self.baseprot+"/"
 		self.ligset_dir = self.docking_dir+"ligsets/"+self.ligset+"/"
 		self.dock_dir = self.prot_dir+self.dock+"/"
 		self.res_dir = self.dock_dir+"results/"
@@ -457,7 +459,7 @@ class Docking: # input is a docking id e.g. a2 b34
 
 	def fetch_params(self):
 		_op = "fetch_params"
-# 		announce(_op)
+		announce(_op)
 
 		self.basic_params()
 		self.ligset_params()
@@ -465,16 +467,13 @@ class Docking: # input is a docking id e.g. a2 b34
 		self.file_addresses()
 		self.binding_site_params()
 
+	def init_meta(self):
+		self.missing_keys = []
+
 	def __init__(self, dock):
 		self.dock = dock
 		self.fetch_params()
-
-# 	def generate_alldata_dic(self):
-# 		_op = "generate_alldata_dic"
-# 		announce(_op)
-#
-# 		exec_print_param = "print(self."+param+")"
-# 		exec(exec_print_param)
+		self.init_meta()
 
 	def load_vina_results(self):
 		_op = "load_vina_results"
@@ -496,8 +495,13 @@ class Docking: # input is a docking id e.g. a2 b34
 		announce(_op)
 
 		self.alldata_dic = {}
+		self.bs_key_list_dic = {}
+
+		for bs in self.bs_list:
+			self.bs_key_list_dic[bs] = []
+
 		for l in self.ligset_list:
-			print("~~~[{}]~~~".format(l))
+# 			print("~~~[{}]~~~".format(l))
 
 			for m in range(1, (self.n_models + 1)):
 # 				print("[{}]".format(m))
@@ -511,12 +515,11 @@ class Docking: # input is a docking id e.g. a2 b34
 
 					_lm_lig = l
 					_lm_model = m
-					_lm_LIG = l
-					_lm_MODEL = m
+					_lm_key = pose.key
 
 					_lm_E = pvrd_obj.E
-					_lm_pvr_resis = pvrd_obj.pvr_resis
-					_lm_pvr_resis_atoms = pvrd_obj.pvr_resis_atoms
+					_lm_pvr_resis = set(pvrd_obj.pvr_resis)
+					_lm_pvr_resis_atoms = set(pvrd_obj.pvr_resis_atoms)
 					_lm_rmsd_ub = pvrd_obj.rmsd_ub
 					_lm_rmsd_lb = pvrd_obj.rmsd_lb
 					_lm_pvr_effic = pvrd_obj.pvr_effic
@@ -526,47 +529,46 @@ class Docking: # input is a docking id e.g. a2 b34
 
 # 					if m != _lm_pvr_model: print("!!! pvr model mismatch <{}_m{}> !!! ([pvr_model: {}; iter_model: {})".format(l, m, _lm_pvr_model, m))
 
-					_lm_bs_resis_scores = {}
-					_lm_bs_resis_atoms_scores = {}
+					_lm_bs_resis_counts = {}
+					_lm_bs_resis_atoms_counts = {}
+					_lm_bs_resis_fractions = {}
+					_lm_bs_resis_atoms_fractions = {}
 					_lm_bs_assignments = [] # resis
 					_lm_bs_atoms_assignments = [] # resis atoms
 
+# 					_lm_bs_resis_counts['total'] = 0
+# 					_lm_bs_resis_atoms_counts['total'] = 0
 					for bs in self.bs_list:
-						_lm_bs_resis_scores[bs] = 0
-						_lm_bs_resis_atoms_scores[bs] = 0
+						_lm_bs_resis_counts[bs] = 0
+						_lm_bs_resis_atoms_counts[bs] = 0
 						for r in self.bs_resis_list_dic[bs]:
 							if r in _lm_pvr_resis:
-								_lm_bs_resis_scores[bs] += 1
+								_lm_bs_resis_counts[bs] += 1
+# 								_lm_bs_resis_counts['total'] += 1
 						for r in self.bs_resis_atoms_list_dic[bs]:
 							if r in _lm_pvr_resis_atoms:
-								_lm_bs_resis_atoms_scores[bs] += 1
+								_lm_bs_resis_atoms_counts[bs] += 1
+# 								_lm_bs_resis_atoms_counts['total'] += 1
 
-						_lm_bs_resis_scores[bs] = r4(float(_lm_bs_resis_scores[bs]) / len(self.bs_resis_list_dic[bs]))
-						_lm_bs_resis_atoms_scores[bs] = r4(float(_lm_bs_resis_atoms_scores[bs]) / len(self.bs_resis_atoms_list_dic[bs]))
+						_lm_bs_resis_fractions[bs] = r4(float(_lm_bs_resis_counts[bs]) / len(self.bs_resis_list_dic[bs]))
+						_lm_bs_resis_atoms_fractions[bs] = r4(float(_lm_bs_resis_atoms_counts[bs]) / len(self.bs_resis_atoms_list_dic[bs]))
 
-						if _lm_bs_resis_scores[bs] >= bs_assign_threshold:
+						if _lm_bs_resis_fractions[bs] >= bs_assign_threshold:
 							_lm_bs_assignments.append(bs)
+							self.bs_key_list_dic[bs].append(pose.key)
 
-						if _lm_bs_resis_atoms_scores[bs] >= bs_assign_atom_threshold:
+						if _lm_bs_resis_atoms_fractions[bs] >= bs_assign_atom_threshold:
 							_lm_bs_atoms_assignments.append(bs)
 
-					for pp in pvr_params:
+					_lm_bs_assignments = set(_lm_bs_assignments)
+					_lm_bs_atoms_assignments = set(_lm_bs_atoms_assignments)
+
+					params = pvr_params | pose_params | bs_params
+					for pp in params:
 						_lm_pp = "_lm_"+pp
 						self.alldata_dic[pose.key][pp] = eval(_lm_pp)
 						none_pp = "{} = None".format(_lm_pp)
 						exec none_pp
-
-					for kp in pose_params:
-						_lm_kp = "_lm_"+kp
-						self.alldata_dic[pose.key][kp] = eval(_lm_kp)
-						none_kp = "{} = None".format(_lm_kp)
-						exec none_kp
-
-					for bp in bs_params:
-						_lm_bp = "_lm_"+bp
-						self.alldata_dic[pose.key][bp] = eval(_lm_bp)
-						none_bp = "{} = None".format(_lm_bp)
-						exec none_bp
 
 				else:
 					print("Ligand {} m{} does pvrd_pdbqt does not exist".format(l, m))
@@ -575,14 +577,13 @@ class Docking: # input is a docking id e.g. a2 b34
 		_op = "alldata_lig_subsets_dic"
 		announce(_op)
 
-		self.generate_alldata_dic()
 		dic = {}
 		for lig in self.ligset_list:
-			dic[lig] = dic_subset(self.alldata_dic, "LIG", subset_value = lig)
+			dic[lig] = dic_subset(self.alldata_dic, "lig", subset_value = lig)
 		return dic
 
 # 	is this one even useful?
-	def alldata_lig_E_lists_dic(self):
+	def generate_alldata_lig_E_lists_dic(self):
 		_op = "alldata_lig_E_lists_dic"
 		announce(_op)
 
@@ -592,70 +593,27 @@ class Docking: # input is a docking id e.g. a2 b34
 			for k, v in subset_dic.items():
 				lig_E_list.append(float(v['E']))
 			dic[lig] = lig_E_list
-		return dic
-
-	def alldata_assign_bs(self, threshold = 0.10):
-		_op = "alldata_assign_bs"
-		announce(_op)
-
-# 		self.generate_alldata_dic()
-# 		new_alldata_dic = {}
-# 		for k, data in self.alldata_dic.items():
-# # 			print(data)
-# 			bs_assignment_dic = {}
-# 			for bs in self.bs_list:
-# 				score_header = "resis_score_fraction_"+bs
-# # 				print(data[score_header])
-# 				try:
-# 					if float(data[score_header]) < threshold:
-# # 						print("{} = 0".format(bs))
-# 						bs_assignment_dic[bs] = False
-# 					elif float(data[score_header]) >= threshold:
-# # 						print("{} = 1".format(bs))
-# 						bs_assignment_dic[bs] = True
-# 				except ValueError:
-# 					pass
-# # 			print(k)
-# 			data['bs_assignments'] = bs_assignment_dic
-# # 			print(data)
-# 			new_alldata_dic[k] = data
-# # 		print(new_alldata_dic)
-# 		self.alldata_dic = new_alldata_dic
-
-		self.generate_alldata_dic()
-# 		for k, data in self.alldata_dic.items():
-# 			print(k)
-# 			print(data)
-
+		self.alldata_lig_E_lists_dic = dic
 
 	def make_bs_lig_E_list_dic(self):
 		_op = "make_bs_lig_E_list_dic"
 		announce(_op)
 
-		self.alldata_assign_bs()
-		dic = {}
+		_dic = {}
+
 		for bs in self.bs_list:
-			dic[bs] = {}
+			_dic[bs] = {}
 			for lig in self.ligset_list:
-				dic[bs][lig] = []
-		for lig in self.ligset_list:
-# 			print(lig) # check
-			for k, data in self.alldata_dic.items():
-				list = []
-				for bs in self.bs_list:
-					try:
-						if (data['LIG'] == lig): # and (data['bs_assignments'][bs] is True):
-# 							print(data['E'])
-							dic[bs][lig].append(float(data['E']))
-# 						print(data)
-						else: print("hi")
-					except KeyError:
-						pass
-# 		return dic
+# 				print(lig)
+				_dic[bs][lig] = []
+		for key, data in self.alldata_dic.items():
+			try: # KLUDGE
+				for assigned_bs in data['bs_assignments']:
+					_dic[assigned_bs][data['lig']].append(data['E'])
+			except KeyError: pass
 
-		self.bs_lig_E_list_dic = dic
-		print(self.bs_lig_E_list_dic)
-
+# 		print(_dic)
+		self.bs_lig_E_list_dic = _dic
 
 	def make_bs_lig_num_dic(self):
 		_op = "make_bs_lig_num_dic"
@@ -721,7 +679,7 @@ class Docking: # input is a docking id e.g. a2 b34
 
 			E_list = []
 			for pose, data in self.alldata_dic.items():
-				if data['LIG'] == lig:
+				if data['lig'] == lig:
 					try:
 						E_list.append(float(data['E']))
 					except ValueError:
@@ -742,9 +700,12 @@ class Docking: # input is a docking id e.g. a2 b34
 		_op = "data_summary_by_lig_csv"
 		announce(_op)
 
+		self.make_bs_lig_E_list_dic()
 		self.make_bs_lig_num_dic()
 		self.make_bs_lig_min_dic()
 		self.make_bs_lig_avg_dic()
+
+		self.generate_alldata_lig_E_lists_dic()
 
 		headers1 = ["Lig", "MinE", "AvgE"]
 		headers2 = [] # BS counts
@@ -765,8 +726,8 @@ class Docking: # input is a docking id e.g. a2 b34
 
 		for lig in self.ligset_list:
 			print("{},{},{}".format(lig,
-				min(self.alldata_lig_E_lists_dic()[lig]),
-				mean(self.alldata_lig_E_lists_dic()[lig])),
+				min(self.alldata_lig_E_lists_dic[lig]),
+				mean(self.alldata_lig_E_lists_dic[lig])),
 				end=','
 			)
 
@@ -780,17 +741,31 @@ class Docking: # input is a docking id e.g. a2 b34
 				for bs in self.bs_list:
 					print(dic[bs][lig],end=',')
 			cr()
+
+	def analyze_threshold(self):
+		self.make_bs_lig_E_list_dic()
+		self.make_bs_lig_num_dic()
+		self.make_bs_lig_min_dic()
+		self.make_bs_lig_avg_dic()
+
+# 		print(self.bs_lig_num_dic)
+		for lig in self.ligset_list:
+			_n_placed = 0
+			for bs in self.bs_list:
+				_n_placed += self.bs_lig_num_dic[bs][lig]
+				print("{}: {}".format(lig, _n_placed))
 ####################
 
 ####################
 # UNIVERSALS
 docks_xlsx = Xlsx('/Users/zarek/lab/Docking/docks.xlsx')
 basic_params = {"dock", "date", "prot", "specprot", "ligset", "box",
-	"exhaust", "n_models", "n_cpus", "notes"}
-pose_params = {"lig", "LIG", "model", "MODEL"}
+	"exhaust", "n_models", "n_cpus", "notes", "baseprot"}
+pose_params = {"lig", "model", "key"}
 pvr_params = {"E", "pvr_resis", "pvr_resis_atoms", "rmsd_ub", "rmsd_lb",
 	"pvr_effic", "pvr_model", "torsdof", "macro_close_ats"}
-bs_params = {"bs_resis_scores", "bs_resis_atoms_scores",
+bs_params = {"bs_resis_counts", "bs_resis_atoms_counts",
+	"bs_resis_fractions", "bs_resis_atoms_fractions",
 	"bs_assignments", "bs_atoms_assignments"}
 bs_assign_threshold = 0.10
 bs_assign_atom_threshold = 0.10
@@ -817,13 +792,15 @@ def dic_subset(dic, subset_key, subset_value = 0, gt_threshold = 0):
 	subsetted_dic = {}
 	if subset_value != 0:
 		for k, v in dic.items():
-			if v[subset_key] == subset_value:
-				subsetted_dic[k] = v
+			if not (v == {}):
+				if v[subset_key] == subset_value:
+					subsetted_dic[k] = v
 		return subsetted_dic
 	elif gt_threshold > 0:
 		for k, v in dic.items():
-			if v[subset_key] >= gt_threshold:
-				subsetted_dic[k] = v
+			if not (v == {}):
+				if v[subset_key] >= gt_threshold:
+					subsetted_dic[k] = v
 		return subsetted_dic
 	else: print('subsetting requires proper criteria')
 ####################
@@ -841,17 +818,21 @@ def main():
 
 # 	print((Pdb('/Users/zarek/lab/Docking/binding_sites/h1c/a5res_pdbs/h1c_bs_fdla_a5resis.pdb').res_list(atoms = False)))
 
-# 	d.generate_alldata_dic()
-# 	print(d.alldata_dic)
+	d.generate_alldata_dic()
+# 	print(d.bs_key_list_dic)
+# 	for bs, key_list in d.bs_key_list_dic.items():
+# 		print("{}: {}".format(bs, len(key_list)))
 
-# 	d.make_bs_lig_E_list_dic()
-	d.data_summary_by_lig()
+# 	d.analyze_threshold()
 
 
+# 	d.data_summary_by_lig_csv()
 
 # 	for x, y in d.alldata_dic.items():
-# 		print(x)
-# 		print(y)
+# # 		print(x)
+# # 		print(y)
+# 		for yy in y: print(yy)
+# 		cr()
 
 
 # 	p = Pose(key = 'p1_ne_m2')
