@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 ##################################################
-###	POST-VINA DATA PROCESSING
+###	GET PARAMETERS
 ##################################################
 # (c) Zarek Siegel
-# created 10/04/15 16:57
+# created 10/12/15 22:28
 #
 #
 # 		Requires:
@@ -17,21 +17,16 @@
 # 		**add a description of what it does...
 #
 #
-# updated 10/04/15 18:50
-# updated 10/12/15 22:14
+# updated 10/12/15 23:37
 #
 #
 
 from __future__ import print_function
 import csv, re, sys
 from openpyxl import load_workbook
-from numpy import mean
 from os.path import isfile
 
-script, dock = sys.argv
-
-# KLUDGE
-bs_assign_threshold = 0.10
+script, dock, print_type = sys.argv
 
 ####################
 ### OBJECTS
@@ -98,26 +93,6 @@ class Xlsx: # input is a .xlsx file address
 							row_data[col_head] = str(c.value)
 				self.sheet_dic[row_head] = row_data
 		return self.sheet_dic
-
-class Csv: # input is a .csv file address
-	def __init__(self, source_csv):
-		self.source_csv = source_csv
-		self.dic = {}
-
-		csv_open = open(self.source_csv, 'r')
-		csv_read = csv.reader(csv_open, delimiter=',', quotechar='"')
-
-		csv_list = []
-		for row in csv_read:
-			csv_list.append(row)
-
-		keys = csv_list[0]
-		for row in csv_list:
-			dic_entry = {}
-			for i in range(0, len(keys)):
-				if row[i] != '':
-					dic_entry[keys[i]] = row[i]
-			self.dic[row[0]] = dic_entry
 
 class Residue: # input is a string of form 'RES123' or 'RES123_A1'
 	def __init__(self, str):
@@ -328,32 +303,6 @@ class Pdb:  # input is a .pdb or .pdbqt file address which may or may not be pvr
 
 
 		self.get_type()
-
-class Pose:
-	def __init__(self, key = None, dock = None, lig = None, model = None):
-		if key == None and dock == None and lig == None and model == None:
-			print("Pose needs a specified key, or lig/model")
-		elif key != None and dock == None and lig == None and model == None:
-			if re.search(r'^[a-z][0-9]+_?[a-z0-9]*_[A-Za-z0-9_]+_m[0-9]+$', key):
-				self.key = key
-				if re.search(r'^[a-z][0-9]+_[A-Za-z0-9_]+_m[0-9]+$', key):
-					self.dock = re.sub(r'_[A-Za-z0-9_]+_m[0-9]+$', '', key)
-					self.lig = re.sub(r'^[a-z][0-9]+_|_m[0-9]+$', '', key)
-					self.model = int(re.sub(r'^[a-z][0-9]+_[A-Za-z0-9_]+_m', '', key))
-			else: print("!!! bad pose key !!!")
-		elif key == None and dock != None and lig != None and model != None:
-			self.dock = dock
-			self.lig = lig
-			self.model = model
-			self.key = dock+"_"+lig+"_m"+str(model)
-		else: print("!!! ERROR GENERATING POSE !!!")
-
-	def pdb_import(self, docking_object):
-		#pvrd_pdbqt
-		self.pvrd_pdbqt = docking_object.pvrd_pdbqts_dir+self.key+".pdbqt"
-		self.pdb = Pdb(self.pvrd_pdbqt)
-
-
 class BindingSite:
 	def __init__(self, prot, bs):
 		self.name = bs
@@ -367,8 +316,6 @@ class BindingSite:
 		self.resis_list = self.a5res_pdb.res_list()
 		self.resis_atoms_list = self.a5res_pdb.res_list(atoms = True)
 
-# 		print(self.name, self.dir, self.lig_pdb, self.a5res_pdb)
-# 		print(self.resis_list, self.resis_atoms_list)
 
 class Docking: # input is a docking id e.g. a2 b34
 	def basic_params(self):
@@ -388,7 +335,7 @@ class Docking: # input is a docking id e.g. a2 b34
 		self.specprot = str(docks_xlsx.look_up(self.prot, dock, "SPECPROT"))
 		self.ligset = str(docks_xlsx.look_up(self.prot, dock, "LIGSET"))
 		self.box = str(docks_xlsx.look_up(self.prot, dock, "BOX"))
-		self.exhaust = str(docks_xlsx.look_up(self.prot, dock, "EXHAUST"))
+		self.exhaust = int(docks_xlsx.look_up(self.prot, dock, "EXHAUST"))
 		self.n_models = int(docks_xlsx.look_up(self.prot, dock, "n_MODELS"))
 		self.n_cpus = docks_xlsx.look_up(self.prot, dock, "n_CPUS") # type?
 		self.notes = str(docks_xlsx.look_up(self.prot, dock, "notes"))
@@ -423,7 +370,19 @@ class Docking: # input is a docking id e.g. a2 b34
 		self.box_params['notes'] = str(docks_xlsx.look_up('gridboxes', self.box, 'notes'))
 		self.box_params['size_tuple'] = self.box_params['size_x'], self.box_params['size_y'], self.box_params['size_z']
 		self.box_params['center_tuple'] = self.box_params['center_x'], self.box_params['center_y'], self.box_params['center_z']
-		self.box_params['name'] = str(docks_xlsx.look_up('gridboxes', self.box, 'name'))
+
+		self.box_name = self.box_params['name']
+		self.box_description = self.box_params['description']
+		self.box_size_x = self.box_params['size_x']
+		self.box_size_y = self.box_params['size_y']
+		self.box_size_z = self.box_params['size_z']
+		self.box_center_x = self.box_params['center_x']
+		self.box_center_y = self.box_params['center_y']
+		self.box_center_z = self.box_params['center_z']
+		self.box_notes = self.box_params['notes']
+		self.box_size_tuple = self.box_params['size_tuple']
+		self.box_center_tuple = self.box_params['center_tuple']
+
 
 	def binding_site_params(self):
 		_op = "binding_site_params"
@@ -441,6 +400,7 @@ class Docking: # input is a docking id e.g. a2 b34
 			b = BindingSite(self, bs)
 			self.bs_resis_list_dic[bs] = b.resis_list
 			self.bs_resis_atoms_list_dic[bs] = b.resis_atoms_list
+# 			eval("self."+bs+"bs_resis_list") = self.bs_resis_list_dic[bs]
 
 
 	def file_addresses(self): # ALL DIRS END IN /
@@ -465,7 +425,7 @@ class Docking: # input is a docking id e.g. a2 b34
 
 	def fetch_params(self):
 		_op = "fetch_params"
-#		announce(_op)
+# 		announce(_op)
 
 		self.basic_params()
 		self.ligset_params()
@@ -473,319 +433,41 @@ class Docking: # input is a docking id e.g. a2 b34
 		self.file_addresses()
 		self.binding_site_params()
 
-	def init_meta(self):
-		self.missing_keys = []
-		self.is_alldata_dic_generated = False
-
 	def __init__(self, dock):
 		self.dock = dock
 		self.fetch_params()
-		self.init_meta()
 
-	def load_vina_results(self):
-		_op = "load_vina_results"
-#		announce(_op)
 
-		for lig in self.ligset_list:
-			print(lig)
-			res_pdbqt = self.res_dir+self.dock+"_"+lig+"_results.pdbqt"
-			for m in range(1, (int(self.n_models) + 1)):
-				try:
-					pvrd_pdbqt = str(self.pvrd_pdbqts_dir)+self.dock+"_"+lig+"_m"+str(m)+".pdbqt"
-					pvrd = Pvrd(pvrd_pdbqt)
-# 					print(pvrd.dic)
-				except IOError:
-					pass
-
-	def generate_alldata_dic(self):
-		_op = "generate_alldata_dic"
-#		announce(_op)
-
-		self.alldata_dic = {}
-		self.bs_key_list_dic = {}
-
-		for bs in self.bs_list:
-			self.bs_key_list_dic[bs] = []
-
-		for l in self.ligset_list:
-# 			print("~~~[{}]~~~".format(l))
-
-			for m in range(1, (self.n_models + 1)):
-# 				print("[{}]".format(m))
-				pose = Pose(dock = self.dock, lig = l, model = m)
-				self.alldata_dic[pose.key] = {}
-
-				pvrd_pdbqt = self.pvrd_pdbqts_dir+pose.key+".pdbqt"
-				if isfile(pvrd_pdbqt):
-					pvrd_obj = Pdb(pvrd_pdbqt)
-	# 				print(pvrd_pdbqt)
-
-					_lm_lig = l
-					_lm_model = m
-					_lm_key = pose.key
-
-					_lm_E = pvrd_obj.E
-					_lm_pvr_resis = set(pvrd_obj.pvr_resis)
-					_lm_pvr_resis_atoms = set(pvrd_obj.pvr_resis_atoms)
-					_lm_rmsd_ub = pvrd_obj.rmsd_ub
-					_lm_rmsd_lb = pvrd_obj.rmsd_lb
-					_lm_pvr_effic = pvrd_obj.pvr_effic
-					_lm_pvr_model = pvrd_obj.pvr_model
-					_lm_macro_close_ats = pvrd_obj.macro_close_ats
-					_lm_torsdof = pvrd_obj.torsdof
-
-# 					if m != _lm_pvr_model: print("!!! pvr model mismatch <{}_m{}> !!! ([pvr_model: {}; iter_model: {})".format(l, m, _lm_pvr_model, m))
-
-					_lm_bs_resis_counts = {}
-					_lm_bs_resis_atoms_counts = {}
-					_lm_bs_resis_fractions = {}
-					_lm_bs_resis_atoms_fractions = {}
-					_lm_bs_assignments = [] # resis
-					_lm_bs_atoms_assignments = [] # resis atoms
-
-# 					_lm_bs_resis_counts['total'] = 0
-# 					_lm_bs_resis_atoms_counts['total'] = 0
-					for bs in self.bs_list:
-						_lm_bs_resis_counts[bs] = 0
-						_lm_bs_resis_atoms_counts[bs] = 0
-						for r in self.bs_resis_list_dic[bs]:
-							if r in _lm_pvr_resis:
-								_lm_bs_resis_counts[bs] += 1
-# 								_lm_bs_resis_counts['total'] += 1
-						for r in self.bs_resis_atoms_list_dic[bs]:
-							if r in _lm_pvr_resis_atoms:
-								_lm_bs_resis_atoms_counts[bs] += 1
-# 								_lm_bs_resis_atoms_counts['total'] += 1
-
-						_lm_bs_resis_fractions[bs] = r4(float(_lm_bs_resis_counts[bs]) / len(self.bs_resis_list_dic[bs]))
-						_lm_bs_resis_atoms_fractions[bs] = r4(float(_lm_bs_resis_atoms_counts[bs]) / len(self.bs_resis_atoms_list_dic[bs]))
-
-						if _lm_bs_resis_fractions[bs] >= bs_assign_threshold:
-							_lm_bs_assignments.append(bs)
-							self.bs_key_list_dic[bs].append(pose.key)
-
-						if _lm_bs_resis_atoms_fractions[bs] >= bs_assign_atom_threshold:
-							_lm_bs_atoms_assignments.append(bs)
-
-					_lm_bs_assignments = set(_lm_bs_assignments)
-					_lm_bs_atoms_assignments = set(_lm_bs_atoms_assignments)
-
-					params = pvr_params | pose_params | bs_params
-					for pp in params:
-						_lm_pp = "_lm_"+pp
-						self.alldata_dic[pose.key][pp] = eval(_lm_pp)
-						none_pp = "{} = None".format(_lm_pp)
-						exec none_pp
-
+	def print_params(self, type = None):
+		if type == "readable":
+			for pp in params_to_print:
+				print("{}: {}".format(pp, eval("self."+pp)))
+		elif type == "sh":
+			for pp in params_to_print - {"bs_list"}:
+				print("{}=\"{}\"".format(pp, eval("self."+pp)))
+		elif type == "py":
+			for pp in params_to_print - {"bs_list_sh"}:
+				if eval("self."+pp) == "None":
+					print("{} = {}".format(pp, None))
+				elif isinstance(eval("self."+pp), float):
+					print("{} = {}".format(pp, eval("self."+pp)))
+				elif isinstance(eval("self."+pp), int):
+					print("{} = {}".format(pp, eval("self."+pp)))
+				elif isinstance(eval("self."+pp), tuple):
+					print("{} = {}".format(pp, eval("self."+pp)))
+				elif isinstance(eval("self."+pp), list):
+					print("{} = {}".format(pp, eval("self."+pp)))
+				elif isinstance(eval("self."+pp), set):
+					print("{} = {}".format(pp, eval("self."+pp)))
+				elif isinstance(eval("self."+pp), dict):
+					print("{} = {}".format(pp, eval("self."+pp)))
 				else:
-# 					print("Ligand {} m{} does pvrd_pdbqt does not exist".format(l, m))
-					pass
-
-		self.is_alldata_dic_generated = True
-
-	def __iter__(self):
-		if not self.is_alldata_dic_generated:
-			self.generate_alldata_dic()
-		for key, data in self.alldata_dic.items():
-			yield data
-
-	def alldata_lig_subsets_dic(self):
-		_op = "alldata_lig_subsets_dic"
-#		announce(_op)
-
-		dic = {}
-		for lig in self.ligset_list:
-			dic[lig] = dic_subset(self.alldata_dic, "lig", subset_value = lig)
-		return dic
-
-# 	is this one even useful?
-	def generate_alldata_lig_E_lists_dic(self):
-		_op = "alldata_lig_E_lists_dic"
-#		announce(_op)
-
-		dic = {}
-		for lig, subset_dic in self.alldata_lig_subsets_dic().items():
-			lig_E_list = []
-			for k, v in subset_dic.items():
-				lig_E_list.append(float(v['E']))
-			dic[lig] = lig_E_list
-		self.alldata_lig_E_lists_dic = dic
-
-	def make_bs_lig_E_list_dic(self):
-		_op = "make_bs_lig_E_list_dic"
-#		announce(_op)
-
-		_dic = {}
-
-		for bs in self.bs_list:
-			_dic[bs] = {}
-			for lig in self.ligset_list:
-# 				print(lig)
-				_dic[bs][lig] = []
-		for key, data in self.alldata_dic.items():
-			try: # KLUDGE
-				for assigned_bs in data['bs_assignments']:
-					_dic[assigned_bs][data['lig']].append(data['E'])
-			except KeyError: pass
-
-# 		print(_dic)
-		self.bs_lig_E_list_dic = _dic
-
-	def make_bs_lig_num_dic(self):
-		_op = "make_bs_lig_num_dic"
-#		announce(_op)
-
-		dic = {}
-
-		for bs, lig_E_list in self.bs_lig_E_list_dic.items():
-# 			print(bs)
-			dic[bs] = {}
-			for lig, E_list in lig_E_list.items():
-# 				print(lig)
-# 				print(len(E_list))
-				dic[bs][lig] = len(E_list)
-		self.bs_lig_num_dic = dic
-
-
-	def make_bs_lig_min_dic(self):
-		_op = "make_bs_lig_min_dic"
-#		announce(_op)
-
-		dic = {}
-		for bs, lig_E_list in self.bs_lig_E_list_dic.items():
-			dic[bs] = {}
-			for lig, E_list in lig_E_list.items():
-				try:
-					dic[bs][lig] = min(E_list)
-				except ValueError:
-					dic[bs][lig] = None
-		self.bs_lig_min_dic = dic
-
-	def make_bs_lig_avg_dic(self, threshold = bs_assign_threshold ):
-		_op = "make_bs_lig_avg_dic"
-#		announce(_op)
-
-		dic = {}
-		for bs, lig_E_list in self.bs_lig_E_list_dic.items():
-			dic[bs] = {}
-			for lig, E_list in lig_E_list.items():
-				try:
-					dic[bs][lig] = ( sum(E_list) / len(E_list) )
-				except ValueError and ZeroDivisionError:
-					dic[bs][lig] = None
-		self.bs_lig_avg_dic = dic
-
-	def data_summary_by_lig(self):
-		_op = "data_summary_by_lig"
-#		announce(_op)
-
-		minE_dic = {}
-
-		self.make_bs_lig_E_list_dic()
-
-		self.make_bs_lig_num_dic()
-		self.make_bs_lig_min_dic()
-		self.make_bs_lig_avg_dic()
-
-		for lig in self.ligset_list:
-			cr()
-			tline()
-			print(lig)
-			tline()
-
-			E_list = []
-			for pose, data in self.alldata_dic.items():
-				if data['lig'] == lig:
-					try:
-						E_list.append(float(data['E']))
-					except ValueError:
-						pass
-# 					if data
-			MinE = min(E_list)
-			AvgE = mean(E_list)
-
-			print("AvgE: {}".format(AvgE))
-			print("MinE: {}".format(MinE))
-# 			for alldata_head
-			for bs in self.bs_list:
-				print("num-{}: {}".format(bs, self.bs_lig_num_dic[bs][lig]))
-				print("minE-{}: {}".format(bs, self.bs_lig_min_dic[bs][lig]))
-				print("avgE-{}: {}".format(bs, self.bs_lig_avg_dic[bs][lig]))
-
-	def data_summary_by_lig_csv(self):
-		_op = "data_summary_by_lig_csv"
-#		announce(_op)
-
-		self.make_bs_lig_E_list_dic()
-		self.make_bs_lig_num_dic()
-		self.make_bs_lig_min_dic()
-		self.make_bs_lig_avg_dic()
-
-		self.generate_alldata_lig_E_lists_dic()
-
-		headers1 = ["Lig", "MinE", "AvgE"]
-		headers2 = [] # BS counts
-		headers3 = [] # BS AvgEs
-		headers4 = [] # BS AvgEs
-
-		for bs in self.bs_list:
-			headers2.append("Num_"+bs) # in "+bs+" site")
-			headers3.append("AvgE_"+bs)
-			headers4.append("MinE_"+bs)
-
-		headers = headers1 + headers2 + headers3 + headers4
-
-		for h in headers:
-			print(h, end=',')
-
-		cr()
-
-		for lig in self.ligset_list:
-			print("{},{},{}".format(lig,
-				min(self.alldata_lig_E_lists_dic[lig]),
-				mean(self.alldata_lig_E_lists_dic[lig])),
-				end=','
-			)
-
-# 			for bs in self.bs_list:
-# 				print("{},{},{}".format("#", "avgE", "minE"),end=',')
-
-# 			for head in ["Num_", "AvgE_", "MinE_"]:
-# 				for bs in self.bs_list:
-# 					print(head+bs)
-			for dic in [self.bs_lig_num_dic, self.bs_lig_avg_dic, self.bs_lig_min_dic]:
-				for bs in self.bs_list:
-					print(dic[bs][lig],end=',')
-			cr()
-
-	def print_alldata_csv(self):
-		keys = [
-			"key", "lig", "model", "E", "pvr_resis", "pvr_resis_atoms"
-		]
-		print(py_list_to_csv(keys))
-		for data in self:
-			csv_row = []
-			for k in keys:
-# 				if type(data[k]) is (set or list): print(py_list_to_sh(data[k]))
-# 				else: print(data[k])
-				try:
-					if type(data[k]) is (set or list):
-						csv_row.append((py_list_to_sh(data[k])))
-					else: csv_row.append(data[k])
-				except:
-					csv_row.append(None)
-			print(py_list_to_csv(csv_row))
-
-	def generate_allposes_dic(self): # incorporate into alldata dic?
-		self.allposes_dic = {}
-		for data in self:
-			pose = Pose(data['key'])
-			pose.pdb_import(self)
-			self.allposes_dic[data['key']] = pose.pdb
-
-
-
-
+					print("{} = \"{}\"".format(pp, eval("self."+pp)))
+		elif type == "csv":
+			for pp in params_to_print:
+				print("{},{}".format(pp, eval("self."+pp)))
+		else:
+			print("!!! bad parameter printing type !!!")
 ####################
 
 ####################
@@ -793,15 +475,21 @@ class Docking: # input is a docking id e.g. a2 b34
 docks_xlsx = Xlsx('/Users/zarek/lab/Docking/docks.xlsx')
 basic_params = {"dock", "date", "prot", "specprot", "ligset", "box",
 	"exhaust", "n_models", "n_cpus", "notes", "baseprot"}
-pose_params = {"lig", "model", "key"}
-pvr_params = {"E", "pvr_resis", "pvr_resis_atoms", "rmsd_ub", "rmsd_lb",
-	"pvr_effic", "pvr_model", "torsdof", "macro_close_ats"}
-bs_params = {"bs_resis_counts", "bs_resis_atoms_counts",
-	"bs_resis_fractions", "bs_resis_atoms_fractions",
-	"bs_assignments", "bs_atoms_assignments"}
-# bs_assign_threshold = 0.01 # KLUDGE
-# bs_assign_atom_threshold = 0.10
-bs_assign_atom_threshold = bs_assign_threshold
+
+box_params = {"box_name", "box_description", "box_size_x", "box_size_y",
+	"box_size_z", "box_center_x", "box_center_y", "box_center_z",
+	"box_notes", "box_size_tuple", "box_center_tuple"}
+
+bs_params = {"bs_list", "bs_list_sh"} #, "bs_resis_list_dic", "bs_resis_atoms_list_dic"}
+
+dir_params = {"lab_dir", "docking_dir", "prot_dir", "bs_dir", "ligset_dir",
+	"dock_dir", "res_dir", "pvrd_pdbqts_dir"}
+
+params_to_print = basic_params | box_params | bs_params | dir_params
+
+bs_assign_threshold = 0.10
+bs_assign_atom_threshold = 0.10
+
 
 def cr(): print("")
 def dline(): print("--------------------")
@@ -813,85 +501,25 @@ def announce(announcement):
 	print(announcement)
 	dline()
 
-def r4(x): return round(x, 4)
-
 def sh_list_to_py(sh_list):
 	py_list = re.sub(r' ', '\", \"', sh_list)
 	py_list = re.sub(r'^(.+)$', r'["\1"]', py_list)
 	py_list = eval(py_list)
 	return py_list
 
-def py_list_to_sh(py_list):
-	if type(py_list) is set: py_list = list(py_list)
-	list_str = str(py_list)
-	sh_list = re.sub(r'[,\'\[\]]', '', list_str)
-	return sh_list
-
-def py_list_to_csv(py_list):
-	list_str = str(py_list)
-	csv_list = re.sub(r'[\'\[\]]', '', list_str)
-	csv_list = re.sub(r', ', ',', csv_list)
-	return csv_list
-
-def dic_subset(dic, subset_key, subset_value = 0, gt_threshold = 0):
-	subsetted_dic = {}
-	if subset_value != 0:
-		for k, v in dic.items():
-			if not (v == {}):
-				if v[subset_key] == subset_value:
-					subsetted_dic[k] = v
-		return subsetted_dic
-	elif gt_threshold > 0:
-		for k, v in dic.items():
-			if not (v == {}):
-				if v[subset_key] >= gt_threshold:
-					subsetted_dic[k] = v
-		return subsetted_dic
-	else: print('subsetting requires proper criteria')
-
-
 ####################
 
 
 
 def main():
-	announce_start = "START"
-# 	announce(announce_start)
-
 	d = Docking(dock)
-# 	print(d.bs_list)
-
-# 	bs = BindingSite(d, 'allo1')
-
-# 	print((Pdb('/Users/zarek/lab/Docking/binding_sites/h1c/a5res_pdbs/h1c_bs_fdla_a5resis.pdb').res_list(atoms = False)))
-
-# 	d.generate_alldata_dic()
-# 	d.print_alldata_csv()
-	d.generate_allposes_dic()
-# 	print(d.allposes_dic)
-	for x, y in d.allposes_dic.items():
-		print(x)
-		print(y.key)
-# 	print(d.bs_key_list_dic)
-# 	for bs, key_list in d.bs_key_list_dic.items():
-# 		print("{}: {}".format(bs, len(key_list)))
-
-# 	d.analyze_threshold()
-
-
-# 	d.data_summary_by_lig_csv()
-
-# 	for x, y in d.alldata_dic.items():
-# # 		print(x)
-# # 		print(y)
-# 		for yy in y: print(yy)
-# 		cr()
-
-
-# 	p = Pose(key = 'p1_ne_m2')
-# 	p = Pose(dock = 'a1', lig = 'ghvbjnm', model = 6)
-# 		for yy in y:
-# 			print(yy)
-# 	d.data_summary_by_lig_csv()
+# 	d.print_params(type = "readable")
+# 	tline()
+# 	d.print_params(type = "sh")
+# 	tline()
+# 	d.print_params(type = "py")
+# 	tline()
+# 	d.print_params(type = "csv")
+	d.print_params(type = print_type)
 
 if __name__ == "__main__": main()
