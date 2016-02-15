@@ -23,12 +23,11 @@
 #
 
 from __future__ import print_function
-import csv, re, sys
+import csv, re, sys, os
 from openpyxl import load_workbook
 from numpy import mean
+import numpy
 from os.path import isfile
-
-script, dock = sys.argv
 
 # KLUDGE
 bs_assign_threshold = 0.10
@@ -425,6 +424,13 @@ class Docking: # input is a docking id e.g. a2 b34
 		self.box_params['center_tuple'] = self.box_params['center_x'], self.box_params['center_y'], self.box_params['center_z']
 		self.box_params['name'] = str(docks_xlsx.look_up('gridboxes', self.box, 'name'))
 
+		self.box_center_x = self.box_params['center_x']
+		self.box_center_y = self.box_params['center_y']
+		self.box_center_z = self.box_params['center_z']
+		self.box_size_x = self.box_params['size_x']
+		self.box_size_y = self.box_params['size_y']
+		self.box_size_z = self.box_params['size_z']
+
 	def binding_site_params(self):
 		_op = "binding_site_params"
 # 		announce(_op)
@@ -433,7 +439,7 @@ class Docking: # input is a docking id e.g. a2 b34
 		self.bs_list = sh_list_to_py(self.bs_list_sh)
 
 		if self.prot == "p300":
-			self.bs_list = ["lys", "side", "coa_ado", "coa_adpp", "coa_pant", "allo1", "allo2"]
+			self.bs_list = ["lys", "side", "coa", "allo1", "allo2", "coa_ado", "coa_adpp", "coa_pant"] # ["lys", "side", "coa", "coa_ado", "coa_adpp", "coa_pant", "allo1", "allo2"]
 
 		self.bs_resis_list_dic = {}
 		self.bs_resis_atoms_list_dic = {}
@@ -456,6 +462,8 @@ class Docking: # input is a docking id e.g. a2 b34
 		self.dock_dir = self.prot_dir+self.dock+"/"
 		self.res_dir = self.dock_dir+"results/"
 		self.pvrd_pdbqts_dir = self.dock_dir+"pvrd_pdbqts/"
+
+		self.cluster_home = "/home/zsiegel/"
 		# Input Files
 # 		self.res_pdbqt = "{}results/{}_{}_results.pdbqt".format(self.dock_dir, self.dock, self
 # 		self.res_pdbqt = "{}results/{}_{}_m{}.pdbqt"
@@ -463,6 +471,7 @@ class Docking: # input is a docking id e.g. a2 b34
 		self.alldata_csv_address = self.prot_dir+self.dock+"/"+self.dock+"_alldata.csv"
 		self.post_analysis_csv_address = self.prot_dir+self.dock+"/"+self.dock+"_analysis.csv"
 
+		self.specprot_pdbqt = self.cluster_home+self.prot+"/"+self.specprot+".pdbqt"
 	def fetch_params(self):
 		_op = "fetch_params"
 #		announce(_op)
@@ -496,6 +505,229 @@ class Docking: # input is a docking id e.g. a2 b34
 # 					print(pvrd.dic)
 				except IOError:
 					pass
+
+# 	def write_bsub(self):
+# 		_output_template = "#BSUB -q hp12\n\
+# #BSUB -n {n_cpus}\n\
+# #BSUB -o {outlog}\n\
+# #BSUB -e {errlog}\n\
+# #BSUB -J {jobname}\n\n\
+# echo \"~~~BEGIN DOCKING {dock}~~~\"\n\n\
+# command mkdir {dock}\n\
+# command mkdir {dock}/results\n\n\
+# for lig in {ligset_list}\n\
+# do\n\
+# 	/share/apps/autodock/autodock_vina_1_1_2_linux_x86/bin/vina \\\n\
+# 	--receptor {specprot_pdbqt} \\\n\
+# 	--ligand {lig_pdbqt} \\\n\
+# 	--out {res_pdbqt} \\\n\
+# 	--center_x {box_center_x} \\\n\
+# 	--center_y {box_center_y} \\\n\
+# 	--center_z {box_center_z} \\\n\
+# 	--size_x {box_size_x} \\\n\
+# 	--size_y {box_size_y} \\\n\
+# 	--size_z {box_size_z} \\\n\
+# 	--cpu {n_cpus} \\\n\
+# 	--num_modes {n_models} \\\n\
+# 	--exhaustiveness {exhaust}\n\
+# 	echo finished docking $lig of docking {dock}\n\
+# done\n\n\
+# echo \"~~~END DOCKING {dock}~~~\""
+#
+# 		if self.n_models <= 20:
+# 			_n_models = self.n_models
+# 			_dock = self.dock
+# 			if type(self.n_cpus) is not int: self.n_cpus = 1
+# # 			_output_address = self.prot_dir+"vsub_"+_dock
+# 			_output_address = self.dock_dir+"vsub_"+_dock
+# # 			print(_output_address)
+# 			output = (_output_template.format(
+# 				n_cpus = self.n_cpus,
+# 				outlog = "dock_logs/"+_dock+"_log_out.txt",
+# 				errlog = "dock_logs/"+_dock+"_log_err.txt",
+# 				jobname = "VinaDock_"+_dock,
+# 				dock = _dock,
+# 				ligset_list = self.ligset_list_sh,
+# 				specprot_pdbqt = self.specprot_pdbqt,
+# 				lig_pdbqt = self.cluster_home+"ligsets/"+self.ligset+"/$lig.pdbqt",
+# 				res_pdbqt = self.cluster_home+_dock+"/results/"+_dock+"_$lig\_results.pdbqt",
+# 				box_center_x = self.box_params['center_x'],
+# 				box_center_y = self.box_params['center_y'],
+# 				box_center_z = self.box_params['center_z'],
+# 				box_size_x = self.box_params['size_x'],
+# 				box_size_y = self.box_params['size_y'],
+# 				box_size_z = self.box_params['size_z'],
+# 				n_models = _n_models,
+# 				exhaust = self.exhaust
+# 			))
+# 			f = open(_output_address, 'w')
+# 			f.write(str(output))
+# # 			print("Vina submission script is at: {}".format(_output_address))
+# 		elif self.n_models > 20:
+# 			if (self.n_models % 20) != 0:
+# 				print("!!! if more than 20 models, gotta be multiple of 20 !!!")
+#
+# 			_n_subdocks = self.n_models / 20
+# 			for subdock in range(1, _n_subdocks + 1):
+# 				_n_models = 20
+# 				_dock = self.dock+"."+str(subdock)
+# # 				_output_address = self.prot_dir+"vsub_"+_dock
+# 				_output_address = self.dock_dir+"vsub_"+_dock
+# 				output = (_output_template.format(
+# 					n_cpus = self.n_cpus,
+# 					outlog = "dock_logs/"+_dock+"_log_out.txt",
+# 					errlog = "dock_logs/"+_dock+"_log_err.txt",
+# 					jobname = "VinaDock_"+_dock,
+# 					dock = _dock,
+# 					ligset_list = self.ligset_list_sh,
+# 					specprot_pdbqt = self.specprot_pdbqt,
+# 					lig_pdbqt = self.cluster_home+"ligsets/"+self.ligset+"/$lig.pdbqt",
+# 					res_pdbqt = self.cluster_home+_dock+"/results/"+_dock+"_$lig\_results.pdbqt",
+# 					box_center_x = self.box_params['center_x'],
+# 					box_center_y = self.box_params['center_y'],
+# 					box_center_z = self.box_params['center_z'],
+# 					box_size_x = self.box_params['size_x'],
+# 					box_size_y = self.box_params['size_y'],
+# 					box_size_z = self.box_params['size_z'],
+# 					n_models = _n_models,
+# 					exhaust = self.exhaust
+# 				))
+# 				f = open(_output_address, 'w')
+# 				f.write(str(output))
+
+	def write_bsub(self, multi=False):
+		_output_template = "#BSUB -q hp12\n\
+#BSUB -n {n_cpus}\n\
+#BSUB -o {outlog}\n\
+#BSUB -e {errlog}\n\
+#BSUB -J {jobname}\n\n\
+echo \"~~~BEGIN DOCKING {dock}~~~\"\n\n\
+command mkdir {dock_dir}results\n\n\
+for lig in {ligset_list}\n\
+do\n\
+	/share/apps/autodock/autodock_vina_1_1_2_linux_x86/bin/vina \\\n\
+	--receptor {specprot_pdbqt} \\\n\
+	--ligand {lig_pdbqt} \\\n\
+	--out {dock_dir}results/{dock}_$lig\_results.pdbqt \\\n\
+	--center_x {box_center_x} \\\n\
+	--center_y {box_center_y} \\\n\
+	--center_z {box_center_z} \\\n\
+	--size_x {box_size_x} \\\n\
+	--size_y {box_size_y} \\\n\
+	--size_z {box_size_z} \\\n\
+	--cpu {n_cpus} \\\n\
+	--num_modes {n_models} \\\n\
+	--exhaustiveness {exhaust}\n\
+	echo finished docking $lig of docking {dock}\n\
+done\n\n\
+echo \"~~~END DOCKING {dock}~~~\""
+
+		_n_models = self.n_models
+		if multi:
+			_base_dock = re.sub(r'\..+$', '', self.dock)
+# 			_res_pdbqt = self.cluster_home+_base_dock+"/"+self.dock+"/results/"+self.dock+"_$lig\_results.pdbqt"
+			_dock_dir = self.cluster_home+_base_dock+"/"+self.dock+"/"
+		else:
+# 			_res_pdbqt = self.cluster_home+self.dock+"/results/"+self.dock+"_$lig\_results.pdbqt"
+			_dock_dir = self.cluster_home+self.dock+"/"
+
+		if type(self.n_cpus) is not int: self.n_cpus = 1
+# 			_output_address = self.prot_dir+"vsub_"+self.dock
+		_output_address = self.dock_dir+"vsub_"+self.dock
+# 			print(_output_address)
+		output = (_output_template.format(
+			n_cpus = self.n_cpus,
+			outlog = "dock_logs/"+self.dock+"_log_out.txt",
+			errlog = "dock_logs/"+self.dock+"_log_err.txt",
+			jobname = "VinaDock_"+self.dock,
+			dock = self.dock,
+			dock_dir = _dock_dir,
+			ligset_list = self.ligset_list_sh,
+			specprot_pdbqt = self.specprot_pdbqt,
+			lig_pdbqt = self.cluster_home+"ligsets/"+self.ligset+"/$lig.pdbqt",
+			box_center_x = self.box_params['center_x'],
+			box_center_y = self.box_params['center_y'],
+			box_center_z = self.box_params['center_z'],
+			box_size_x = self.box_params['size_x'],
+			box_size_y = self.box_params['size_y'],
+			box_size_z = self.box_params['size_z'],
+			n_models = self.n_models,
+			exhaust = self.exhaust
+		))
+		f = open(_output_address, 'w')
+		f.write(str(output))
+
+	def write_params(self):
+		for p in print_params:
+# 			ep = "print(self.{}, end='')".format(p)
+# 			print("{}=\"".format(p), end='')
+# 			eval(ep)
+# 			print("\"")
+# 			print(p)
+			pass
+
+
+		output="baseprot=\"{baseprot}\"\n\
+box=\"{box}\"\n\
+box_center_x=\"{box_center_x}\"\n\
+box_center_y=\"{box_center_y}\"\n\
+box_center_z=\"{box_center_z}\"\n\
+box_size_x=\"{box_size_x}\"\n\
+box_size_y=\"{box_size_y}\"\n\
+box_size_z=\"{box_size_z}\"\n\
+date=\"{date}\"\n\
+dock=\"{dock}\"\n\
+exhaust=\"{exhaust}\"\n\
+ligset=\"{ligset}\"\n\
+ligset_list_sh=\"{ligset_list_sh}\"\n\
+n_cpus=\"{n_cpus}\"\n\
+n_models=\"{n_models}\"\n\
+notes=\"{notes}\"\n\
+prot=\"{prot}\"\n\
+specprot=\"{specprot}\"\n\
+specprot_pdbqt=\"{specprot_pdbqt}\"".format(
+	baseprot=self.baseprot, box=self.box, box_center_x=self.box_center_x,
+	box_center_y=self.box_center_y, box_center_z=self.box_center_z,
+	box_size_x=self.box_size_x, box_size_y=self.box_size_y,
+	box_size_z=self.box_size_z, date=self.date, dock=self.dock,
+	exhaust=self.exhaust, ligset=self.ligset, ligset_list_sh=self.ligset_list_sh,
+	n_cpus=self.n_cpus, n_models=self.n_models, notes=self.notes, prot=self.prot,
+	specprot=self.specprot, specprot_pdbqt=self.specprot_pdbqt
+	)
+
+# 		_output_address = self.prot_dir+dock+"_params.txt"
+		_output_address = self.dock_dir+dock+"_params.txt"
+		f = open(_output_address, 'w')
+		f.write(str(output))
+# 		print("Params txt is at: {}".format(_output_address))
+
+	def pre(self, pre_name):
+		self.dock_dir = self.prot_dir+pre_name+"/"
+		os.mkdir(self.dock_dir)
+		self.write_params()
+
+		if self.n_models <= 20:
+			self.write_bsub()
+		else:
+			if (self.n_models % 20) != 0:
+					print("!!! if more than 20 models, gotta be multiple of 20 !!!")
+			else: self.n_subdocks = self.n_models / 20
+
+			_dock_dir = self.dock_dir
+			for s in range(1, self.n_subdocks + 1):
+				sd = d
+				sd.dock = pre_name+"."+str(s)
+				sd.n_models = 20
+				sd.dock_dir = _dock_dir+sd.dock+"/"
+				os.mkdir(sd.dock_dir)
+				sd.write_params()
+				sd.write_bsub(multi=True)
+
+
+
+# 	print("Dock folder (with vsub and params) is at: {}".format(self.dock_dir))
+
+
 
 	def generate_alldata_dic(self):
 		_op = "generate_alldata_dic"
@@ -625,7 +857,8 @@ class Docking: # input is a docking id e.g. a2 b34
 		for key, data in self.alldata_dic.items():
 			try: # KLUDGE
 				for assigned_bs in data['bs_assignments']:
-					_dic[assigned_bs][data['lig']].append(data['E'])
+					if type(data['E']) is float:
+						_dic[assigned_bs][data['lig']].append(data['E'])
 			except KeyError: pass
 
 # 		print(_dic)
@@ -670,10 +903,32 @@ class Docking: # input is a docking id e.g. a2 b34
 			dic[bs] = {}
 			for lig, E_list in lig_E_list.items():
 				try:
-					dic[bs][lig] = ( sum(E_list) / len(E_list) )
-				except ValueError and ZeroDivisionError:
+					E_array = numpy.array(E_list)
+					if numpy.isnan(numpy.mean(E_array, axis=0)):
+						dic[bs][lig] = None
+					else:
+						dic[bs][lig] = numpy.mean(E_array, axis=0)
+				except: # ValueError and ZeroDivisionError:
 					dic[bs][lig] = None
 		self.bs_lig_avg_dic = dic
+
+	def make_bs_lig_stdev_dic(self, threshold = bs_assign_threshold ):
+		_op = "make_bs_lig_avg_dic"
+#		announce(_op)
+
+		dic = {}
+		for bs, lig_E_list in self.bs_lig_E_list_dic.items():
+			dic[bs] = {}
+			for lig, E_list in lig_E_list.items():
+				try:
+					E_array = numpy.array(E_list)
+					if numpy.isnan(numpy.std(E_array, axis=0)):
+						dic[bs][lig] = None
+					else:
+						dic[bs][lig] = numpy.std(E_array, axis=0)
+				except:
+					dic[bs][lig] = None
+		self.bs_lig_stdev_dic = dic
 
 	def data_summary_by_lig(self):
 		_op = "data_summary_by_lig"
@@ -686,6 +941,7 @@ class Docking: # input is a docking id e.g. a2 b34
 		self.make_bs_lig_num_dic()
 		self.make_bs_lig_min_dic()
 		self.make_bs_lig_avg_dic()
+		self.make_bs_lig_stdev_dic()
 
 		for lig in self.ligset_list:
 			cr()
@@ -703,6 +959,8 @@ class Docking: # input is a docking id e.g. a2 b34
 # 					if data
 			MinE = min(E_list)
 			AvgE = mean(E_list)
+			StdevE = numpy.std(numpy.array(E_list), axis=0)
+
 
 			print("AvgE: {}".format(AvgE))
 			print("MinE: {}".format(MinE))
@@ -720,30 +978,36 @@ class Docking: # input is a docking id e.g. a2 b34
 		self.make_bs_lig_num_dic()
 		self.make_bs_lig_min_dic()
 		self.make_bs_lig_avg_dic()
+		self.make_bs_lig_stdev_dic()
 
 		self.generate_alldata_lig_E_lists_dic()
 
-		headers1 = ["Lig", "MinE", "AvgE"]
+		headers1 = ["Lig", "MinE", "AvgE", "StdevE"]
 		headers2 = [] # BS counts
 		headers3 = [] # BS AvgEs
 		headers4 = [] # BS AvgEs
+		headers5 = []
 
 		for bs in self.bs_list:
 			headers2.append("Num_"+bs) # in "+bs+" site")
 			headers3.append("AvgE_"+bs)
 			headers4.append("MinE_"+bs)
+			headers4.append("StdevE_"+bs)
 
-		headers = headers1 + headers2 + headers3 + headers4
+		headers = headers1 + headers2 + headers3 + headers4 + headers5
 
 		for h in headers:
 			print(h, end=',')
 
 		cr()
 
+
+
 		for lig in self.ligset_list:
-			print("{},{},{}".format(lig,
-				min(self.alldata_lig_E_lists_dic[lig]),
-				mean(self.alldata_lig_E_lists_dic[lig])),
+			print("{},{},{},{}".format(lig,
+				r4(min(self.alldata_lig_E_lists_dic[lig])),
+				r4(mean(self.alldata_lig_E_lists_dic[lig])),
+				r4(numpy.std(numpy.array(self.alldata_lig_E_lists_dic[lig]), axis=0))),
 				end=','
 			)
 
@@ -753,9 +1017,15 @@ class Docking: # input is a docking id e.g. a2 b34
 # 			for head in ["Num_", "AvgE_", "MinE_"]:
 # 				for bs in self.bs_list:
 # 					print(head+bs)
-			for dic in [self.bs_lig_num_dic, self.bs_lig_avg_dic, self.bs_lig_min_dic]:
+			for dic in [self.bs_lig_num_dic, self.bs_lig_avg_dic, self.bs_lig_min_dic, self.bs_lig_stdev_dic]:
 				for bs in self.bs_list:
-					print(dic[bs][lig],end=',')
+					try:
+						if type(dic[bs][lig]) is int:
+							print(dic[bs][lig],end=',')
+						else:
+							print(r4(dic[bs][lig]),end=',')
+					except TypeError:
+						print('',end=',')
 			cr()
 
 	def print_alldata_csv(self):
@@ -793,6 +1063,9 @@ class Docking: # input is a docking id e.g. a2 b34
 docks_xlsx = Xlsx('/Users/zarek/lab/Docking/docks.xlsx')
 basic_params = {"dock", "date", "prot", "specprot", "ligset", "box",
 	"exhaust", "n_models", "n_cpus", "notes", "baseprot"}
+print_params = basic_params | {"ligset_list_sh", "specprot_pdbqt",
+	"box_center_x", "box_center_y", "box_center_z",
+	"box_size_x", "box_size_y", "box_size_z"}
 pose_params = {"lig", "model", "key"}
 pvr_params = {"E", "pvr_resis", "pvr_resis_atoms", "rmsd_ub", "rmsd_lb",
 	"pvr_effic", "pvr_model", "torsdof", "macro_close_ats"}
@@ -808,7 +1081,7 @@ def dline(): print("--------------------")
 def tline(): print("~~~~~~~~~~~~~~~~~~~~")
 
 def announce(announcement):
-	cr()
+# 	cr()
 	dline()
 	print(announcement)
 	dline()
@@ -816,7 +1089,7 @@ def announce(announcement):
 def r4(x): return round(x, 4)
 
 def sh_list_to_py(sh_list):
-	py_list = re.sub(r' ', '\", \"', sh_list)
+	py_list = re.sub(r' ', '\",\"', sh_list)
 	py_list = re.sub(r'^(.+)$', r'["\1"]', py_list)
 	py_list = eval(py_list)
 	return py_list
@@ -849,29 +1122,70 @@ def dic_subset(dic, subset_key, subset_value = 0, gt_threshold = 0):
 		return subsetted_dic
 	else: print('subsetting requires proper criteria')
 
+def n2b(x): # none -> blank
+	if x is not None:
+		return x
+	else:
+		return ''
+
 
 ####################
-
 
 
 def main():
 	announce_start = "START"
 # 	announce(announce_start)
 
-	d = Docking(dock)
-# 	print(d.bs_list)
+	def execute_help():
+		print("\n	HELP:\n\
+		  * Required: at least 1 argument (dock id)\n")
+	def initiate():
+		print("initiate")
+		global dock, d
+		dock = sys.argv[1]
+		d = Docking(dock)
+	# 	d = Docking(dock)
+	def execute_default():
+		print("no arguments given (default)")
+	def execute_pre():
+		announce('pre')
+		if len(sys.argv) > 3:
+			pre_name = sys.argv[3]
+		else: pre_name = dock
+		d.pre(pre_name)
 
-# 	bs = BindingSite(d, 'allo1')
 
-# 	print((Pdb('/Users/zarek/lab/Docking/binding_sites/h1c/a5res_pdbs/h1c_bs_fdla_a5resis.pdb').res_list(atoms = False)))
+	if len(sys.argv) < 2:
+		announce("!!! not enough arguments !!!")
+		execute_help()
+	elif len(sys.argv) == 2:
+		if (sys.argv[1] == 'h') or (sys.argv[1] == 'help'):
+			execute_help()
+		else:
+			initiate()
+			option = 'default'
+			execute_default()
+	elif len(sys.argv) > 2:
+		initiate()
+		option = sys.argv[2]
+		if option == 'pre': execute_pre()
+# 		elif option ==
+
+
+
+
+
+
+
+
 
 # 	d.generate_alldata_dic()
 # 	d.print_alldata_csv()
-	d.generate_allposes_dic()
-# 	print(d.allposes_dic)
-	for x, y in d.allposes_dic.items():
-		print(x)
-		print(y.key)
+# 	d.generate_allposes_dic()
+# 	print(d.alldata_dic)
+# 	for x, y in d.allposes_dic.items():
+# 		print(x)
+# 		print(y.key)
 # 	print(d.bs_key_list_dic)
 # 	for bs, key_list in d.bs_key_list_dic.items():
 # 		print("{}: {}".format(bs, len(key_list)))
@@ -880,6 +1194,9 @@ def main():
 
 
 # 	d.data_summary_by_lig_csv()
+# 	d.make_bs_lig_E_list_dic()
+# 	d.make_bs_lig_stdev_dic()
+# 	print(d.bs_lig_stdev_dic)
 
 # 	for x, y in d.alldata_dic.items():
 # # 		print(x)
