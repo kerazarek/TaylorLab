@@ -5,7 +5,7 @@ rm(list=ls(all=TRUE)) # clear out old variables
 library(foreign) # for reading csv
 
 ### Basic parameters
-dock <- "p31" # docking id
+dock <- "p27" # docking id
 if(substr(dock,0,1) == "p") {prot <- "p300"} # p300 dockings are labeled p##
 if(substr(dock,0,1) == "h") {prot <- "hepi"} # hepi dockings are labeled h##
 # assumptions
@@ -139,7 +139,7 @@ for(abs in paste("AvgE.", binding.sites, sep="")) {
 AvgE.bysite.plot <- t(as.matrix(AvgE.bysite.plot))
 
 pdf("avgE_by_site.pdf")
-barplot(graph.in, main="Average Energy in Each Binding Site",
+barplot(AvgE.bysite.plot, main="Average Energy in Each Binding Site",
         xlab="Ligand", ylab="Binding energy (kcal/mol)",
         legend.text = binding.sites, beside = T,
         col=colors)
@@ -196,6 +196,10 @@ distrib.table <- distrib.table[binding.sites]
 distrib.table.csv <- paste(dock, "bs_distribution_table.csv", sep="_")
 write.csv(distrib.table, file=distrib.table.csv)
 
+plot(density(data$E[data$binds.in.side]))
+           col=c("darkred", "navy"),
+           main="Binding Affinity Frequencies by Ligand (Side Binding Site)",
+           xlab="Ligand", ylab="Binding energy (kcal/mol)")
 
 ##############################
 print("All done, graphs can found in:")
