@@ -1,0 +1,5 @@
+constant,address,
+docking_dir,/Users/zarek/GitHub/TaylorLab/zvina,
+ligsets_dir,/Users/zarek/GitHub/TaylorLab/zvina/ligsets,
+docks_csv,/Users/zarek/GitHub/TaylorLab/zvina/Dockings.csv,
+gridboxes_csv,/Users/zarek/GitHub/TaylorLab/zvina/Gridboxes.csv,
