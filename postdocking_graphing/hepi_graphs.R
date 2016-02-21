@@ -5,6 +5,7 @@ rm(list=ls(all=TRUE)) # clear out old variables
 library(foreign) # for reading csv
 library(xlsx)
 library(RColorBrewer)
+library(ggplot2)
 
 ### Basic parameters
 dock <- "h24" # docking id
@@ -107,6 +108,15 @@ setwd(graphs.dir) # needed for pdf names below
 bs.colors <- brewer.pal(length(binding.sites), "Set1")
 lig.colors <- brewer.pal(length(ligset.list), "Set2")
 
+
+ncs.sugargrouped <- c("adph", "fdla", 
+                      "ab", "aam", "abm", "ab3", "ab6", 
+                      "ab7", "aa8", "ab8", "aa10", "ab10",
+                      "gb", "gam", "gbm", "gb3", "gb6", 
+                      "gb7", "ga8", "gb8", "gb8y", 
+                      "ga10", "gb10")
+
+
 # Box plot of binding energies (in all sites) by ligand
 pdf(paste(dock, "boxplots_bindingenergy_by_lig_ALL.pdf", sep="_"), width=14)
 boxplot(E ~ LIG, data=data, main="Binding Energies by Ligand (all binding sites)",
@@ -114,23 +124,29 @@ boxplot(E ~ LIG, data=data, main="Binding Energies by Ligand (all binding sites)
         col=lig.colors)
 dev.off()
 
-# Strip chart to show energy frequency by ligand
-pdf(paste(dock, "stripcharts_bindingenergy_by_lig_ALL.pdf", sep="_"), width=14)
-stripchart(E ~ LIG, data=data, method = "stack", offset=1/40,
-           vertical=T, col=lig.colors,
-           main="Binding Affinity Frequencies by Ligand (all binding sites)",
-           xlab="Ligand", ylab="Binding energy (kcal/mol)")
-dev.off()
+boxplots_energy_vs_lig_allsites <- ggplot(data=data, aes(x=LIG, y=E)) +
+  geom_boxplot(aes(fill=LIG)) +
+  scale_x_discrete(limits=ncs.sugargrouped) + # define order
+  scale_fill_discrete(name="Ligands", breaks=ncs.sugargrouped) + # legend
+  xlab("Ligand") +
+  ylab("Binding energy (kcal/mol)") +
+  ggtitle("Binding Energies by Ligand (all binding sites)") +
+  theme(legend.title=element_text(face="bold"),
+        plot.title=element_text(face="bold"))
+boxplots_energy_vs_lig_allsites
 
 # Density to show energy frequency by ligand
 pdf(paste(dock, "binding_energy_density_by_lig.pdf", sep="_"))
-plot(density(data$E), ylim=c(0,10), col=c[1],
+c <- 1
+plot(density(data$E), ylim=c(0,10), col=lig.colors[c],
      main="Density of Dockings versus Binding Energy",
      xlab="Binding energy (kcal/mol)", ylab="Density")
 for(l in ligset.list) {
+  if(c>8) {c <- 1} else {c <- c+1}
   lines(density(data$E[data$LIG == l]))
+  
 }
-legend("topleft", c("ALL", ligset.list))# , fill=c.list)
+legend("topleft", c("ALL", ligset.list), fill=lig.colors)# , fill=c.list)
 dev.off()
 
 # Bar plot of binding distribution in each binding site per ligand
@@ -161,6 +177,14 @@ barplot(AvgE.bysite.plot, main="Average Energy by Binding Site",
         col=bs.colors)
 dev.off()
 
+# Strip chart to show energy frequency by ligand
+pdf(paste(dock, "stripcharts_bindingenergy_by_lig_ALL.pdf", sep="_"), width=14)
+stripchart(E ~ LIG, data=data, method = "stack", offset=1/40,
+           vertical=T, col=lig.colors, pch=15,
+           main="Binding Affinity Frequencies by Ligand (all binding sites)",
+           xlab="Ligand", ylab="Binding energy (kcal/mol)")
+dev.off()
+
 # Strip charts for each binding site
 # ADPH
 pdf(paste(dock, "stripcharts_bindingenergy_by_lig_adph.pdf", sep="_"), width=14)
@@ -172,19 +196,29 @@ dev.off()
 # FDLA
 pdf(paste(dock, "stripcharts_bindingenergy_by_lig_fdla.pdf", sep="_"), width=14)
 stripchart(data$E[data$binds.in.fdla] ~ data$LIG[data$binds.in.fdla], method = "stack", offset=1/20,
-           vertical=T, col=lig.colors,
+           vertical=T, col=lig.colors, pch=15,
            main="Binding Affinity Frequencies by Ligand (FDLA Binding Site)",
            xlab="Ligand", ylab="Binding energy (kcal/mol)")
 dev.off()
 # ALLO
 pdf(paste(dock, "stripcharts_bindingenergy_by_lig_allo.pdf", sep="_"), width=14)
 stripchart(data$E[data$binds.in.allo] ~ data$LIG[data$binds.in.allo], method = "stack", offset=1/20,
-           vertical=T, col=lig.colors,
+           vertical=T, col=lig.colors, pch=15,
            main="Binding Affinity Frequencies by Ligand (Allosteric Binding Site)",
            xlab="Ligand", ylab="Binding energy (kcal/mol)")
 dev.off()
 
 ###################################################
+
+# Dan's % Inhibition data
+dan.data <- read.csv("/Users/zarek/lab/Resources/Dans_Percent_Inhib_Data.csv", header = T)
+dan.data$Percent.Inhibition <- as.factor(dan.data$Percent.Inhibition)
+dan.data.plot <- t(as.matrix(dan.data$Percent.Inhibition))
+pdf("dans_percent_inhib.pdf", width=14)
+barplot(dan.data.plot, name=ligset.list, main="In Vitro Percent Inhibition by Ligand (from Dan)", 
+        xlab="Ligand", ylab="% Inhibition", col=lig.colors)
+dev.off()
+
 
 # Save data tables for % Distribution
 distrib.table <- analysis[paste("DistribFrac.", binding.sites, sep = "")]
@@ -194,6 +228,41 @@ for(bs in binding.sites) {
 distrib.table <- distrib.table[binding.sites]
 distrib.table.csv <- paste(dock, "bs_distribution_table.csv", sep="_")
 write.csv(distrib.table, file=distrib.table.csv)
+
+###################################################
+
+### ggplot2 experimentation
+library(ggplot2)
+data$LIGf <- as.factor(data$LIG)
+head(data$LIGf)
+ggplot(data, aes(x=LIGf, y=E), levels=ncs.sugargrouped) + 
+  geom_jitter()
+
+
+View(ToothGrowth)
+
+
+l<-"ga"
+stripchart(E[binds.in.allo&LIG==l] ~ LIG[binds.in.allo&LIG==l], 
+           add=T,data=data, method = "stack", offset=1/20,
+           vertical=T, col=lig.colors, pch=15,
+           main="Binding Affinity Frequencies by Ligand (Allosteric Binding Site)",
+           xlab="Ligand", ylab="Binding energy (kcal/mol)")
+
+
+
+ncs.sugargrouped <- c("adph", "fdla", 
+                      "ab", "aam", "abm", "ab3", "ab6", 
+                      "ab7", "aa8", "ab8", "aa10", "ab10",
+                      "gb", "gam", "gbm", "gb3", "gb6", 
+                      "gb7", "ga8", "gb8", "gb8y", 
+                      "ga10", "gb10")
+i<-1
+data.sugargrouped <- data[data$LIG == ncs.sugargrouped[i],] 
+for(i in 2:length(ncs.sugargrouped)) {
+  addition <- data[data$LIG == ncs.sugargrouped[i],] 
+  data.sugargrouped <- rbind(data.sugargrouped, addition)
+}
 
 
 ##############################
