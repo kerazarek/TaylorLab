@@ -10,7 +10,7 @@ library(ggplot2)
 library(reshape2)
 
 ### Basic parameters
-dock <- "p31" # docking id
+dock <- "p28" # docking id
 if(substr(dock,0,1) == "p") {prot <- "p300"} # p300 dockings are labeled p##
 if(substr(dock,0,1) == "h") {prot <- "hepi"} # hepi dockings are labeled h##
 # assumptions
@@ -55,8 +55,7 @@ data <- read.csv(alldata.csv)
 #                  "ab10", "ga10", "gb10")
 
 ### Look up ligset
-# ** add this**, this (below) is temporary
-
+#**KLUDGE* ** add this**, this (below) is temporary
 if(prot == "hepi") {
   binding.sites <- c("adph", "fdla", "allo")
   #***# Order levels
@@ -68,13 +67,23 @@ if(prot == "hepi") {
                         "ga10", "gb10")
   ligset.list <- ncs.sugargrouped
 }
-
 if(prot == "p300") {
   binding.sites <- c("lys", "coa", "side", "allo1", "allo2") # "coa_adpp", "coa_pant",
   ligset.list <- c("Garcinol", "CTB", "EGCG", "CTPB", "C646")
 }
+##**##
 
-data$LIG <- factor(data$LIG, levels=ligset.list) # for orders
+### Recode variables with more convenient names
+if(is.element(dock, c("p28", "p29", "p30"))) {
+  ligset.coded <- c("ng", "s2", "ne", "s1", "s3")
+  ligset.names <- factor(c("Garcinol", "CTB", "EGCG", "CTPB", "C646"))
+  data$LIG <- ligset.names[match(data$LIG, ligset.coded)] 
+  data$LIG <- factor(data$LIG, levels = ligset.list)
+}
+
+
+
+
 
 ### Look up ligset ***
 
@@ -145,7 +154,7 @@ boxplots_energy_vs_lig_allsites <- ggplot(data=data, aes(x=LIG, y=E)) +
   theme(legend.title=element_text(face="bold"),
         plot.title=element_text(face="bold"))
 boxplots_energy_vs_lig_allsites
-ggsave(paste0(dock, "_boxplots_energy_vs_lig_allsites.pdf"), width=12, height=8)
+ggsave(paste0(dock, "_", "boxplots_energy_vs_lig_allsites", ".pdf"), width=12, height=8)
 ####################
 
 ####################
@@ -158,19 +167,19 @@ densities_energy_by_lig_allcombined <- ggplot(data=data, aes(x=E)) +
   theme(legend.title=element_text(face="bold"),
         plot.title=element_text(face="bold"))
 densities_energy_by_lig_allcombined
-ggsave(paste0(dock, "_densities_energy_by_lig_allcombined.pdf"), width=12, height=8)
+ggsave(paste0(dock, "_", "densities_energy_by_lig_allcombined", ".pdf"), width=12, height=8)
 # Separate charts for each ligand, arranged in a grid
 #   OK fine it actually wraps but whatever
 densities_energy_by_lig_grid <- ggplot(data=data, aes(x=E, color=LIG, group=LIG)) +
   geom_density() +
   scale_color_hue(name="Ligands") + 
   xlab("Binding energy (kcal/mol)") +
-  ggtitle("Density of Dockings versus Binding Energy by Ligand") +
+  ggtitle("Density of Dockings versus Binding Energy by Ligand (All Binding Sites)") +
   theme(legend.title=element_text(face="bold"),
         plot.title=element_text(face="bold")) +
   facet_wrap(~LIG)
 densities_energy_by_lig_grid
-ggsave(paste0(dock, "_densities_energy_by_lig_grid.pdf"), width=12, height=8)
+ggsave(paste0(dock, "_", "densities_energy_by_lig_grid", ".pdf"), width=12, height=8)
 ####################
 
 ####################
@@ -192,7 +201,7 @@ densities_energy_by_site_overlay <- ggplot(data=data.E.bs.melted, aes(x=E, color
   theme(legend.title=element_text(face="bold"),
         plot.title=element_text(face="bold")) 
 densities_energy_by_site_overlay
-ggsave(paste0(dock, "_densities_energy_by_site_overlay.pdf"), width=12, height=8)
+ggsave(paste0(dock, "_", "densities_energy_by_site_overlay", ".pdf"), width=12, height=8)
 ### A grid of density plots (lig vs. site) with single energy traces for each box
 densities_energy_by_lig_and_site_grid <- ggplot(data=data.E.bs.melted, aes(x=E, color=binding.placement, group=LIG)) +
   geom_density() +
@@ -203,8 +212,49 @@ densities_energy_by_lig_and_site_grid <- ggplot(data=data.E.bs.melted, aes(x=E, 
   theme(legend.title=element_text(face="bold"),
         plot.title=element_text(face="bold")) 
 densities_energy_by_lig_and_site_grid
-ggsave(paste0(dock, "_densities_energy_by_lig_and_site_grid.pdf"), width=12, height=12)
+ggsave(paste0(dock, "_", "densities_energy_by_lig_and_site_grid", ".pdf"), width=1.75*(length(ligset.list)+2), height=2*length(binding.sites))
 ####################
+
+
+
+
+
+
+
+
+
+
+
+
+
+data$combined.sites <- rep(NA, nrow(data))
+
+for(r in 1:nrow(data)) {
+  combined.sites <- NA
+  for(bs in binding.sites) {
+    if(data[r, paste0("binds.in.", bs)]) {combined.sites <- c(combined.sites, bs) }
+  }
+  data[r, "combined.sites"] <- paste(na.omit(combined.sites), collapse=" + ")
+}
+data$combined.sites[data$combined.sites == ""] <- "no site placement"
+
+barplot_bindingdist_by_lig_combinedsites <- ggplot(data=data) +
+  geom_bar(aes(x=LIG, fill=combined.sites), color="black") +
+  scale_x_discrete(limits=ligset.list) +
+  scale_fill_discrete(name="Binding Site(s)") +
+  xlab("Ligand") +
+  ylab("Number of Ligands in Site") +
+  ggtitle("Binding Distribution by Ligand (Binding Sites Combined)") +
+  theme(legend.title=element_text(face="bold"),
+        plot.title=element_text(face="bold"))
+barplot_bindingdist_by_lig_combinedsites
+ggsave(paste0(dock, "_", "barplot_bindingdist_by_lig_combinedsites", ".pdf"), width=12, height=8)
+
+
+
+
+
+
 
 ####################
 ### Bar plot of binding distribution in each binding site by ligand
@@ -223,7 +273,7 @@ barplot_bindingdist_by_lig <- ggplot(data=melted.analysis.bindingsites, aes(x=bs
   theme(legend.title=element_text(face="bold"),
         plot.title=element_text(face="bold"))
 barplot_bindingdist_by_lig
-ggsave(paste0(dock, "_barplot_bindingdist_by_lig.pdf"), width=12, height=8)
+ggsave(paste0(dock, "_", "barplot_bindingdist_by_lig", ".pdf"), width=12, height=8)
 ####################
 
 ####################
@@ -243,7 +293,7 @@ barplot_avge_vs_lig_by_bs <- ggplot(data=melted.analysis.avgenergies, aes(x=bs_c
   theme(legend.title=element_text(face="bold"),
         plot.title=element_text(face="bold"))
 barplot_avge_vs_lig_by_bs
-ggsave(paste0(dock, "_barplot_avge_vs_lig_by_bs.pdf"), width=12, height=8)
+ggsave(paste0(dock, "_", "barplot_avge_vs_lig_by_bs", ".pdf"), width=12, height=8)
 ####################
 
 ####################
@@ -259,8 +309,9 @@ vertbarplots_energy_by_lig_allsites <- ggplot(data=data, aes(x=E, fill=LIG, grou
   theme(legend.title=element_text(face="bold")) +
   facet_grid(. ~ LIG)
 vertbarplots_energy_by_lig_allsites
-ggsave(paste0(dock, "_vertbarplots_energy_by_lig_allsites.pdf"), width=12, height=8)
+ggsave(paste0(dock, "_", "vertbarplots_energy_by_lig_allsites", ".pdf"), width=12, height=8)
 # For each binding site
+counts.max <- 50
 # HepI:
 if(prot == "hepi") {
   # ADPH
@@ -269,36 +320,39 @@ if(prot == "hepi") {
     coord_flip() +
     scale_fill_hue(guide=FALSE) +
     xlab("Binding energy (kcal/mol)") +
-    scale_y_continuous(breaks=c(0,20)) +
+    scale_x_reverse(limits=c(max(data$E), min(data$E))) +
+    ylim(0, counts.max) +
     ggtitle("Binding Affinity Frequencies by Ligand (ADPH Binding Site)") +
     theme(legend.title=element_text(face="bold")) +
     facet_grid(. ~ LIG)
   vertbarplots_energy_by_lig_adphsite
-  ggsave(paste0(dock, "_vertbarplots_energy_by_lig_adphsite.pdf"), width=12, height=8)
+  ggsave(paste0(dock, "_", "vertbarplots_energy_by_lig_adphsite", ".pdf"), width=12, height=8)
   # FDLA
   vertbarplots_energy_by_lig_fdlasite <- ggplot(data=subset(data, binds.in.fdla), aes(x=E, fill=LIG, group=LIG)) +
     geom_bar(width=0.1) +
     coord_flip() +
     scale_fill_hue(guide=FALSE) +
     xlab("Binding energy (kcal/mol)") +
-    scale_y_continuous(breaks=c(0,20)) +
+    scale_x_reverse(limits=c(max(data$E), min(data$E))) +
+    ylim(0, counts.max) +
     ggtitle("Binding Affinity Frequencies by Ligand (FDLA Binding Site)") +
     theme(legend.title=element_text(face="bold")) +
     facet_grid(. ~ LIG)
   vertbarplots_energy_by_lig_fdlasite
-  ggsave(paste0(dock, "_vertbarplots_energy_by_lig_fdlasite.pdf"), width=12, height=8)
+  ggsave(paste0(dock, "_", "vertbarplots_energy_by_lig_fdlasite", ".pdf"), width=12, height=8)
   # ALLO
   vertbarplots_energy_by_lig_allosite <- ggplot(data=subset(data, binds.in.allo), aes(x=E, fill=LIG, group=LIG)) +
     geom_bar(width=0.1) +
     coord_flip() +
     scale_fill_hue(guide=FALSE) +
     xlab("Binding energy (kcal/mol)") +
-    scale_y_continuous(breaks=c(0,20)) +
+    scale_x_reverse(limits=c(max(data$E), min(data$E))) +
+    ylim(0, counts.max) +
     ggtitle("Binding Affinity Frequencies by Ligand (ALLO Binding Site)") +
     theme(legend.title=element_text(face="bold")) +
     facet_grid(. ~ LIG)
   vertbarplots_energy_by_lig_allosite
-  ggsave(paste0(dock, "_vertbarplots_energy_by_lig_allosite.pdf"), width=12, height=8)
+  ggsave(paste0(dock, "_", "vertbarplots_energy_by_lig_allosite", ".pdf"), width=12, height=8)
   
   
   ### Dan's Percent Inhibition data
@@ -322,60 +376,65 @@ if(prot == "p300") {
     coord_flip() +
     scale_fill_hue(guide=FALSE) +
     xlab("Binding energy (kcal/mol)") +
-    scale_y_continuous(breaks=c(0,20)) +
+    ylim(0, counts.max) +
+    scale_x_reverse(limits=c(max(data$E), min(data$E))) +
     ggtitle("Binding Affinity Frequencies by Ligand (lys Binding Site)") +
     theme(legend.title=element_text(face="bold")) +
     facet_grid(. ~ LIG)
   vertbarplots_energy_by_lig_lyssite
-  ggsave(paste0(dock, "_vertbarplots_energy_by_lig_lyssite.pdf"), width=12, height=8)
+  ggsave(paste0(dock, "_", "vertbarplots_energy_by_lig_lyssite", ".pdf"), width=12, height=8)
   # coa
   vertbarplots_energy_by_lig_coasite <- ggplot(data=subset(data, binds.in.coa), aes(x=E, fill=LIG, group=LIG)) +
     geom_bar(width=0.1) +
     coord_flip() +
     scale_fill_hue(guide=FALSE) +
     xlab("Binding energy (kcal/mol)") +
-    scale_y_continuous(breaks=c(0,20)) +
+    scale_x_reverse(limits=c(max(data$E), min(data$E))) +
+    ylim(0, counts.max) +
     ggtitle("Binding Affinity Frequencies by Ligand (coa Binding Site)") +
     theme(legend.title=element_text(face="bold")) +
     facet_grid(. ~ LIG)
   vertbarplots_energy_by_lig_coasite
-  ggsave(paste0(dock, "_vertbarplots_energy_by_lig_coasite.pdf"), width=12, height=8)
+  ggsave(paste0(dock, "_", "vertbarplots_energy_by_lig_coasite", ".pdf"), width=12, height=8)
   # side
   vertbarplots_energy_by_lig_sidesite <- ggplot(data=subset(data, binds.in.side), aes(x=E, fill=LIG, group=LIG)) +
     geom_bar(width=0.1) +
     coord_flip() +
     scale_fill_hue(guide=FALSE) +
     xlab("Binding energy (kcal/mol)") +
-    scale_y_continuous(breaks=c(0,20)) +
+    scale_x_reverse(limits=c(max(data$E), min(data$E))) +
+    ylim(0, counts.max) +
     ggtitle("Binding Affinity Frequencies by Ligand (side Binding Site)") +
     theme(legend.title=element_text(face="bold")) +
     facet_grid(. ~ LIG)
   vertbarplots_energy_by_lig_sidesite
-  ggsave(paste0(dock, "_vertbarplots_energy_by_lig_sidesite.pdf"), width=12, height=8)
+  ggsave(paste0(dock, "_", "vertbarplots_energy_by_lig_sidesite", ".pdf"), width=12, height=8)
   # allo1
   vertbarplots_energy_by_lig_allo1site <- ggplot(data=subset(data, binds.in.allo1), aes(x=E, fill=LIG, group=LIG)) +
     geom_bar(width=0.1) +
     coord_flip() +
     scale_fill_hue(guide=FALSE) +
     xlab("Binding energy (kcal/mol)") +
-    scale_y_continuous(breaks=c(0,20)) +
+    scale_x_reverse(limits=c(max(data$E), min(data$E))) +
+    ylim(0, counts.max) +
     ggtitle("Binding Affinity Frequencies by Ligand (allo1 Binding Site)") +
     theme(legend.title=element_text(face="bold")) +
     facet_grid(. ~ LIG)
   vertbarplots_energy_by_lig_allo1site
-  ggsave(paste0(dock, "_vertbarplots_energy_by_lig_allo1site.pdf"), width=12, height=8)
+  ggsave(paste0(dock, "_", "vertbarplots_energy_by_lig_allo1site", ".pdf"), width=12, height=8)
   # allo2
   vertbarplots_energy_by_lig_allo2site <- ggplot(data=subset(data, binds.in.allo2), aes(x=E, fill=LIG, group=LIG)) +
     geom_bar(width=0.1) +
     coord_flip() +
     scale_fill_hue(guide=FALSE) +
     xlab("Binding energy (kcal/mol)") +
-    scale_y_continuous(breaks=c(0,20)) +
+    scale_x_reverse(limits=c(max(data$E), min(data$E))) +
+    ylim(0, counts.max) +
     ggtitle("Binding Affinity Frequencies by Ligand (allo2 Binding Site)") +
     theme(legend.title=element_text(face="bold")) +
     facet_grid(. ~ LIG)
   vertbarplots_energy_by_lig_allo2site
-  ggsave(paste0(dock, "_vertbarplots_energy_by_lig_allo2site.pdf"), width=12, height=8)
+  ggsave(paste0(dock, "_", "vertbarplots_energy_by_lig_allo2site", ".pdf"), width=12, height=8)
 }
 ####################
 
@@ -389,6 +448,14 @@ distrib.table <- distrib.table[binding.sites]
 distrib.table.csv <- paste(dock, "bs_distribution_table.csv", sep="_")
 write.csv(distrib.table, file=distrib.table.csv)
 ####################
+
+g <- data.E.bs.melted
+list <- g$key[g$E < -6.25 & g$E > -6.75 & g$LIG == "Garcinol" & g$binding.placement == "coa"]
+
+write.table(list, file = "/Users/zarek/Desktop/list.txt",
+            col.names=F, row.names=F, quote=F)
+
+
 
 
 
