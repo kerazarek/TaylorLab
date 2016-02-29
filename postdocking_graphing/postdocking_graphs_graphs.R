@@ -10,7 +10,7 @@ library(ggplot2)
 library(reshape2)
 
 ### Basic parameters
-dock <- "p28" # docking id
+dock <- "p27" # docking id
 if(substr(dock,0,1) == "p") {prot <- "p300"} # p300 dockings are labeled p##
 if(substr(dock,0,1) == "h") {prot <- "hepi"} # hepi dockings are labeled h##
 # assumptions
@@ -78,9 +78,12 @@ if(is.element(dock, c("p28", "p29", "p30"))) {
   ligset.coded <- c("ng", "s2", "ne", "s1", "s3")
   ligset.names <- factor(c("Garcinol", "CTB", "EGCG", "CTPB", "C646"))
   data$LIG <- ligset.names[match(data$LIG, ligset.coded)] 
-  data$LIG <- factor(data$LIG, levels = ligset.list)
+  data$LIG <- factor(data$LIG, levels = ligset.names)
 }
-
+if(is.element(dock, c("p27", "p31"))) {
+  ligset.names <- factor(c("Garcinol", "CTB", "EGCG", "CTPB", "C646"))
+  data$LIG <- factor(data$LIG, levels = ligset.names)
+}
 
 
 
@@ -142,11 +145,13 @@ setwd(graphs.dir) # needed for pdf names below
 # bs.colors <- brewer.pal(length(binding.sites), "Set1")
 # lig.colors <- brewer.pal(length(ligset.list), "Set2")
 
+lig.palette <- "Greys"
+ 
 ####################
 ### Box plot of binding energies (in all sites) by ligand
 boxplots_energy_vs_lig_allsites <- ggplot(data=data, aes(x=LIG, y=E)) +
   geom_boxplot(aes(fill=LIG)) +
-  scale_fill_discrete(name="Ligands") + # legend
+  scale_fill_hue(name="Ligands") + # legend
   scale_x_discrete(limits=ligset.list) +
   xlab("Ligand") +
   ylab("Binding energy (kcal/mol)") +
@@ -241,7 +246,7 @@ data$combined.sites[data$combined.sites == ""] <- "no site placement"
 barplot_bindingdist_by_lig_combinedsites <- ggplot(data=data) +
   geom_bar(aes(x=LIG, fill=combined.sites), color="black") +
   scale_x_discrete(limits=ligset.list) +
-  scale_fill_discrete(name="Binding Site(s)") +
+  scale_fill_hue(name="Binding Site(s)") +
   xlab("Ligand") +
   ylab("Number of Ligands in Site") +
   ggtitle("Binding Distribution by Ligand (Binding Sites Combined)") +
@@ -266,7 +271,7 @@ melted.analysis.bindingsites <- melt(analysis.bindingsites, id.vars = "bs_cat")
 barplot_bindingdist_by_lig <- ggplot(data=melted.analysis.bindingsites, aes(x=bs_cat, y=value, fill=variable)) +
   geom_bar(stat="identity", color="black") +
   scale_x_discrete(limits=ligset.list) +
-  scale_fill_discrete(name="Binding Site", labels=binding.sites) +
+  scale_fill_hue(name="Binding Site", labels=binding.sites) +
   xlab("Ligand") +
   ylab("Number of Ligands in Site") +
   ggtitle("Binding Distribution by Ligand") +
@@ -286,7 +291,7 @@ melted.analysis.avgenergies <- melt(analysis.avgenergies, id.vars = "bs_cat")
 barplot_avge_vs_lig_by_bs <- ggplot(data=melted.analysis.avgenergies, aes(x=bs_cat, y=value, fill=variable, width=0.75)) +
   geom_bar(stat="identity", color="black", position=position_dodge()) +
   scale_x_discrete(limits=ligset.list) +
-  scale_fill_discrete(name="Binding Site", labels=binding.sites) +
+  scale_fill_hue(name="Binding Site", labels=binding.sites) +
   xlab("Ligand") +
   ylab("Binding energy (kcal/mol)") +
   ggtitle("Average Energy by Binding Site") +
@@ -297,6 +302,7 @@ ggsave(paste0(dock, "_", "barplot_avge_vs_lig_by_bs", ".pdf"), width=12, height=
 ####################
 
 ####################
+counts.max <- 60
 ### 'Stripcharts' for energy by ligand
 # Overall
 vertbarplots_energy_by_lig_allsites <- ggplot(data=data, aes(x=E, fill=LIG, group=LIG)) +
@@ -304,14 +310,14 @@ vertbarplots_energy_by_lig_allsites <- ggplot(data=data, aes(x=E, fill=LIG, grou
   coord_flip() +
   scale_fill_hue(guide=FALSE) + 
   xlab("Binding energy (kcal/mol)") +
-  scale_y_continuous(breaks=c(0,20)) +
-  ggtitle("Binding Affinity Frequencies by Ligand (all binding sites)") +
+  scale_x_reverse(limits=c(max(data$E), min(data$E))) +
+  ylim(0, counts.max) +
+  ggtitle("Binding Affinity Frequencies by Ligand (All binding sites)") +
   theme(legend.title=element_text(face="bold")) +
-  facet_grid(. ~ LIG)
+  facet_grid(. ~ LIG, drop=F)
 vertbarplots_energy_by_lig_allsites
 ggsave(paste0(dock, "_", "vertbarplots_energy_by_lig_allsites", ".pdf"), width=12, height=8)
-# For each binding site
-counts.max <- 50
+### For each binding site
 # HepI:
 if(prot == "hepi") {
   # ADPH
@@ -324,7 +330,7 @@ if(prot == "hepi") {
     ylim(0, counts.max) +
     ggtitle("Binding Affinity Frequencies by Ligand (ADPH Binding Site)") +
     theme(legend.title=element_text(face="bold")) +
-    facet_grid(. ~ LIG)
+    facet_grid(. ~ LIG, drop=F)
   vertbarplots_energy_by_lig_adphsite
   ggsave(paste0(dock, "_", "vertbarplots_energy_by_lig_adphsite", ".pdf"), width=12, height=8)
   # FDLA
@@ -337,7 +343,7 @@ if(prot == "hepi") {
     ylim(0, counts.max) +
     ggtitle("Binding Affinity Frequencies by Ligand (FDLA Binding Site)") +
     theme(legend.title=element_text(face="bold")) +
-    facet_grid(. ~ LIG)
+    facet_grid(. ~ LIG, drop=F)
   vertbarplots_energy_by_lig_fdlasite
   ggsave(paste0(dock, "_", "vertbarplots_energy_by_lig_fdlasite", ".pdf"), width=12, height=8)
   # ALLO
@@ -350,7 +356,7 @@ if(prot == "hepi") {
     ylim(0, counts.max) +
     ggtitle("Binding Affinity Frequencies by Ligand (ALLO Binding Site)") +
     theme(legend.title=element_text(face="bold")) +
-    facet_grid(. ~ LIG)
+    facet_grid(. ~ LIG, drop=F)
   vertbarplots_energy_by_lig_allosite
   ggsave(paste0(dock, "_", "vertbarplots_energy_by_lig_allosite", ".pdf"), width=12, height=8)
   
@@ -380,7 +386,7 @@ if(prot == "p300") {
     scale_x_reverse(limits=c(max(data$E), min(data$E))) +
     ggtitle("Binding Affinity Frequencies by Ligand (lys Binding Site)") +
     theme(legend.title=element_text(face="bold")) +
-    facet_grid(. ~ LIG)
+    facet_grid(. ~ LIG, drop=F)
   vertbarplots_energy_by_lig_lyssite
   ggsave(paste0(dock, "_", "vertbarplots_energy_by_lig_lyssite", ".pdf"), width=12, height=8)
   # coa
@@ -393,7 +399,7 @@ if(prot == "p300") {
     ylim(0, counts.max) +
     ggtitle("Binding Affinity Frequencies by Ligand (coa Binding Site)") +
     theme(legend.title=element_text(face="bold")) +
-    facet_grid(. ~ LIG)
+    facet_grid(. ~ LIG, drop=F)
   vertbarplots_energy_by_lig_coasite
   ggsave(paste0(dock, "_", "vertbarplots_energy_by_lig_coasite", ".pdf"), width=12, height=8)
   # side
@@ -406,7 +412,7 @@ if(prot == "p300") {
     ylim(0, counts.max) +
     ggtitle("Binding Affinity Frequencies by Ligand (side Binding Site)") +
     theme(legend.title=element_text(face="bold")) +
-    facet_grid(. ~ LIG)
+    facet_grid(. ~ LIG, drop=F)
   vertbarplots_energy_by_lig_sidesite
   ggsave(paste0(dock, "_", "vertbarplots_energy_by_lig_sidesite", ".pdf"), width=12, height=8)
   # allo1
@@ -419,7 +425,7 @@ if(prot == "p300") {
     ylim(0, counts.max) +
     ggtitle("Binding Affinity Frequencies by Ligand (allo1 Binding Site)") +
     theme(legend.title=element_text(face="bold")) +
-    facet_grid(. ~ LIG)
+    facet_grid(. ~ LIG, drop=F)
   vertbarplots_energy_by_lig_allo1site
   ggsave(paste0(dock, "_", "vertbarplots_energy_by_lig_allo1site", ".pdf"), width=12, height=8)
   # allo2
@@ -432,7 +438,7 @@ if(prot == "p300") {
     ylim(0, counts.max) +
     ggtitle("Binding Affinity Frequencies by Ligand (allo2 Binding Site)") +
     theme(legend.title=element_text(face="bold")) +
-    facet_grid(. ~ LIG)
+    facet_grid(. ~ LIG, drop=F)
   vertbarplots_energy_by_lig_allo2site
   ggsave(paste0(dock, "_", "vertbarplots_energy_by_lig_allo2site", ".pdf"), width=12, height=8)
 }
@@ -462,3 +468,4 @@ write.table(list, file = "/Users/zarek/Desktop/list.txt",
 ################################################################################
 print("All done, graphs can found in:")
 print(graphs.dir, quote=F)
+
