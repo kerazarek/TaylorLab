@@ -7,13 +7,14 @@
 
 ### Required input to the script
 dock <- "DOCK"
-scripts_dir <- "/Users/zarek/GitHub/TaylorLab/zvina/scripts"
+fs_constants_csv <- "/Users/zarek/GitHub/TaylorLab/zvina/scripts/filesystem_constants.csv"
 
 ### Import filesystem constants
-fs_constants_csv <- paste0(scripts_dir, "/filesystem_constants.csv")
+# fs_constants_csv <- paste0(scripts_dir, "/filesystem_constants.csv")
 fs_constants_df <- read.csv(fs_constants_csv, header=TRUE)
 docking_dir <- as.character(fs_constants_df$address[fs_constants_df$constant == "docking_dir"])
-ligsets_dir <- as.character(fs_constants_df$address[fs_constants_df$constant == "ligsets_dir"])
+scripts_dir <- as.character(fs_constants_df$address[fs_constants_df$constant == "docking_dir"])
+ligsets_dir <- as.character(fs_constants_df$address[fs_constants_df$constant == "scripts_dir"])
 docks_csv <- as.character(fs_constants_df$address[fs_constants_df$constant == "docks_csv"])
 gridboxes_csv <- as.character(fs_constants_df$address[fs_constants_df$constant == "gridboxes_csv"])
 
@@ -39,21 +40,21 @@ box_size_z <- as.character(gridboxes_df$Size.in.z.dimension[gridboxes_df$Gridbox
 # Ligset?
 
 ### Create parameters data frame
-parameters_names_list <- c("dock", "prot", "ligset", "box", 
-                "box_center_x", "box_center_y", "box_center_z", 
-                "box_size_x", "box_size_y", "box_size_z", 
+parameters_names_list <- c("dock", "prot", "ligset", "box",
+                "box_center_x", "box_center_y", "box_center_z",
+                "box_size_x", "box_size_y", "box_size_z",
                 "exhaust", "n_models", "n_cpus") # flex
-parameters_values_list <- c(dock, prot, ligset, box, 
-                           box_center_x, box_center_y, box_center_z, 
-                           box_size_x, box_size_y, box_size_z, 
+parameters_values_list <- c(dock, prot, ligset, box,
+                           box_center_x, box_center_y, box_center_z,
+                           box_size_x, box_size_y, box_size_z,
                            exhaust, n_models, n_cpus) # flex
-parameters_df <- data.frame(row.names = parameters_list)
+parameters_df <- data.frame(row.names = parameters_names_list)
 parameters_df$parameter <- parameters_names_list
 parameters_df$value <- parameters_values_list
 
 ### Write parameters CSV
 parameters_csv <- paste0(docking_dir, "/", prot, "/", dock, "_parameters.csv")
-write.csv(parameters_df, parameters_csv, row.names = F)
+write.csv(parameters_df, parameters_csv, row.names = F, quote = F)
 noquote(paste0("---> Parameters CSV for docking ", dock, " has been created. It can be found at:"))
 noquote(parameters_csv)
 
