@@ -5,15 +5,22 @@
 # v1 2/16/2016
 # v1.1 3/4/2016
 
-### Required input to the script
-dock <- "DOCK"
+### Required input
+arg <- commandArgs(TRUE)
+if(length(arg) != 1) {
+	stop("! ! ! This script requires exactly one argument (the Dock ID)")
+} else {
+	dock <- arg
+}
+
+### Required global constant
 fs_constants_csv <- "/Users/zarek/GitHub/TaylorLab/zvina/scripts/filesystem_constants.csv"
 
 ### Import filesystem constants
 # fs_constants_csv <- paste0(scripts_dir, "/filesystem_constants.csv")
 fs_constants_df <- read.csv(fs_constants_csv, header=TRUE)
-docking_dir <- as.character(fs_constants_df$address[fs_constants_df$constant == "docking_dir"])
-scripts_dir <- as.character(fs_constants_df$address[fs_constants_df$constant == "docking_dir"])
+base_dir <- as.character(fs_constants_df$address[fs_constants_df$constant == "base_dir"])
+scripts_dir <- as.character(fs_constants_df$address[fs_constants_df$constant == "base_dir"])
 ligsets_dir <- as.character(fs_constants_df$address[fs_constants_df$constant == "scripts_dir"])
 docks_csv <- as.character(fs_constants_df$address[fs_constants_df$constant == "docks_csv"])
 gridboxes_csv <- as.character(fs_constants_df$address[fs_constants_df$constant == "gridboxes_csv"])
@@ -21,6 +28,10 @@ gridboxes_csv <- as.character(fs_constants_df$address[fs_constants_df$constant =
 ### Import docking parameters
 # Docking CSV
 docks_df <- read.csv(docks_csv, header=TRUE)
+# Check that the docking exists
+if(is.na(match(dock, docks_df$Docking.ID))) {
+	stop(paste0("! ! ! No docking called '", dock, "' in Dockings.csv"))
+}
 # Basics
 prot <- as.character(docks_df$Protein[docks_df$Docking.ID == dock])
 ligset <- as.character(docks_df$Ligset[docks_df$Docking.ID == dock])
@@ -53,7 +64,7 @@ parameters_df$parameter <- parameters_names_list
 parameters_df$value <- parameters_values_list
 
 ### Write parameters CSV
-parameters_csv <- paste0(docking_dir, "/", prot, "/", dock, "_parameters.csv")
+parameters_csv <- paste0(base_dir, prot, "/", dock, "_parameters.csv")
 write.csv(parameters_df, parameters_csv, row.names = F, quote = F)
 noquote(paste0("---> Parameters CSV for docking ", dock, " has been created. It can be found at:"))
 noquote(parameters_csv)
