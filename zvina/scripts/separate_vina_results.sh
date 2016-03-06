@@ -20,4 +20,5 @@ source $base_dir/scripts/load_parameters.sh h11
 # base_dir="/Users/zarek/GitHub/TaylorLab/zvina/"
 
 # Create a directory for processed files
-mkdir $base_dir/$prot/processed_pdbqts/
+# mkdir $base_dir/$prot/processed_pdbqts/
+echo $ligset
