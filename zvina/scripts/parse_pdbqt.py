@@ -155,21 +155,6 @@ class Pdb:
 			'pvr_model' : self.pvr_model
 		}
 
-	def res_list(self, atoms = False):
-		list = []
-		if atoms is False:
-			for atom in self.coords:
-				list.append(atom['resn']+atom['resi'])
-		elif atoms is True:
-			for atom in self.coords:
-				list.append(atom['resn']+atom['resi']+"_"+atom['atomn'])
-
-		nodup_list = set(list)
-		reslist = []
-		for n in nodup_list:
-			reslist.append(n)
-		return reslist
-
 	def get_types(self):
 		# Detect if its been through ADT process_VinaResult.py
 		self.is_pvrd = False # by default
