@@ -4,7 +4,7 @@
 # (c) Zarek Siegel
 # v1 3/6/16
 
-from parse_pdbqt import *
+from parse_pdb import *
 from math import sqrt
 from numpy import mean
 
