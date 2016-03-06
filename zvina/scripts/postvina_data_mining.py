@@ -1,16 +1,15 @@
-#!/usr/bin/env python
+#! /usr/bin/env python
 
 ### Putting together all parsed data from processed vina results
 # (c) Zarek Siegel
-# v1 3/5/16
+# v1 3/5/16 (as assemble_alldata.py)
+# v2 3/6/16
 
 from __future__ import print_function
-import sys, csv, re, os
+import csv, re, os
 import cPickle as pickle
 from parse_pdb import *
 from aiad_icpd import *
-
-script, dock = sys.argv
 
 class Docking():
 	def load_parameters(self):
@@ -80,9 +79,12 @@ class Docking():
 				self.data_dic[key] = pose_dic
 				self.keys.append(key)
 
+		self.is_assembled = True
 		print("---> data_dic created with data from process_VinaResult.py")
 
 	def get_binding_sites_list(self):
+		if not self.is_assembled: self.assemble_dic()
+
 		binding_sites_dir = "{p_d}binding_sites/".format(p_d=self.prot_dir)
 		self.binding_sites_list = []
 		self.binding_sites_objs = {}
@@ -103,9 +105,13 @@ class Docking():
 			self.bs_resis_lists[bs] = list(set(bs_resis))
 			self.bs_resis_atoms_lists[bs] = list(set(bs_resis_atoms))
 
+		self.is_bs_listed = True
 		print("---> Retrieved binding sites")
 
 	def score_binding_sites(self):
+		if not self.is_assembled: self.assemble_dic()
+		if not self.is_bs_listed: self.get_binding_sites_list()
+
 		for pose in self.data_dic:
 			for bs in self.binding_sites_list:
 				resis_union = ( set(self.bs_resis_lists[bs]) & set(self.data_dic[pose]['pvr_resis']) )
@@ -113,9 +119,12 @@ class Docking():
 				resis_atoms_union = ( set(self.bs_resis_atoms_lists[bs]) & set(self.data_dic[pose]['pvr_resis_atoms']) )
 				self.data_dic[pose]["{}_atoms_fraction".format(bs)] = float(len(resis_atoms_union)) / float(len(self.bs_resis_atoms_lists[bs]))
 
+		self.is_bs_scored = True
 		print("---> Scored binding sites")
 
 	def aiad_icpd_binding_sites(self):
+		if not self.is_assembled: self.assemble_dic()
+
 		for pose in self.data_dic:
 			for bs, bso in self.binding_sites_objs.items():
 				aiad = caclulate_aiad(self.data_dic[pose]['pvr_obj'], bso)
@@ -123,9 +132,12 @@ class Docking():
 				icpd = calculate_icpd(self.data_dic[pose]['pvr_obj'], bso)
 				self.data_dic[pose]["{}_icpd".format(bs)] = icpd
 
+		self.are_aiad_icpd_calcd = True
 		print("---> Calculated AIAD and ICPD")
 
 	def assess_all_resis(self):
+		if not self.is_assembled: self.assemble_dic()
+
 		self.prot_pdbqt = "{p_d}{p}.pdbqt".format(p_d=self.prot_dir, p=self.prot)
 		self.prot_obj = Pdb(self.prot_pdbqt)
 		self.prot_resis_list = []
@@ -148,9 +160,16 @@ class Docking():
 # 				else:
 # 					self.data_dic[pose][atom] = 0
 
+		self.are_all_resis_assessed = True
 		print("---> Residues contacts added to data.dic")
 
 	def write_alldata_csv(self):
+		if not self.is_assembled: self.assemble_dic()
+		if not self.is_bs_listed: self.get_binding_sites_list()
+		if not self.is_bs_scored: self.score_binding_sites()
+		if not self.are_aiad_icpd_calcd: self.aiad_icpd_binding_sites()
+		if not self.are_all_resis_assessed: self.assess_all_resis()
+
 		fieldnames = ['key', 'lig', 'model', 'E', 'rmsd_lb', 'rmsd_ub',
 			'pvr_effic', 'pvr_n_contacts', 'torsdof', 'pdb_address']
 		for bs in self.binding_sites_list:
@@ -170,9 +189,13 @@ class Docking():
 				for f in fieldnames:
 					row[f] = self.data_dic[pose][f]
 				writer.writerow(row)
+
+		self.is_csv_written = True
 		print("---> Completed alldata.csv is located at:\n\t{}".format(self.alldata_csv))
 
 	def cluster_poses(self):
+		if not self.is_assembled: self.assemble_dic()
+
 		self.clustering_dic = {}
 		c = 0
 		print("---> Calculating AIAD between poses (for clustering)")
@@ -193,34 +216,48 @@ class Docking():
 				row = self.clustering_dic[key]
 				row['compared'] = key
 				writer.writerow(row)
+
+		self.are_poses_clustered = True
 		print("   > Completed clustering.csv is located at:\n\t{}".format(self.clustering_csv))
 
 	def save_pickled_docking_obj(self):
 		self.pickled_docking_obj = "{d_d}{d}.p".format(d_d=self.dock_dir, d=dock)
 		pickle.dump(self, open(self.pickled_docking_obj, 'wb'))
 
+		self.is_pickled = True
 		print("---> Pickled docking object located at:\n\t{}".format(self.pickled_docking_obj))
 
-	def __init__(self, dock):
+	def __init__(self, d, b_d):
+		global dock
+		global base_dir
+		dock = d
+		base_dir = b_d
+
 		self.dock = dock
 		self.load_parameters()
 		self.get_ligset_list()
-		self.assemble_dic()
-		self.get_binding_sites_list()
-		self.score_binding_sites()
-		self.aiad_icpd_binding_sites()
-		self.assess_all_resis()
 
-def main():
-	global base_dir
-	base_dir = "/Users/zarek/GitHub/TaylorLab/zvina/"
+		self.is_assembled = False
+		self.is_bs_listed = False
+		self.is_bs_scored = False
+		self.are_aiad_icpd_calcd = False
+		self.are_all_resis_assessed = False
+		self.is_csv_written = False
+		self.are_poses_clustered = False
+		self.is_pickled = False
 
-	d = Docking(dock)
-	d.write_alldata_csv()
-	d.cluster_poses()
-	d.save_pickled_docking_obj()
 
-if __name__ == "__main__": main()
+
+
+
+		# WOOOT! not !
+
+
+
+
+
+
+
 
 
 
