@@ -34,6 +34,7 @@ class Docking():
 
 	def assemble_dic(self):
 		self.data_dic = {}
+		self.keys = []
 		for lig in self.ligset_list:
 			for m in range(1, int(self.parameters['n_models'])+1):
 				processed_pdbqt = "{b_d}{p}/{d}/processed_pdbqts/{d}_{lig}_m{m}.pdbqt".format(
@@ -59,6 +60,7 @@ class Docking():
 					'pdb_address' : re.sub('pdbqt', 'pdb', processed_pdbqt)
 				}
 				self.data_dic[key] = pose_dic
+				self.keys.append(key)
 
 	def get_binding_sites_list(self):
 		binding_sites_dir = "{b_d}{p}/binding_sites/".format(
@@ -145,10 +147,29 @@ class Docking():
 				writer.writerow(row)
 		print("---> Completed alldata.csv is located at:\n{}".format(alldata_csv))
 
-	def save_pickled_data_dic(self):
-		self.pickled_data_dic = "{b_d}{p}/{d}/{d}_data_dic.p".format(
+	def cluster_poses(self):
+		self.clustering_dic = {}
+		for key1 in self.data_dic:
+			self.clustering_dic[key1] = {}
+			for key2 in self.data_dic:
+				aiad12 = caclulate_aiad(self.data_dic[key1]['pvr_obj'], self.data_dic[key2]['pvr_obj'])
+				print(key1, key2, aiad12)
+				self.clustering_dic[key1][key2] = aiad12
+
+		clustering_csv = "{b_d}{p}/{d}/{d}_clustering.csv".format(
 					b_d=base_dir, p=self.parameters['prot'], d=dock)
-		pickle.dump(self.data_dic, open(self.pickled_data_dic, 'wb'))
+		with open(clustering_csv, 'w') as csvfile:
+			writer = csv.DictWriter(csvfile, fieldnames=self.keys)
+			writer.writeheader()
+			for key in self.keys:
+				row = self.clustering_dic[key]
+				writer.writerow(row)
+		print("---> Completed clustering.csv is located at:\n{}".format(clustering_csv))
+
+	def save_pickled_docking_obj(self):
+		self.pickled_docking_obj = "{b_d}{p}/{d}/{d}.p".format(
+					b_d=base_dir, p=self.parameters['prot'], d=dock)
+		pickle.dump(self, open(self.pickled_docking_obj, 'wb'))
 
 	def __init__(self, dock):
 		self.dock = dock
@@ -159,14 +180,15 @@ class Docking():
 		self.score_binding_sites()
 		self.aiad_icpd_binding_sites()
 		self.assess_all_resis()
-		self.write_alldata_csv()
 
 def main():
 	global base_dir
 	base_dir = "/Users/zarek/GitHub/TaylorLab/zvina/"
 
 	d = Docking(dock)
-	d.save_pickled_data_dic()
+	d.write_alldata_csv()
+	d.cluster_poses()
+	d.save_pickled_docking_obj()
 
 if __name__ == "__main__": main()
 
