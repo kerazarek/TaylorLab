@@ -1,2 +1,4 @@
-Docking ID,Date,Protein,Ligset,Gridbox,Exhaustiveness,Number of Models,Number of CPUs,Notes,
-DOCK,20160216,PROT,LIGSET,BOX,8,10,1,testing out new system,
+Docking ID,Date,Protein,Ligset,Gridbox,Exhaustiveness,Number of Models,Number of CPUs,Notes
+DOCK,20160216,PROT,LIGSET,BOX,8,10,1,testing out new system
+p31,20150922,p300,pls1a,pwp,50,400,2,n/a
+h11,20150615,hepi,hls1,hab2,50,9,1,
