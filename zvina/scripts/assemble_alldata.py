@@ -149,20 +149,27 @@ class Docking():
 
 	def cluster_poses(self):
 		self.clustering_dic = {}
+		c1 = 0
 		for key1 in self.data_dic:
 			self.clustering_dic[key1] = {}
+			c1 += 1
+			c2 = 0
 			for key2 in self.data_dic:
+				c2 += 1
 				aiad12 = caclulate_aiad(self.data_dic[key1]['pvr_obj'], self.data_dic[key2]['pvr_obj'])
-				print(key1, key2, aiad12)
+				print(key1, "{}/{}".format(c1,len(self.keys)),
+					key2, "{}/{}".format(c2,len(self.keys)), aiad12)
 				self.clustering_dic[key1][key2] = aiad12
 
 		clustering_csv = "{b_d}{p}/{d}/{d}_clustering.csv".format(
 					b_d=base_dir, p=self.parameters['prot'], d=dock)
+		fieldnames = ['compared'] + self.keys
 		with open(clustering_csv, 'w') as csvfile:
-			writer = csv.DictWriter(csvfile, fieldnames=self.keys)
+			writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 			writer.writeheader()
 			for key in self.keys:
 				row = self.clustering_dic[key]
+				row['compared'] = key
 				writer.writerow(row)
 		print("---> Completed clustering.csv is located at:\n{}".format(clustering_csv))
 
@@ -187,7 +194,7 @@ def main():
 
 	d = Docking(dock)
 	d.write_alldata_csv()
-	d.cluster_poses()
+# 	d.cluster_poses()
 	d.save_pickled_docking_obj()
 
 if __name__ == "__main__": main()
