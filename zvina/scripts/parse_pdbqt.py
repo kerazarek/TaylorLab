@@ -170,7 +170,7 @@ class Pdb:
 			reslist.append(n)
 		return reslist
 
-	def get_type(self):
+	def get_types(self):
 		# Detect if its been through ADT process_VinaResult.py
 		self.is_pvrd = False # by default
 		for line in self.pdb_lines:
@@ -189,7 +189,9 @@ class Pdb:
 			print("!!! BAD FILETYPE !!!")
 
 	def __init__(self, pdb_file_in):
+		# Specify input file
 		self.pdb_file_in = pdb_file_in
+		# Try to read it, else error
 		try:
 			pdb_file_open = open(pdb_file_in)
 			with pdb_file_open as f:
@@ -197,11 +199,9 @@ class Pdb:
 		except IOError:
 			print("! ! ! IOError")
 			pass
+		# Determine if PDB or PDBQT, and whether it has been through process_VinaResult.py
+		self.get_types() # this also mines the actual data
 
-def main():
-	infile = "/Users/zarek/GitHub/TaylorLab/zvina/hepi/h11/processed_pdbqts/h11_aa8_m1.pdbqt"
-	thing = Pdb(infile)
-	print(thing.pvr_data)
 
-if __name__ == "__main__": main()
+
 

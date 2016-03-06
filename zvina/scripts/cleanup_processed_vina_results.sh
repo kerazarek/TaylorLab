@@ -56,4 +56,5 @@ do
 done
 
 # Overwrite pre-clean-up pvr'd pdbqts with cleaned up ones
+rm -rf $processed_pdbqts_dir
 mv $cleanedup_processed_pdbqts_dir $processed_pdbqts_dir
