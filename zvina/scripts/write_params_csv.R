@@ -14,16 +14,11 @@ if(length(arg) != 1) {
 }
 
 ### Required global constant
-fs_constants_csv <- "/Users/zarek/GitHub/TaylorLab/zvina/scripts/filesystem_constants.csv"
+base_dir <- "/Users/zarek/GitHub/TaylorLab/zvina/"
 
-### Import filesystem constants
-# fs_constants_csv <- paste0(scripts_dir, "/filesystem_constants.csv")
-fs_constants_df <- read.csv(fs_constants_csv, header=TRUE)
-base_dir <- as.character(fs_constants_df$address[fs_constants_df$constant == "base_dir"])
-scripts_dir <- as.character(fs_constants_df$address[fs_constants_df$constant == "base_dir"])
-ligsets_dir <- as.character(fs_constants_df$address[fs_constants_df$constant == "scripts_dir"])
-docks_csv <- as.character(fs_constants_df$address[fs_constants_df$constant == "docks_csv"])
-gridboxes_csv <- as.character(fs_constants_df$address[fs_constants_df$constant == "gridboxes_csv"])
+### Reference CSVs
+docks_csv <- paste0(base_dir, "Dockings.csv")
+gridboxes_csv <- paste0(base_dir, "Gridboxes.csv")
 
 ### Import docking parameters
 # Docking CSV
