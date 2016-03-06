@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
 ### Putting together all parsed data from processed vina results
-#		Outputs a pickled python dictionary will all the data for all the poses
 # (c) Zarek Siegel
 # v1 3/5/16
 
-import sys, csv, re
+import sys, csv, re, os
 import cPickle as pickle
 from parse_pdbqt import *
 
@@ -49,11 +48,65 @@ class Docking():
 					'pvr_resis_atoms' : pose.pvr_resis_atoms,
 					'pvr_resis_objs' : pose.pvr_resis_objs,
 					'torsdof' : pose.torsdof,
-					'macro_close_ats' : pose.macro_close_ats,
+					'pvr_n_contacts' : pose.macro_close_ats,
 					'pvr_model' : pose.pvr_model,
+					'pvr_effic' : pose.pvr_effic,
 					'coords' : pose.coords
 				}
 				self.data_dic[key] = pose_dic
+				self.data_dic[key]['lig'] = lig
+				self.data_dic[key]['model'] = m
+
+	def get_binding_sites_list(self):
+		binding_sites_dir = "{b_d}{p}/binding_sites/".format(
+					b_d=base_dir, p=self.parameters['prot'])
+		self.binding_sites_list = []
+		self.binding_sites_objs = {}
+		for root, dirs, files in os.walk(binding_sites_dir):
+			for file in files:
+				self.binding_sites_list.append(re.sub('.pdb', '', file))
+				self.binding_sites_objs[re.sub('.pdb', '', file)] = (Pdb("{}{}".format(root, file)))
+
+		self.bs_resis_lists = {}
+		self.bs_resis_atoms_lists = {}
+
+		for bs, bso in self.binding_sites_objs.items():
+			bs_resis = []
+			bs_resis_atoms = []
+
+			for atom in bso.coords:
+				bs_resis.append("{}{}".format(atom['resn'], atom['resi']))
+				bs_resis_atoms.append("{}{}_{}".format(atom['resn'], atom['resi'], atom['atomn']))
+			self.bs_resis_lists[bs] = list(set(bs_resis))
+			self.bs_resis_atoms_lists[bs] = list(set(bs_resis_atoms))
+
+	def score_binding_sites(self):
+		self.bs_resis_fractions = {}
+		self.bs_resis_atoms_fractions = {}
+
+		for pose, data in self.data_dic.items():
+			for bs in self.binding_sites_list:
+				resis_union = ( set(self.bs_resis_lists[bs]) & set(data['pvr_resis']) )
+				self.data_dic[pose]["{}_fraction".format(bs)] = float(len(resis_union)) / float(len(self.bs_resis_lists[bs]))
+				resis_atoms_union = ( set(self.bs_resis_atoms_lists[bs]) & set(data['pvr_resis_atoms']) )
+				self.data_dic[pose]["{}_atoms_fraction".format(bs)] = float(len(resis_atoms_union)) / float(len(self.bs_resis_atoms_lists[bs]))
+
+	def write_alldata_csv(self):
+		fieldnames = ['key', 'lig', 'model', 'E', 'rmsd_lb', 'rmsd_ub', 'pvr_effic', 'pvr_n_contacts', 'torsdof']
+		for bs in self.binding_sites_list:
+			fieldnames.append("{}_fraction".format(bs))
+			fieldnames.append("{}_atoms_fraction".format(bs))
+
+		alldata_csv = "{b_d}{p}/{d}/{d}_alldata.csv".format(
+					b_d=base_dir, p=self.parameters['prot'], d=dock)
+		with open(alldata_csv, 'w') as csvfile:
+			writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+			writer.writeheader()
+			for pose, data in self.data_dic.items():
+				row = {}
+				for f in fieldnames:
+					row[f] = data[f]
+				writer.writerow(row)
 
 	def save_pickled_data_dic(self):
 		self.pickled_data_dic = "{b_d}{p}/{d}/{d}_data_dic.p".format(
@@ -65,6 +118,9 @@ class Docking():
 		self.load_parameters()
 		self.get_ligset_list()
 		self.assemble_dic()
+		self.get_binding_sites_list()
+		self.score_binding_sites()
+		self.write_alldata_csv()
 
 def main():
 	global base_dir

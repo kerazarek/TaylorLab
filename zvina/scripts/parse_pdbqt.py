@@ -42,7 +42,7 @@ class Pdb:
 	def get_pdb_coords(self):
 		_coords = []
 		for line in self.pdb_lines:
-			if re.search('HETATM', line) or (re.search('ATOM', line)):
+			if re.search('HETATM|ATOM', line) or (re.search('ATOM', line)):
 				_dic = {
 					'atomi' : int(line[6:11]),
 					'atomn' : line[12:16].replace(" ", ""),
@@ -63,7 +63,7 @@ class Pdb:
 	def get_pdbqt_coords(self):
 		_coords = []
 		for line in self.pdb_lines:
-			if re.search('HETATM', line) or (re.search('ATOM', line)):
+			if re.search('HETATM|ATOM', line) or (re.search('ATOM', line)):
 				_dic = {
 					'atomi' : int(line[6:11]),
 					'atomn' : line[12:16].replace(" ", ""),
