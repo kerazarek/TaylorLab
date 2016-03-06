@@ -1,0 +1,26 @@
+REMARK   4 XXXX COMPLIES WITH FORMAT V. 2.0
+HETATM    1  C   LIG     1       0.766   1.297  -0.242  1.00  0.00      ga8  C  
+HETATM    2  C   LIG     1       1.517  -0.012   0.048  1.00  0.00      ga8  C  
+HETATM    3  C   LIG     1       0.707  -1.204  -0.447  1.00  0.00      ga8  C  
+HETATM    4  C   LIG     1      -0.672  -1.176   0.237  1.00  0.00      ga8  C  
+HETATM    5  O   LIG     1      -1.353   0.024  -0.153  1.00  0.00      ga8  O  
+HETATM    6  C   LIG     1      -0.693   1.232   0.263  1.00  0.00      ga8  C  
+HETATM    7  O   LIG     1      -0.592  -1.236   1.666  1.00  0.00      ga8  O  
+HETATM    8  C   LIG     1      -0.466  -2.576   2.136  1.00  0.00      ga8  C  
+HETATM    9  C   LIG     1      -0.474  -2.566   3.633  1.00  0.00      ga8  C  
+HETATM   10  C   LIG     1       0.350  -3.338   4.364  1.00  0.00      ga8  C  
+HETATM   11  C   LIG     1       0.350  -3.399   5.864  1.00  0.00      ga8  C  
+HETATM   12  C   LIG     1       0.973  -4.711   6.355  1.00  0.00      ga8  C  
+HETATM   13  C   LIG     1       1.014  -4.783   7.882  1.00  0.00      ga8  C  
+HETATM   14  C   LIG     1       1.691  -6.072   8.352  1.00  0.00      ga8  C  
+HETATM   15  C   LIG     1       1.728  -6.156   9.877  1.00  0.00      ga8  C  
+HETATM   16  C   LIG     1       2.400  -7.437  10.348  1.00  0.00      ga8  C  
+HETATM   17  O   LIG     1       1.440  -2.412  -0.223  1.00  0.00      ga8  O  
+HETATM   18  H   LIG     1       2.378  -2.170  -0.373  1.00  0.00      ga8  H  
+HETATM   19  O   LIG     1       2.800  -0.051  -0.605  1.00  0.00      ga8  O  
+HETATM   20  H   LIG     1       2.936   0.812  -1.040  1.00  0.00      ga8  H  
+HETATM   21  C   LIG     1      -1.544   2.399  -0.275  1.00  0.00      ga8  C  
+HETATM   22  O   LIG     1      -1.110   3.679   0.159  1.00  0.00      ga8  O  
+HETATM   23  H   LIG     1      -1.006   3.653   1.125  1.00  0.00      ga8  H  
+HETATM   24  O   LIG     1       1.507   2.379   0.331  1.00  0.00      ga8  O  
+HETATM   25  H   LIG     1       1.674   2.182   1.269  1.00  0.00      ga8  H  
