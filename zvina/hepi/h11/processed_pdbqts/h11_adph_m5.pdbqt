@@ -1,4 +1,4 @@
-REMARK AutoDockVina VirtualScreeningResult  Sat Mar  5 21:13:57 2016
+REMARK AutoDockVina VirtualScreeningResult  Sat Mar  5 21:34:22 2016
 USER  AD>  5 of 9 MODELS
 USER  AD>  ligand efficiency  -0.2025
 USER  AD>  -8.10,  1.867,  3.140
@@ -9,36 +9,36 @@ USER  AD> hepi:A:LYS241:H
 USER  AD> hepi:A:GLY218:H
 USER  AD> hepi:A:LYS192:H
 USER  AD> hepi:A:ALA186:CB
+USER  AD> hepi:A:SER243:C
 USER  AD> hepi:A:HIS266:CE1
 USER  AD> hepi:A:ASP261:O
 USER  AD> hepi:A:MET11:H
 USER  AD> hepi:A:HIS266:CD2
-USER  AD> hepi:A:GLY218:N
-USER  AD> hepi:A:MET11:N
+USER  AD> hepi:A:LYS192:H
+USER  AD> hepi:A:VAL247:CG1
 USER  AD> hepi:A:LEU264:CD1
 USER  AD> hepi:A:TRP217:CA
 USER  AD> hepi:A:HIS266:NE2
-USER  AD> hepi:A:ASP261:CG
-USER  AD> hepi:A:GLY12:CA
-USER  AD> hepi:A:LYS192:H
+USER  AD> hepi:A:LEU244:CA
+USER  AD> hepi:A:MET11:N
 USER  AD> hepi:A:SER10:H
 USER  AD> hepi:A:SER10:OG
+USER  AD> hepi:A:GLY218:N
 USER  AD> hepi:A:THR188:CA
-USER  AD> hepi:A:VAL247:CG1
-USER  AD> hepi:A:LEU244:CA
+USER  AD> hepi:A:GLY12:CA
 USER  AD> hepi:A:ASP261:C
-USER  AD> hepi:A:THR188:H
-USER  AD> hepi:A:SER243:C
+USER  AD> hepi:A:THR262:H
 USER  AD> hepi:A:TRP217:C
 USER  AD> hepi:A:THR188:CB
 USER  AD> hepi:A:GLY263:H
 USER  AD> hepi:A:GLY12:H
-USER  AD> hepi:A:THR262:H
+USER  AD> hepi:A:THR188:H
 USER  AD> hepi:A:LYS192:NZ
 USER  AD> hepi:A:GLY218:CA
+USER  AD> hepi:A:ASP261:CG
 
 USER  AD> lig_close_ats: 21
-USER  AD> h11_adph_m5_model1: :   1:O,O,C,H,O,O,O,O,H,H,H,O,H,C,C,H,O,C,H,H,N
+USER  AD> h11_adph_m5_model1: :   1:O,O,C,H,O,O,O,O,H,H,H,O,C,H,C,H,O,C,H,H,N
 MODEL 5
 REMARK VINA RESULT:      -8.1      1.867      3.140
 REMARK  19 active torsions:

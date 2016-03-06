@@ -1,21 +1,21 @@
-REMARK AutoDockVina VirtualScreeningResult  Sat Mar  5 21:14:37 2016
+REMARK AutoDockVina VirtualScreeningResult  Sat Mar  5 21:35:02 2016
 USER  AD>  4 of 9 MODELS
 USER  AD>  ligand efficiency  -0.2429
 USER  AD>  -5.10, 13.205, 16.335
 USER  AD> macro_close_ats: 14
 USER  AD> hepi:A:PHE41:CZ
 USER  AD> hepi:A:GLY12:H
-USER  AD> hepi:A:MET11:N
-USER  AD> hepi:A:SER10:OG
+USER  AD> hepi:A:SER10:CA
 USER  AD> hepi:A:THR187:OG1
+USER  AD> hepi:A:LYS192:H
 USER  AD> hepi:A:LYS192:H
 USER  AD> hepi:A:GLY263:CA
 USER  AD> hepi:A:GLY12:N
 USER  AD> hepi:A:THR188:H
 USER  AD> hepi:A:SER10:H
-USER  AD> hepi:A:LYS192:H
+USER  AD> hepi:A:MET11:N
 USER  AD> hepi:A:LYS192:NZ
-USER  AD> hepi:A:SER10:CA
+USER  AD> hepi:A:SER10:OG
 USER  AD> hepi:A:GLU38:CG
 
 USER  AD> lig_close_ats: 11

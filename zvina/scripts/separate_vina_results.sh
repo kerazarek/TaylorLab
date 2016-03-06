@@ -1,6 +1,6 @@
 #!/bin/bash
 
-### process_VinaResult and a bit organization
+### process_VinaResult and a bit of organization
 # (c) Zarek Siegel
 # v1 3/5/16
 
@@ -16,7 +16,7 @@ MGL_py_bin="/Library/MGLTools/latest/bin/pythonsh"
 pvr_py="$ADT_dir/Utilities24/process_VinaResult.py"
 
 # Retrieve docking parameters
-source $base_dir\scripts/load_parameters.sh h11
+source $base_dir\scripts/load_parameters.sh $dock
 
 # Retrieve ligset list
 ligset_list_txt=$base_dir\ligsets/$ligset/$ligset\_list.txt
@@ -35,9 +35,11 @@ for lig in $ligset_list;
 do
 	result_pdbqt=$result_pdbqts_dir$dock\_$lig\_results.pdbqt
 	processed_pdbqt_stem=$processed_pdbqts_dir$dock\_$lig\_m
-	$MGL_py_bin $pvr_py -v -r $receptor_pdbqt \
-						   -f $result_pdbqt \
-						   -o $processed_pdbqt_stem
+	$MGL_py_bin $pvr_py -r $receptor_pdbqt \
+						-f $result_pdbqt \
+						-o $processed_pdbqt_stem
+	echo "---> processed ligand $lig"
+
 done
 
 # *** check for results, prot.pdb, params

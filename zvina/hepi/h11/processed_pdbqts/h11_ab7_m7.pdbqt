@@ -1,4 +1,4 @@
-REMARK AutoDockVina VirtualScreeningResult  Sat Mar  5 21:14:13 2016
+REMARK AutoDockVina VirtualScreeningResult  Sat Mar  5 21:34:38 2016
 USER  AD>  7 of 9 MODELS
 USER  AD>  ligand efficiency  -0.2550
 USER  AD>  -5.10, 18.483, 20.165
@@ -8,13 +8,13 @@ USER  AD> hepi:A:ASP191:CB
 USER  AD> hepi:A:ARG225:NH1
 USER  AD> hepi:A:LEU304:H
 USER  AD> hepi:A:PRO195:CG
+USER  AD> hepi:A:HIS193:CD2
 USER  AD> hepi:A:HIS193:ND1
-USER  AD> hepi:A:HIS193:CG
 USER  AD> hepi:A:SER305:H
 USER  AD> hepi:A:GLU196:H
 USER  AD> hepi:A:GLU303:CG
 USER  AD> hepi:A:HIS193:CB
-USER  AD> hepi:A:HIS193:CD2
+USER  AD> hepi:A:HIS193:CG
 
 USER  AD> lig_close_ats: 10
 USER  AD> h11_ab7_m7_model1: :LIG1:O,C,C,C,H,C,C,C,C,O

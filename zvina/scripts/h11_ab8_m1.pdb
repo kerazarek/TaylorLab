@@ -1,0 +1,26 @@
+REMARK   4 XXXX COMPLIES WITH FORMAT V. 2.0
+HETATM    1  C   LIG L   1      43.106   6.381   0.929  1.00  0.00      h11_ C  
+HETATM    2  C   LIG L   1      44.590   6.016   0.792  1.00  0.00      h11_ C  
+HETATM    3  C   LIG L   1      45.399   6.398   2.043  1.00  0.00      h11_ C  
+HETATM    4  C   LIG L   1      45.076   7.851   2.454  1.00  0.00      h11_ C  
+HETATM    5  O   LIG L   1      43.662   8.054   2.563  1.00  0.00      h11_ O  
+HETATM    6  C   LIG L   1      42.996   7.863   1.311  1.00  0.00      h11_ C  
+HETATM    7  O   LIG L   1      45.638   8.168   3.727  1.00  0.00      h11_ O  
+HETATM    8  C   LIG L   1      45.930   9.555   3.846  1.00  0.00      h11_ C  
+HETATM    9  C   LIG L   1      47.326   9.711   4.366  1.00  0.00      h11_ C  
+HETATM   10  C   LIG L   1      47.589  10.156   5.604  1.00  0.00      h11_ C  
+HETATM   11  C   LIG L   1      48.968  10.323   6.176  1.00  0.00      h11_ C  
+HETATM   12  C   LIG L   1      49.317  11.808   6.323  1.00  0.00      h11_ C  
+HETATM   13  C   LIG L   1      48.589  12.454   7.502  1.00  0.00      h11_ C  
+HETATM   14  C   LIG L   1      49.187  11.986   8.830  1.00  0.00      h11_ C  
+HETATM   15  C   LIG L   1      49.158  13.095   9.880  1.00  0.00      h11_ C  
+HETATM   16  C   LIG L   1      50.564  13.533  10.259  1.00  0.00      h11_ C  
+HETATM   17  O   LIG L   1      46.795   6.243   1.734  1.00  0.00      h11_ O  
+HETATM   18  H   LIG L   1      47.267   6.437   2.569  1.00  0.00      h11_ H  
+HETATM   19  O   LIG L   1      44.745   4.609   0.554  1.00  0.00      h11_ O  
+HETATM   20  H   LIG L   1      44.329   4.165   1.324  1.00  0.00      h11_ H  
+HETATM   21  C   LIG L   1      41.551   8.342   1.456  1.00  0.00      h11_ C  
+HETATM   22  O   LIG L   1      41.510   9.665   1.974  1.00  0.00      h11_ O  
+HETATM   23  H   LIG L   1      41.027   9.634   2.820  1.00  0.00      h11_ H  
+HETATM   24  O   LIG L   1      42.546   5.524   1.941  1.00  0.00      h11_ O  
+HETATM   25  H   LIG L   1      41.760   5.976   2.306  1.00  0.00      h11_ H  

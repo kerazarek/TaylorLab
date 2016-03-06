@@ -1,0 +1,18 @@
+REMARK   4 XXXX COMPLIES WITH FORMAT V. 2.0
+HETATM    1  C   LIG L   1      42.999  -6.577  -3.582  1.00  0.00      h11_ C  
+HETATM    2  C   LIG L   1      42.471  -5.321  -2.884  1.00  0.00      h11_ C  
+HETATM    3  C   LIG L   1      41.057  -5.534  -2.350  1.00  0.00      h11_ C  
+HETATM    4  C   LIG L   1      40.160  -6.098  -3.472  1.00  0.00      h11_ C  
+HETATM    5  O   LIG L   1      40.708  -7.291  -4.029  1.00  0.00      h11_ O  
+HETATM    6  C   LIG L   1      41.987  -7.057  -4.637  1.00  0.00      h11_ C  
+HETATM    7  C   LIG L   1      42.468  -8.347  -5.314  1.00  0.00      h11_ C  
+HETATM    8  O   LIG L   1      41.424  -8.996  -6.031  1.00  0.00      h11_ O  
+HETATM    9  H   LIG L   1      41.848  -9.509  -6.754  1.00  0.00      h11_ H  
+HETATM   10  O   LIG L   1      44.269  -6.291  -4.179  1.00  0.00      h11_ O  
+HETATM   11  H   LIG L   1      44.089  -6.226  -5.142  1.00  0.00      h11_ H  
+HETATM   12  O   LIG L   1      43.364  -4.979  -1.811  1.00  0.00      h11_ O  
+HETATM   13  H   LIG L   1      42.812  -4.996  -1.001  1.00  0.00      h11_ H  
+HETATM   14  O   LIG L   1      38.813  -6.289  -3.024  1.00  0.00      h11_ O  
+HETATM   15  C   LIG L   1      38.673  -7.172  -1.920  1.00  0.00      h11_ C  
+HETATM   16  O   LIG L   1      40.570  -4.275  -1.855  1.00  0.00      h11_ O  
+HETATM   17  H   LIG L   1      41.305  -3.865  -1.363  1.00  0.00      h11_ H  

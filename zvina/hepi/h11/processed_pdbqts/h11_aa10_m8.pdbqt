@@ -1,4 +1,4 @@
-REMARK AutoDockVina VirtualScreeningResult  Sat Mar  5 21:14:20 2016
+REMARK AutoDockVina VirtualScreeningResult  Sat Mar  5 21:34:45 2016
 USER  AD>  8 of 9 MODELS
 USER  AD>  ligand efficiency  -0.2261
 USER  AD>  -5.20, 23.529, 26.053
@@ -8,10 +8,10 @@ USER  AD> hepi:A:ASP191:O
 USER  AD> hepi:A:GLU196:H
 USER  AD> hepi:A:GLU303:CG
 USER  AD> hepi:A:LEU304:H
+USER  AD> hepi:A:GLU303:CD
 USER  AD> hepi:A:LEU304:N
 USER  AD> hepi:A:HIS193:CG
 USER  AD> hepi:A:PRO195:CA
-USER  AD> hepi:A:GLU303:CD
 USER  AD> hepi:A:PRO195:CG
 USER  AD> hepi:A:GLU196:CG
 USER  AD> hepi:A:HIS193:O
@@ -19,7 +19,7 @@ USER  AD> hepi:A:SER305:OG
 USER  AD> hepi:A:ASP191:CA
 
 USER  AD> lig_close_ats: 10
-USER  AD> h11_aa10_m8_model1: :LIG1:C,O,O,C,H,C,C,C,H,H
+USER  AD> h11_aa10_m8_model1: :LIG1:C,O,C,O,H,C,C,C,H,H
 MODEL 8
 REMARK VINA RESULT:      -5.2     23.529     26.053
 REMARK  15 active torsions:

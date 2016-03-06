@@ -1,34 +1,34 @@
-REMARK AutoDockVina VirtualScreeningResult  Sat Mar  5 21:14:46 2016
+REMARK AutoDockVina VirtualScreeningResult  Sat Mar  5 21:35:11 2016
 USER  AD>  4 of 9 MODELS
 USER  AD>  ligand efficiency  -0.2435
 USER  AD>  -5.60,  2.603,  5.130
 USER  AD> macro_close_ats: 26
 USER  AD> hepi:A:MET11:N
+USER  AD> hepi:A:SER10:H
 USER  AD> hepi:A:PRO216:CB
 USER  AD> hepi:A:ALA186:H
+USER  AD> hepi:A:THR188:N
 USER  AD> hepi:A:THR188:CG2
 USER  AD> hepi:A:SER10:CB
 USER  AD> hepi:A:THR188:CB
-USER  AD> hepi:A:ALA186:CB
 USER  AD> hepi:A:THR262:CA
-USER  AD> hepi:A:SER10:H
-USER  AD> hepi:A:THR188:N
-USER  AD> hepi:A:THR187:OG1
+USER  AD> hepi:A:ALA186:CB
+USER  AD> hepi:A:LEU184:CA
+USER  AD> hepi:A:LYS192:NZ
 USER  AD> hepi:A:ALA186:O
 USER  AD> hepi:A:LYS192:H
 USER  AD> hepi:A:SER10:C
-USER  AD> hepi:A:LYS192:NZ
 USER  AD> hepi:A:THR188:H
 USER  AD> hepi:A:SER10:OG
-USER  AD> hepi:A:HIS185:H
 USER  AD> hepi:A:LEU184:CD2
 USER  AD> hepi:A:SER10:CA
 USER  AD> hepi:A:LEU264:CD1
-USER  AD> hepi:A:LEU184:CA
+USER  AD> hepi:A:LYS192:H
 USER  AD> hepi:A:MET11:H
 USER  AD> hepi:A:GLY12:H
 USER  AD> hepi:A:MET11:CB
-USER  AD> hepi:A:LYS192:H
+USER  AD> hepi:A:HIS185:H
+USER  AD> hepi:A:THR187:OG1
 
 USER  AD> lig_close_ats: 11
 USER  AD> h11_gb10_m4_model1: :LIG1:O,C,O,C,C,C,H,H,C,O,C
