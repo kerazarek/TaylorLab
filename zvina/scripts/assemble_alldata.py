@@ -7,6 +7,7 @@
 import sys, csv, re, os
 import cPickle as pickle
 from parse_pdbqt import *
+from aiad_icpd import *
 
 script, dock = sys.argv
 
@@ -51,11 +52,13 @@ class Docking():
 					'pvr_n_contacts' : pose.macro_close_ats,
 					'pvr_model' : pose.pvr_model,
 					'pvr_effic' : pose.pvr_effic,
-					'coords' : pose.coords
+					'coords' : pose.coords,
+					'lig' : lig,
+					'model' : m,
+					'pvr_obj' : pose,
+					'pdb_address' : re.sub('pdbqt', 'pdb', processed_pdbqt)
 				}
 				self.data_dic[key] = pose_dic
-				self.data_dic[key]['lig'] = lig
-				self.data_dic[key]['model'] = m
 
 	def get_binding_sites_list(self):
 		binding_sites_dir = "{b_d}{p}/binding_sites/".format(
@@ -73,7 +76,6 @@ class Docking():
 		for bs, bso in self.binding_sites_objs.items():
 			bs_resis = []
 			bs_resis_atoms = []
-
 			for atom in bso.coords:
 				bs_resis.append("{}{}".format(atom['resn'], atom['resi']))
 				bs_resis_atoms.append("{}{}_{}".format(atom['resn'], atom['resi'], atom['atomn']))
@@ -81,32 +83,67 @@ class Docking():
 			self.bs_resis_atoms_lists[bs] = list(set(bs_resis_atoms))
 
 	def score_binding_sites(self):
-		self.bs_resis_fractions = {}
-		self.bs_resis_atoms_fractions = {}
-
-		for pose, data in self.data_dic.items():
+		for pose in self.data_dic:
 			for bs in self.binding_sites_list:
-				resis_union = ( set(self.bs_resis_lists[bs]) & set(data['pvr_resis']) )
+				resis_union = ( set(self.bs_resis_lists[bs]) & set(self.data_dic[pose]['pvr_resis']) )
 				self.data_dic[pose]["{}_fraction".format(bs)] = float(len(resis_union)) / float(len(self.bs_resis_lists[bs]))
-				resis_atoms_union = ( set(self.bs_resis_atoms_lists[bs]) & set(data['pvr_resis_atoms']) )
+				resis_atoms_union = ( set(self.bs_resis_atoms_lists[bs]) & set(self.data_dic[pose]['pvr_resis_atoms']) )
 				self.data_dic[pose]["{}_atoms_fraction".format(bs)] = float(len(resis_atoms_union)) / float(len(self.bs_resis_atoms_lists[bs]))
 
+	def aiad_icpd_binding_sites(self):
+		for pose in self.data_dic:
+			for bs, bso in self.binding_sites_objs.items():
+				aiad = caclulate_aiad(self.data_dic[pose]['pvr_obj'], bso)
+				self.data_dic[pose]["{}_aiad".format(bs)] = aiad
+				icpd = calculate_icpd(self.data_dic[pose]['pvr_obj'], bso)
+				self.data_dic[pose]["{}_icpd".format(bs)] = icpd
+
+	def assess_all_resis(self):
+		prot_pdbqt = "{b_d}{p}/{p}.pdbqt".format(
+					b_d=base_dir, p=self.parameters['prot'])
+		self.prot_obj = Pdb(prot_pdbqt)
+		self.prot_resis_list = []
+# 		self.prot_resis_atoms_list = []
+		for atom in self.prot_obj.coords:
+			self.prot_resis_list.append("{}{}".format(atom['resn'], atom['resi']))
+# 			self.prot_resis_atoms_list.append("{}{}_{}".format(atom['resn'], atom['resi'], atom['atomn']))
+		self.prot_resis_list = list(set(self.prot_resis_list))
+# 		self.prot_resis_atoms_list = list(set(self.prot_resis_atoms_list))
+
+		for pose in self.data_dic:
+			for res in self.prot_resis_list:
+				if res in self.data_dic[pose]['pvr_resis']:
+					self.data_dic[pose][res] = 1
+				else:
+					self.data_dic[pose][res] = 0
+# 			for atom in self.prot_resis_atoms_list:
+# 				if atom in self.data_dic[pose]['pvr_resis_atoms']:
+# 					self.data_dic[pose][atom] = 1
+# 				else:
+# 					self.data_dic[pose][atom] = 0
+
 	def write_alldata_csv(self):
-		fieldnames = ['key', 'lig', 'model', 'E', 'rmsd_lb', 'rmsd_ub', 'pvr_effic', 'pvr_n_contacts', 'torsdof']
+		fieldnames = ['key', 'lig', 'model', 'E', 'rmsd_lb', 'rmsd_ub',
+			'pvr_effic', 'pvr_n_contacts', 'torsdof', 'pdb_address']
 		for bs in self.binding_sites_list:
 			fieldnames.append("{}_fraction".format(bs))
 			fieldnames.append("{}_atoms_fraction".format(bs))
+			fieldnames.append("{}_aiad".format(bs))
+			fieldnames.append("{}_icpd".format(bs))
+		for res in self.prot_resis_list: fieldnames.append(res)
+# 		for atom in self.prot_resis_atoms_list: fieldnames.append(atom)
 
 		alldata_csv = "{b_d}{p}/{d}/{d}_alldata.csv".format(
 					b_d=base_dir, p=self.parameters['prot'], d=dock)
 		with open(alldata_csv, 'w') as csvfile:
 			writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 			writer.writeheader()
-			for pose, data in self.data_dic.items():
+			for pose in self.data_dic:
 				row = {}
 				for f in fieldnames:
-					row[f] = data[f]
+					row[f] = self.data_dic[pose][f]
 				writer.writerow(row)
+		print("---> Completed alldata.csv is located at:\n{}".format(alldata_csv))
 
 	def save_pickled_data_dic(self):
 		self.pickled_data_dic = "{b_d}{p}/{d}/{d}_data_dic.p".format(
@@ -120,6 +157,8 @@ class Docking():
 		self.assemble_dic()
 		self.get_binding_sites_list()
 		self.score_binding_sites()
+		self.aiad_icpd_binding_sites()
+		self.assess_all_resis()
 		self.write_alldata_csv()
 
 def main():
