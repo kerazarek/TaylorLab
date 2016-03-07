@@ -39,8 +39,7 @@ mkdir $processed_pdbqts_dir
 
 # The actual process_VinaResult step
 receptor_pdbqt=$base_dir$prot/$prot.pdbqt
-# ** NEED TO CHANGE THESE 9s TO 20s
-batch_size=9
+batch_size=20
 # No batches
 n_models=$(echo $n_models | sed 's/[^0-9]//')
 if [[ "n_models" -le "$batch_size" ]]; then

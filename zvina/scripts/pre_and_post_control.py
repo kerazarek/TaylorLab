@@ -10,6 +10,7 @@ from postvina_data_mining import Docking
 def main():
 	print("")
 	base_dir = "/Users/zarek/GitHub/TaylorLab/zvina/"
+	cluster_base_dir = "/home/zsiegel/"
 
 	parser = argparse.ArgumentParser(description='Pre- and post-Vina file fun times')
 	parser.add_argument('-d', '--dock', metavar='DOCK', type=str, nargs=1,
@@ -17,6 +18,8 @@ def main():
 
 	parser.add_argument('-w', '--write_params', action='store_true', default=False,
 		help='execute the R script to write the parameters.csv')
+	parser.add_argument('-v', '--vina', action='store_true', default=False,
+		help='write the Vina job submission script')
 	parser.add_argument('-s', '--separate', action='store_true', default=False,
 		help='execute the bash script to separate row Vina results')
 	parser.add_argument('-n', '--clean', action='store_true', default=False,
@@ -32,6 +35,7 @@ def main():
 	args = vars(parser.parse_args())
 	dock = str(args['dock'][0])
 	write_params = args['write_params']
+	vina = args['vina']
 	separate = args['separate']
 	clean = args['clean']
 
@@ -43,8 +47,13 @@ def main():
 		subprocess.call(["./write_params_csv.R", dock])
 		print("---> Parameters CSV for docking h11 has been created. It can be found at:")
 
-	d = Docking(dock, base_dir)
+	d = Docking(dock, base_dir, cluster_base_dir)
 
+	if vina:
+		print("---> Writing Vina submission script")
+		d.write_vina_submit()
+# 		if d.n_models <= 20: d.write_vina_submit_le20ligs()
+# 		elif d.n_models > 20: d.write_vina_submit_gt20ligs()
 	if separate:
 		print("---> Processing raw Vina output PDBQTs")
 		subprocess.call(["./separate_vina_results.sh", dock])
@@ -55,6 +64,7 @@ def main():
 	if cluster: d.cluster_poses()
 	if pickle: d.save_pickled_docking_obj()
 
+	print("->-> All done!!!!!!!!!!!!!!!")
 	print("")
 
 if __name__ == "__main__": main()

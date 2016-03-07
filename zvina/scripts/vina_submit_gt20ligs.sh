@@ -2,7 +2,7 @@
 #BSUB -n 2
 #BSUB -J JOB_NAME
 
-### This will dock one ligand
+### This will a set of ligands
 #   Put this file in your home directory (/home/jdoe)
 #	All other files (receptor, ligand, and out) are relative to that directory
 #	num_modes are more than twenty (but they must be a multiple of 20)
