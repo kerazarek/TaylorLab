@@ -1,4 +1,4 @@
-Gridbox Name,Protein,Size in x-dimension,Size in y-dimension,Size in z-dimension,Center in x-dimension,Center in y-dimension,Center in z-dimension,Notes
-BOX,PROT,60,72,88,41.89,2.69,-1.85,Same as hab2
+Gridbox Name,Protein,Size in x-dimension,Size in y-dimension,Size in z-dimension,Center in x-dimension,Center in y-dimension,Center in z-dimension,Notes,
+BOX,PROT,60,72,88,41.89,2.69,-1.85,Same as hab2,
 pab,p300,19.75,31.6,19.75,-17.63,15.96,1.48,
 hab2,hepi,60,72,88,41.89,2.69,-1.85,
