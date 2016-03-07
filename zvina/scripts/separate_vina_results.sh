@@ -8,17 +8,20 @@
 
 ### Required input
 dock=$1
-base_dir="/Users/zarek/GitHub/TaylorLab/zvina/"
+# base_dir="/Users/zarek/GitHub/TaylorLab/zvina/"
+base_dir=$2
 # AutoDockTools Directory
-ADT_dir="/Library/MGLTools/latest/MGLToolsPckgs/AutoDockTools/"
+# ADT_dir="/Library/MGLTools/latest/MGLToolsPckgs/AutoDockTools/"
+ADT_dir=$3
 # MGLTools Python binary
-MGL_py_bin="/Library/MGLTools/latest/bin/pythonsh"
+# MGL_py_bin="/Library/MGLTools/latest/bin/pythonsh"
+MGL_py_bin=$4
 
 # Location of process_VinaResult
 pvr_py="$ADT_dir/Utilities24/process_VinaResult.py"
 
 # Retrieve docking parameters
-source $base_dir\scripts/load_parameters.sh $dock
+source $base_dir\scripts/load_parameters.sh $dock $base_dir
 
 # Exit it already done
 # if [ -d $base_dir$prot/$dock/processed_pdbqts/ ]; then

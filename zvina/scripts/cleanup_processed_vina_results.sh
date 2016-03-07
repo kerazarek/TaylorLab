@@ -7,17 +7,20 @@
 
 ### Required input
 dock=$1
-base_dir="/Users/zarek/GitHub/TaylorLab/zvina/"
+# base_dir="/Users/zarek/GitHub/TaylorLab/zvina/"
+base_dir=$2
 # AutoDockTools Directory
-ADT_dir="/Library/MGLTools/latest/MGLToolsPckgs/AutoDockTools/"
+# ADT_dir="/Library/MGLTools/latest/MGLToolsPckgs/AutoDockTools/"
+ADT_dir=$3
 # MGLTools Python binary
-MGL_py_bin="/Library/MGLTools/latest/bin/pythonsh"
+# MGL_py_bin="/Library/MGLTools/latest/bin/pythonsh"
+MGL_py_bin=$4
 
 # Location of pdbqt_to_pdb
 q2b_py="$ADT_dir/Utilities24/pdbqt_to_pdb.py"
 
 # Retrieve docking parameters
-source $base_dir\scripts/load_parameters.sh $dock
+source $base_dir\scripts/load_parameters.sh $dock $base_dir
 
 # Relevant directories
 processed_pdbqts_dir=$base_dir$prot/$dock/processed_pdbqts/
@@ -61,3 +64,4 @@ done
 # Overwrite pre-clean-up pvr'd pdbqts with cleaned up ones
 rm -rf $processed_pdbqts_dir
 mv $cleanedup_processed_pdbqts_dir $processed_pdbqts_dir
+

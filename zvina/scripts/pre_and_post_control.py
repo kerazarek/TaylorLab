@@ -11,6 +11,9 @@ def main():
 	print("")
 	base_dir = "/Users/zarek/GitHub/TaylorLab/zvina/"
 	cluster_base_dir = "/home/zsiegel/"
+	ADT_dir="/Library/MGLTools/latest/MGLToolsPckgs/AutoDockTools/"
+	MGL_py_bin="/Library/MGLTools/latest/bin/pythonsh"
+
 
 	parser = argparse.ArgumentParser(description='Pre- and post-Vina file fun times')
 	parser.add_argument('-d', '--dock', metavar='DOCK', type=str, nargs=1,
@@ -56,10 +59,10 @@ def main():
 # 		elif d.n_models > 20: d.write_vina_submit_gt20ligs()
 	if separate:
 		print("---> Processing raw Vina output PDBQTs")
-		subprocess.call(["./separate_vina_results.sh", dock])
+		subprocess.call(["./separate_vina_results.sh", dock, ADT_dir, MGL_py_bin])
 	if clean:
 		print("---> Cleaning up processed PDBQTs and converting to PDBs")
-		subprocess.call(["./cleanup_processed_vina_results.sh", dock])
+		subprocess.call(["./cleanup_processed_vina_results.sh", dock, ADT_dir, MGL_py_bin])
 	if csv: d.write_alldata_csv()
 	if cluster: d.cluster_poses()
 	if pickle: d.save_pickled_docking_obj()
