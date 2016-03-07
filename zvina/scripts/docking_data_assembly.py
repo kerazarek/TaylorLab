@@ -184,7 +184,7 @@ echo \"---> Finished docking $ligset_list\""""
 				self.keys.append(key)
 
 		self.is_assembled = True
-		print("---> data_dic created with data from process_VinaResult.py")
+		print("---> data dictionary created with data from process_VinaResult.py")
 
 	def get_binding_sites_list(self):
 		if not self.is_assembled: self.assemble_dic()
@@ -265,7 +265,7 @@ echo \"---> Finished docking $ligset_list\""""
 # 					self.data_dic[pose][atom] = 0
 
 		self.are_all_resis_assessed = True
-		print("---> Residues contacts added to data.dic")
+		print("---> Residues contacts added to data dictionary")
 
 	def write_alldata_csv(self):
 		if not self.is_assembled: self.assemble_dic()
@@ -356,7 +356,7 @@ echo \"---> Finished docking $ligset_list\""""
 
 
 
-		# WOOOT! not !
+		# WOOOT!
 
 
 

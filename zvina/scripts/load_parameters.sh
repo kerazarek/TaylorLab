@@ -10,7 +10,6 @@
 dock=$1
 
 # Required for all other system directories and such
-# base_dir="/Users/zarek/GitHub/TaylorLab/zvina/"
 base_dir=$2
 
 # CSV file with docking parameters

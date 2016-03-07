@@ -5,15 +5,15 @@
 # v1 3/6/16
 
 import argparse, subprocess
-from postvina_data_mining import Docking
+from docking_data_assembly import Docking
 
 def main():
 	print("")
+	print("->-> hi")
 	base_dir = "/Users/zarek/GitHub/TaylorLab/zvina/"
 	cluster_base_dir = "/home/zsiegel/"
 	ADT_dir="/Library/MGLTools/latest/MGLToolsPckgs/AutoDockTools/"
 	MGL_py_bin="/Library/MGLTools/latest/bin/pythonsh"
-
 
 	parser = argparse.ArgumentParser(description='Pre- and post-Vina file fun times')
 	parser.add_argument('-d', '--dock', metavar='DOCK', type=str, nargs=1,
@@ -47,16 +47,14 @@ def main():
 	pickle = args['pickle']
 
 	if write_params:
-		subprocess.call(["./write_params_csv.R", dock])
 		print("---> Parameters CSV for docking h11 has been created. It can be found at:")
+		subprocess.call(["./write_params_csv.R", dock, base_dir])
 
 	d = Docking(dock, base_dir, cluster_base_dir)
 
 	if vina:
 		print("---> Writing Vina submission script")
 		d.write_vina_submit()
-# 		if d.n_models <= 20: d.write_vina_submit_le20ligs()
-# 		elif d.n_models > 20: d.write_vina_submit_gt20ligs()
 	if separate:
 		print("---> Processing raw Vina output PDBQTs")
 		subprocess.call(["./separate_vina_results.sh", dock, ADT_dir, MGL_py_bin])

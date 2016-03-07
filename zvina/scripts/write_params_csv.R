@@ -8,14 +8,14 @@
 
 ### Required input
 arg <- commandArgs(TRUE)
-if(length(arg) != 1) {
+if(length(arg) != 2) {
 	stop("! ! ! This script requires exactly one argument (the Dock ID)")
 } else {
-	dock <- arg
+	dock <- as.character(arg[1])
 }
 
 ### Required global constant
-base_dir <- "/Users/zarek/GitHub/TaylorLab/zvina/"
+base_dir <- as.character(arg[2])
 
 ### Reference CSVs
 docks_csv <- paste0(base_dir, "Dockings.csv")
