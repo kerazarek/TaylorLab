@@ -28,7 +28,7 @@ for lig in $ligset_list; do
 	/share/apps/autodock/autodock_vina_1_1_2_linux_x86/bin/vina \
 	--receptor PROT.pdbqt \
 	--ligand $in_dir/$lig.pdbqt \
-	--out $out_dir/$lig\_result.pdbqt \
+	--out $out_dir/$lig\_results.pdbqt \
 	--center_x XXX \
 	--center_y XXX \
 	--center_z XXX \

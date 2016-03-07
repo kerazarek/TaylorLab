@@ -39,11 +39,12 @@ def main():
 	cluster = args['cluster']
 	pickle = args['pickle']
 
+	if write_params:
+		subprocess.call(["./write_params_csv.R", dock])
+		print("---> Parameters CSV for docking h11 has been created. It can be found at:")
+
 	d = Docking(dock, base_dir)
 
-	if write_params:
-		print("---> Parameters CSV for docking h11 has been created. It can be found at:")
-		subprocess.call(["./write_params_csv.R", dock])
 	if separate:
 		print("---> Processing raw Vina output PDBQTs")
 		subprocess.call(["./separate_vina_results.sh", dock])

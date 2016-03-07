@@ -1,0 +1,69 @@
+REMARK AutoDockVina VirtualScreeningResult  Sun Mar  6 21:58:16 2016
+USER  AD>  6 of 9 MODELS
+USER  AD>  ligand efficiency  -0.3333
+USER  AD>  -5.00, 27.545, 29.642
+USER  AD> macro_close_ats: 10
+USER  AD> hepi:A:PHE78:CE2
+USER  AD> hepi:A:TRP66:CH2
+USER  AD> hepi:A:ILE59:CD1
+USER  AD> hepi:A:ARG75:H
+USER  AD> hepi:A:ARG75:CZ
+USER  AD> hepi:A:ARG75:H
+USER  AD> hepi:A:ARG75:CG
+USER  AD> hepi:A:ARG75:NE
+USER  AD> hepi:A:LEU102:CD1
+USER  AD> hepi:A:ARG75:CB
+
+USER  AD> lig_close_ats: 9
+USER  AD> h11b_ab3_b3_m6_model1: :LIG1:C,C,C,O,O,O,O,C,H
+MODEL 6
+REMARK VINA RESULT:      -5.0     27.545     29.642
+REMARK  8 active torsions:
+REMARK  status: ('A' for Active; 'I' for Inactive)
+REMARK    1  A    between atoms: C_1  and  O_7 
+REMARK    2  A    between atoms: C_2  and  O_10 
+REMARK    3  A    between atoms: C_3  and  O_11 
+REMARK    4  A    between atoms: C_4  and  O_12 
+REMARK    5  A    between atoms: C_6  and  C_8 
+REMARK    6  A    between atoms: C_8  and  O_9 
+REMARK    7  A    between atoms: O_12  and  C_13 
+REMARK    8  A    between atoms: C_13  and  C_14 
+ROOT
+HETATM    1  C   LIG     1      64.526  -0.302 -16.418  1.00  0.00     0.180 C 
+HETATM    2  C   LIG     1      63.494  -1.351 -16.012  1.00  0.00     0.183 C 
+HETATM    3  C   LIG     1      62.247  -0.718 -15.378  1.00  0.00     0.204 C 
+HETATM    4  C   LIG     1      62.640   0.311 -14.287  1.00  0.00     0.291 C 
+HETATM    5  O   LIG     1      63.646   1.218 -14.781  1.00  0.00    -0.348 OA
+HETATM    6  C   LIG     1      64.848   0.560 -15.191  1.00  0.00     0.179 C 
+ENDROOT
+BRANCH   4   7
+HETATM    7  O   LIG     1      61.546   1.145 -13.901  1.00  0.00    -0.355 OA
+BRANCH   7   8
+HETATM    8  C   LIG     1      61.021   0.929 -12.597  1.00  0.00     0.197 C 
+BRANCH   8   9
+HETATM    9  C   LIG     1      59.545   0.680 -12.640  1.00  0.00    -0.011 C 
+HETATM   10  C   LIG     1      58.813   0.320 -11.576  1.00  0.00     0.009 C 
+ENDBRANCH   8   9
+ENDBRANCH   7   8
+ENDBRANCH   4   7
+BRANCH   3  11
+HETATM   11  O   LIG     1      61.445  -1.793 -14.861  1.00  0.00    -0.388 OA
+HETATM   12  H   LIG     1      61.229  -1.533 -13.942  1.00  0.00     0.210 HD
+ENDBRANCH   3  11
+BRANCH   2  13
+HETATM   13  O   LIG     1      63.077  -2.114 -17.158  1.00  0.00    -0.390 OA
+HETATM   14  H   LIG     1      63.288  -3.048 -16.940  1.00  0.00     0.210 HD
+ENDBRANCH   2  13
+BRANCH   6  15
+HETATM   15  C   LIG     1      65.909   1.622 -15.495  1.00  0.00     0.198 C 
+BRANCH  15  16
+HETATM   16  O   LIG     1      65.566   2.858 -14.881  1.00  0.00    -0.398 OA
+HETATM   17  H   LIG     1      64.661   2.771 -14.532  1.00  0.00     0.209 HD
+ENDBRANCH  15  16
+ENDBRANCH   6  15
+BRANCH   1  18
+HETATM   18  O   LIG     1      63.949   0.479 -17.482  1.00  0.00    -0.390 OA
+HETATM   19  H   LIG     1      64.611   1.150 -17.742  1.00  0.00     0.210 HD
+ENDBRANCH   1  18
+TORSDOF 8
+ENDMDL

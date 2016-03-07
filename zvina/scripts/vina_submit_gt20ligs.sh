@@ -33,7 +33,7 @@ for ((b=1;b<=$n_batches;b++)); do
 		/share/apps/autodock/autodock_vina_1_1_2_linux_x86/bin/vina \
 		--receptor PROT.pdbqt \
 		--ligand $in_dir/$lig.pdbqt \
-		--out $out_dir/$lig\_result_b$b.pdbqt \
+		--out $out_dir/$lig\_results_b$b.pdbqt \
 		--center_x XXX \
 		--center_y XXX \
 		--center_z XXX \
