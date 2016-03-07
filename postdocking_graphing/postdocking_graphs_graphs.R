@@ -185,6 +185,17 @@ densities_energy_by_lig_grid <- ggplot(data=data, aes(x=E, color=LIG, group=LIG)
   facet_wrap(~LIG)
 densities_energy_by_lig_grid
 ggsave(paste0(dock, "_", "densities_energy_by_lig_grid", ".pdf"), width=12, height=8)
+# Same thing but overlayed
+densities_energy_by_lig_overlay <- ggplot(data=data, aes(x=E, color=LIG)) +
+  geom_density() +
+  scale_color_hue(name="Ligands") + 
+  xlab("Binding energy (kcal/mol)") +
+  ylab("Probability density") +
+  ggtitle("Density of Dockings versus Binding Energy\nby Ligand (All Binding Sites)") +
+  theme(legend.title=element_text(face="bold"),
+        plot.title=element_text(face="bold"))
+densities_energy_by_lig_overlay
+ggsave(paste0(dock, "_", "densities_energy_by_lig_overlay", ".pdf"), width=6, height=4)
 ####################
 
 ####################
