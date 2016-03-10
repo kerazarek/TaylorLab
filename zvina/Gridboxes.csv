@@ -14,3 +14,6 @@ pal,p300,18.75,12.38,15.75,-19.93,28.27,2.51,Lys (AS)
 pab,p300,19.75,31.6,19.75,-17.63,15.96,1.48,Lys+Ac-CoA (AS)
 psl,p300,27.65,29.62,31.6,-22,34,4,Lys expanded/surface
 pwp,p300,126,126,126,-8.38,25.49,1.43,Whole protein
+BOX_AAS,PROT_A,60,72,88,41.89,2.69,-1.85,active site of protein A
+BOX_AWP,PROT_A,126,126,126,41.89,2.69,-1.85,all of protein A
+BOX_BWP,PROT_B,126,126,126,4.89,-5.27,12.0,all of protein B

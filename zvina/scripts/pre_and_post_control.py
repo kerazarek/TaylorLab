@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
 ### One script to control them AAAAAALLLLL!!!!
 # (c) Zarek Siegel

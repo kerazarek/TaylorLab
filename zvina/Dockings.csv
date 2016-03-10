@@ -4,3 +4,6 @@ p31,20150922,p300,pls1a,pwp,50,400,2,n/a
 h11,20150615,hepi,hls1,hab2,50,9,1,
 h11b,20150615,hepi,hls1,hab2,50,27,1,
 test_309,20160309,hepi,hls1,hab,8,20,1,testing out new system
+DOCK_A1,20160301,PROT_A,LIGSET1,BOX_AAS,20,10,2,looking at active size of protein A
+DOCK_A2,20160308,PROT_A,LIGSET2,BOX_AWP,50,400,4,high volume docking of whole protein A
+DOCK_B1,20160308,PROT_B,LIGSET3,BOX_BWP,8,20,1,initial docking of whole protein B

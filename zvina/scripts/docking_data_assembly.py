@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
 ### Putting together all parsed data from processed vina results
 # (c) Zarek Siegel
