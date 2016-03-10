@@ -1,0 +1,14 @@
+parameter,value
+dock,p31
+prot,p300
+ligset,pls1a
+box,pwp
+box_center_x,-8.38
+box_center_y,25.49
+box_center_z,1.43
+box_size_x,126
+box_size_y,126
+box_size_z,126
+exhaust,50
+n_models,400
+n_cpus,2

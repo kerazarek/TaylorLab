@@ -6,7 +6,7 @@
 # v2 3/6/16
 
 from __future__ import print_function
-import csv, re, os
+import csv, re, subprocess
 import cPickle as pickle
 from parse_pdb import *
 from aiad_icpd import *
@@ -50,17 +50,17 @@ class Docking():
 		print("---> Retrieved ligset list")
 
 	def write_vina_submit(self):
-		if self.n_models <= 20:
-			template_empty =  """#BSUB -q hp12
+		### For dockings <20 models
+		template_empty =  """#BSUB -q hp12
 #BSUB -n {n_cpus}
-#BSUB -J {job_name}
+#BSUB -J vina_{dock}
 
 # Text file with list of ligands (one on each line)
-ligset_list_txt={ligset_list_txt}
+ligset_list_txt={cluster_base_dir}ligsets/{ligset}/{ligset}_list.txt
 
 # Create the docking and output directories
-mkdir {out_dir}
-mkdir {out_dir}result_pdbqts
+mkdir {cluster_base_dir}{prot}/{dock}/
+mkdir {cluster_base_dir}{prot}/{dock}/result_pdbqts
 
 # Generate the list of ligands
 ligset_list=$(for l in $(cat $ligset_list_txt); do echo $l; done)
@@ -68,68 +68,63 @@ ligset_list=$(for l in $(cat $ligset_list_txt); do echo $l; done)
 # Vina command
 for lig in $ligset_list; do
 	/share/apps/autodock/autodock_vina_1_1_2_linux_x86/bin/vina \\
-	--receptor {prot_pdbqt} \\
-	--ligand {in_dir}$lig.pdbqt \\
-	--out {out_dir}result_pdbqts/$lig\_results.pdbqt \\
+	--receptor {cluster_base_dir}{prot}/{prot}.pdbqt \\
+	--ligand {cluster_base_dir}ligsets/{ligset}/pdbqts/$lig.pdbqt \\
+	--out {cluster_base_dir}{prot}/{dock}/result_pdbqts/{dock}_$lig\_results.pdbqt \\
 	--center_x {box_center_x} \\
 	--center_y {box_center_y} \\
 	--center_z {box_center_z} \\
 	--size_x {box_size_x} \\
 	--size_y {box_size_y} \\
-	--size_z {box_center_z} \\
+	--size_z {box_size_z} \\
 	--cpu {n_cpus} \\
 	--num_modes {n_models} \\
 	--exhaustiveness {exhaust}
-done
+done"""
+### For doing big dockings (>20 models)
+### For doing big dockings (>20 models) in serial
+# 		elif self.n_models > 20:
+# 			template_empty =  """#BSUB -q hp12
+# #BSUB -n {n_cpus}
+# #BSUB -J vina_{dock}
+#
+# # Text file with list of ligands (one on each line)
+# ligset_list_txt={ligset_list_txt}
+#
+# # Create the docking and output directories
+# mkdir {out_dir}
+# mkdir {out_dir}result_pdbqts
+#
+# # Generate the list of ligands
+# ligset_list=$(for l in $(cat $ligset_list_txt); do echo $l; done)
+#
+# # Vina command
+# for ((b=1;b<={n_batches};b++)); do
+# 	for lig in $ligset_list; do
+# 		/share/apps/autodock/autodock_vina_1_1_2_linux_x86/bin/vina \\
+# 		--receptor {prot_pdbqt} \\
+# 		--ligand {in_dir}$lig.pdbqt \\
+# 		--out {out_dir}result_pdbqts/{dock}_$lig\_results_b$b.pdbqt \\
+# 		--center_x {box_center_x} \\
+# 		--center_y {box_center_y} \\
+# 		--center_z {box_center_z} \\
+# 		--size_x {box_size_x} \\
+# 		--size_y {box_size_y} \\
+# 		--size_z {box_size_z} \\
+# 		--cpu {n_cpus} \\
+# 		--num_modes {n_models} \\
+# 		--exhaustiveness {exhaust}
+# 	done
+#
+# done
+#
+# echo \"---> Finished docking $ligset_list\""""
 
-echo \"---> Finished docking $ligset_list\""""
-		elif self.n_models > 20:
-			template_empty =  """#BSUB -q hp12
-#BSUB -n {n_cpus}
-#BSUB -J {job_name}
-
-# Text file with list of ligands (one on each line)
-ligset_list_txt={ligset_list_txt}
-
-# Create the docking and output directories
-mkdir {out_dir}
-mkdir {out_dir}result_pdbqts
-
-# Generate the list of ligands
-ligset_list=$(for l in $(cat $ligset_list_txt); do echo $l; done)
-
-# Vina command
-for ((b=1;b<={n_batches};b++)); do
-	for lig in $ligset_list; do
-		/share/apps/autodock/autodock_vina_1_1_2_linux_x86/bin/vina \\
-		--receptor {prot_pdbqt} \\
-		--ligand {in_dir}$lig.pdbqt \\
-		--out {out_dir}result_pdbqts/$lig\_results_b$b.pdbqt \\
-		--center_x {box_center_x} \\
-		--center_y {box_center_y} \\
-		--center_z {box_center_z} \\
-		--size_x {box_size_x} \\
-		--size_y {box_size_y} \\
-		--size_z {box_center_z} \\
-		--cpu {n_cpus} \\
-		--num_modes {n_models} \\
-		--exhaustiveness {exhaust}
-	done
-
-done
-
-echo \"---> Finished docking $ligset_list\""""
-		template_filled = template_empty.format(
+		template_filled_no_dock = template_empty.format(
+			cluster_base_dir = cluster_base_dir,
 			n_cpus = self.n_cpus,
-			job_name = "vina_{}".format(dock),
-			ligset_list_txt = "{c_b_d}ligsets/{ls}/{ls}_list.txt".format(
-				c_b_d=cluster_base_dir, ls=self.ligset),
-			in_dir = "{c_b_d}ligsets/{ls}/pdbqts/".format(
-				c_b_d=cluster_base_dir, ls=self.ligset),
-			out_dir = "{c_b_d}{p}/{d}/".format(
-				c_b_d=cluster_base_dir, p=self.prot, d=self.dock),
-			prot_pdbqt = "{c_b_d}{p}/{p}.pdbqt".format(
-				c_b_d=cluster_base_dir, p=self.prot),
+			prot = self.prot,
+			ligset = self.ligset,
 			box_center_x = self.box_center_x,
 			box_center_y = self.box_center_y,
 			box_center_z = self.box_center_z,
@@ -138,17 +133,35 @@ echo \"---> Finished docking $ligset_list\""""
 			box_size_z = self.box_size_z,
 			n_models = self.n_models,
 			exhaust = self.exhaust,
-			n_batches = self.n_models / 20
+			dock = '{dock}'
 		)
 
-		vina_submit_sh = "{b_d}vina_submit_shs/vina_submit_{d}.sh".format(
-			b_d=base_dir, d=dock)
-		with open(vina_submit_sh, 'w') as f:
-			f.write(template_filled)
-# 		print(vina_submit_sh)
-# 		print(template_filled)
-		print("---> Vina submission script for docking h11 has been created. It can be found at:")
-		print("\t{}".format(vina_submit_sh))
+		if self.n_models <= 20:
+			template_filled = template_filled_no_dock.format(dock=dock)
+			vina_submit_sh = "{b_d}vina_submit_shs/vina_submit_{d}.sh".format(
+				b_d=base_dir, d=dock)
+			with open(vina_submit_sh, 'w') as f:
+				f.write(template_filled)
+			print("---> Vina submission script for docking h11 has been created. \
+				It can be found at:")
+			print("\t{}".format(vina_submit_sh))
+		elif self.n_models > 20:
+			vina_submits_dir = "{b_d}vina_submit_shs/vina_submits_{d}/".format(
+				b_d=base_dir, d=dock)
+			subprocess.call(['mkdir', vina_submits_dir])
+			n_batches = self.n_models / 20
+			for b in range(1, n_batches + 1):
+				subdock = "{d}.{b}".format(d = dock, b = b)
+				template_filled = template_filled_no_dock.format(dock = subdock)
+				vina_submit_sh = "{v_s_d}vina_submit_{sd}.sh".format(
+					v_s_d = vina_submits_dir, sd = subdock)
+				with open(vina_submit_sh, 'w') as f:
+					f.write(template_filled)
+			print("---> Vina submission scripts for docking h11 have been created. They can be found in:")
+			print("\t{}".format(vina_submits_dir))
+		else: print("! ! ! bad n_models")
+
+
 
 	def write_vina_submit_gt20ligs(self):
 		pass
@@ -184,7 +197,7 @@ echo \"---> Finished docking $ligset_list\""""
 				self.keys.append(key)
 
 		self.is_assembled = True
-		print("---> data dictionary created with data from process_VinaResult.py")
+		print("---> Data dictionary created with data from process_VinaResult.py")
 
 	def get_binding_sites_list(self):
 		if not self.is_assembled: self.assemble_dic()

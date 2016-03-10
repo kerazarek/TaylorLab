@@ -1,0 +1,14 @@
+parameter,value
+dock,test_309
+prot,hepi
+ligset,hls1
+box,hab
+box_center_x,41.89
+box_center_y,2.69
+box_center_z,-1.85
+box_size_x,60
+box_size_y,72
+box_size_z,88
+exhaust,8
+n_models,20
+n_cpus,1

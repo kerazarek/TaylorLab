@@ -140,6 +140,54 @@ for(l in ligset.list) {
 ################################################################################
 ################################################################################
 
+
+# Multiple plot function
+#
+# ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
+# - cols:   Number of columns in layout
+# - layout: A matrix specifying the layout. If present, 'cols' is ignored.
+#
+# If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
+# then plot 1 will go in the upper left, 2 will go in the upper right, and
+# 3 will go all the way across the bottom.
+#
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  library(grid)
+  
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+  
+  numPlots = length(plots)
+  
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                     ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+  
+  if (numPlots==1) {
+    print(plots[[1]])
+    
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+    
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+      
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
+
+
 ### Graphs!!!!!!!
 setwd(graphs.dir) # needed for pdf names below
 # bs.colors <- brewer.pal(length(binding.sites), "Set1")
@@ -155,7 +203,7 @@ boxplots_energy_vs_lig_allsites <- ggplot(data=data, aes(x=LIG, y=E)) +
   scale_x_discrete(limits=ligset.list) +
   xlab("Ligand") +
   ylab("Binding energy (kcal/mol)") +
-  ggtitle("Binding Energies by Ligand (all binding sites)") +
+  ggtitle("Binding Energies by Ligand (All binding sites)") +
   theme(legend.title=element_text(face="bold"),
         plot.title=element_text(face="bold"))
 boxplots_energy_vs_lig_allsites
@@ -185,13 +233,15 @@ densities_energy_by_lig_grid <- ggplot(data=data, aes(x=E, color=LIG, group=LIG)
   facet_wrap(~LIG)
 densities_energy_by_lig_grid
 ggsave(paste0(dock, "_", "densities_energy_by_lig_grid", ".pdf"), width=12, height=8)
+# *A*
 # Same thing but overlayed
 densities_energy_by_lig_overlay <- ggplot(data=data, aes(x=E, color=LIG)) +
   geom_density() +
   scale_color_hue(name="Ligands") + 
+  scale_x_reverse(limits=c(max(data$E), min(data$E))) +
   xlab("Binding energy (kcal/mol)") +
   ylab("Probability density") +
-  ggtitle("Density of Dockings versus Binding Energy\nby Ligand (All Binding Sites)") +
+  ggtitle("Density of Dockings versus Binding Energy (All Binding Sites)") +
   theme(legend.title=element_text(face="bold"),
         plot.title=element_text(face="bold"))
 densities_energy_by_lig_overlay
@@ -242,29 +292,35 @@ ggsave(paste0(dock, "_", "densities_energy_by_lig_and_site_grid", ".pdf"), width
 
 
 
-
+# *A*
 data$combined.sites <- rep(NA, nrow(data))
+binding.sites.capitalized <- c("Lys", "CoA", "Side", "Allo1", "Allo2")
 
 for(r in 1:nrow(data)) {
   combined.sites <- NA
-  for(bs in binding.sites) {
-    if(data[r, paste0("binds.in.", bs)]) {combined.sites <- c(combined.sites, bs) }
+  # for(bs in binding.sites) {
+  for(bs in binding.sites.capitalized) {
+    # if(data[r, paste0("binds.in.", bs)]) {combined.sites <- c(combined.sites, bs) }
+    if(data[r, paste0("binds.in.", tolower(bs))]) {combined.sites <- c(combined.sites, bs) }
   }
   data[r, "combined.sites"] <- paste(na.omit(combined.sites), collapse=" + ")
 }
-data$combined.sites[data$combined.sites == ""] <- "no site placement"
+data$combined.sites[data$combined.sites == ""] <- "No site placement"
 
 barplot_bindingdist_by_lig_combinedsites <- ggplot(data=data) +
-  geom_bar(aes(x=LIG, fill=combined.sites), color="black") +
+  geom_bar(aes(x=LIG, fill=combined.sites), color="black", width=0.8) +
   scale_x_discrete(limits=ligset.list) +
-  scale_fill_hue(name="Binding Site(s)") +
+  # scale_fill_hue(name="Binding Site(s)") +
+  scale_fill_manual(values=c("orchid", "mediumpurple", "greenyellow", "mediumaquamarine", "grey"), 
+  # scale_fill_brewer(palette="Set2", 
+                    name="Binding Site(s)") + 
   xlab("Ligand") +
   ylab("Number of Ligands in Site") +
-  ggtitle("Binding Distribution by Ligand (Binding Sites Combined)") +
+  ggtitle("Binding Site Placement Distribution by Ligand") +
   theme(legend.title=element_text(face="bold"),
         plot.title=element_text(face="bold"))
 barplot_bindingdist_by_lig_combinedsites
-ggsave(paste0(dock, "_", "barplot_bindingdist_by_lig_combinedsites", ".pdf"), width=12, height=8)
+ggsave(paste0(dock, "_", "barplot_bindingdist_by_lig_combinedsites", ".pdf"), width=6, height=4)
 
 
 
@@ -324,7 +380,8 @@ vertbarplots_energy_by_lig_allsites <- ggplot(data=data, aes(x=E, fill=LIG, grou
   scale_x_reverse(limits=c(max(data$E), min(data$E))) +
   ylim(0, counts.max) +
   ggtitle("Binding Affinity Frequencies by Ligand (All binding sites)") +
-  theme(legend.title=element_text(face="bold")) +
+  theme(plot.title=element_text(face="bold"),
+         legend.title=element_text(face="bold")) +
   facet_grid(. ~ LIG, drop=F)
 vertbarplots_energy_by_lig_allsites
 ggsave(paste0(dock, "_", "vertbarplots_energy_by_lig_allsites", ".pdf"), width=12, height=8)
@@ -454,6 +511,31 @@ if(prot == "p300") {
   ggsave(paste0(dock, "_", "vertbarplots_energy_by_lig_allo2site", ".pdf"), width=12, height=8)
 }
 ####################
+
+
+
+barplot_bindingdist_by_lig_combinedsites
+vertbarplots_energy_by_lig_allsites
+densities_energy_by_lig_overlay
+
+combined_bar_bySite_and_density_byLig <- multiplot(barplot_bindingdist_by_lig_combinedsites, 
+                                                   densities_energy_by_lig_overlay, cols=2)
+print(paste0(dock, "_", "combined_bar_bySite_and_density_byLig", ".pdf"))#, width=12, height=4)
+
+combined_bar_bySite_and_histograms_byLig <- multiplot(barplot_bindingdist_by_lig_combinedsites, 
+                                                      vertbarplots_energy_by_lig_allsites, cols=2)
+print(paste0(dock, "_", "combined_bar_bySite_and_histograms_byLig", ".pdf"))#, width=12, height=4)
+
+
+
+
+
+
+
+
+
+
+
 
 ####################
 ### Save data tables for % Distribution

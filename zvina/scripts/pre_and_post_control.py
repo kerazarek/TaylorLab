@@ -5,7 +5,6 @@
 # v1 3/6/16
 
 import argparse, subprocess
-from docking_data_assembly import Docking
 
 def main():
 	print("")
@@ -50,7 +49,9 @@ def main():
 		print("---> Parameters CSV for docking h11 has been created. It can be found at:")
 		subprocess.call(["./write_params_csv.R", dock, base_dir])
 
-	d = Docking(dock, base_dir, cluster_base_dir)
+	if not write_params:
+		from docking_data_assembly import Docking
+		d = Docking(dock, base_dir, cluster_base_dir)
 
 	if vina:
 		print("---> Writing Vina submission script")

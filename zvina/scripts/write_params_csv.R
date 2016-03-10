@@ -9,7 +9,7 @@
 ### Required input
 arg <- commandArgs(TRUE)
 if(length(arg) != 2) {
-	stop("! ! ! This script requires exactly one argument (the Dock ID)")
+	stop("! ! ! This script requires exactly two arguments (the dock ID and the base_dir)")
 } else {
 	dock <- as.character(arg[1])
 }

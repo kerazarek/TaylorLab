@@ -1,4 +1,16 @@
-Gridbox Name,Protein,Size in x-dimension,Size in y-dimension,Size in z-dimension,Center in x-dimension,Center in y-dimension,Center in z-dimension,Notes,
-BOX,PROT,60,72,88,41.89,2.69,-1.85,Same as hab2,
-pab,p300,19.75,31.6,19.75,-17.63,15.96,1.48,
-hab2,hepi,60,72,88,41.89,2.69,-1.85,
+Gridbox Name,Protein,Size in x-dimension,Size in y-dimension,Size in z-dimension,Center in x-dimension,Center in y-dimension,Center in z-dimension,Notes
+BOX,PROT,60,72,88,41.89,2.69,-1.85,Same as hab2
+hab2,hepi,60,72,88,41.89,2.69,-1.85,Same as hab
+haa,hepi,56,58,52,44.2,9.9,4.2,ADPH (AS) [CARM+2H1H]
+haf,hepi,48,70,48,40.54,-1.4,-4.91,FDLA (AS) [2H1H]
+hab,hepi,60,72,88,41.89,2.69,-1.85,ADPH+FDLA (AS) [2H1H]
+hwp,hepi,120,120,120,46.22,0.99,5.48,Whole protein [2H1H]
+haa_c,hepi_c,56,58,52,44.2,9.9,4.2,ADPH (AS) [CARM+2H1H]
+haf_c,hepi_c,48,70,48,42.6,8.8,-7.7,FDLA (AS) [CARM]
+hab_c,hepi_c,60,72,88,43.5,8,-0.5,ADPH+FDLA (AS) [CARM]
+hwp_c,hepi_c,126,126,126,46,6.5,0,Whole protein [CARM]
+pac,p300,17.38,24.49,18.17,-17,12.81,1.26,Ac-CoA (AS)
+pal,p300,18.75,12.38,15.75,-19.93,28.27,2.51,Lys (AS)
+pab,p300,19.75,31.6,19.75,-17.63,15.96,1.48,Lys+Ac-CoA (AS)
+psl,p300,27.65,29.62,31.6,-22,34,4,Lys expanded/surface
+pwp,p300,126,126,126,-8.38,25.49,1.43,Whole protein

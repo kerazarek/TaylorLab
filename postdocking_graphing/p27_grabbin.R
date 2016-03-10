@@ -1,6 +1,6 @@
 p27 <- read.csv("/Users/zarek/lab/Docking/p300/p27/p27_alldata.csv")
-# p27$key[p27$E < -6.25 & p27$E > -6.75 & p27$LIG == "Garcinol" & p27$resis_score_coa > .1]
-
+p27$key[p27$E < -6.25 & p27$E > -6.75 & p27$LIG == "Garcinol" & p27$resis_score_coa > .1]
+side.binders <- data[data$binds.in.side & data$LIG != "C646",]
 
 
 p27.egcg <- p27[p27$LIG == "EGCG",]
