@@ -65,7 +65,7 @@ elif [[ "n_models" -gt "$batch_size" ]]; then
 								-o $processed_pdbqt_stem
 			# Rename the processed pdbqts
 			for ((m=1;m<=$batch_size;m++)); do
-				old_processed_pdbqt=$processed_pdbqts_dir$dock\_$lig\_b$b\_m$m.pdbqt
+				old_processed_pdbqt=$processed_pdbqts_dir$dock.$b_$lig\_m$m.pdbqt
 				new_m=$(bc <<< "(( $b - 1 ) * $batch_size ) + $m")
 				new_processed_pdbqt=$processed_pdbqts_dir$dock\_$lig\_m$new_m.pdbqt
 				mv $old_processed_pdbqt $new_processed_pdbqt
