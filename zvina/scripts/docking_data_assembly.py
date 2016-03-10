@@ -11,17 +11,19 @@ import cPickle as pickle
 from parse_pdb import *
 from aiad_icpd import *
 
+### A class for docking data, for sourcing, reading, and analyzing
 class Docking():
+	# Basic docking parameters are contained in CSV file in .../base/parameters_csvs/
 	def load_parameters(self):
 		parameters_csv = "{b_d}parameters_csvs/{d}_parameters.csv".format(b_d=base_dir, d=dock)
 		parameters_csv_open = open(parameters_csv, 'r')
 		parameters_csv_read = csv.reader(parameters_csv_open)
-
+		# Open up the parameters.csv as a dictionary
 		parameters_dic = {}
 		for row in parameters_csv_read:
 			parameters_dic[row[0]] = row[1]
 		self.parameters = parameters_dic
-
+		# Source the parameters as class attributes
 		self.dock = self.parameters['dock']
 		self.prot = self.parameters['prot']
 		self.ligset = self.parameters['ligset']
@@ -35,12 +37,13 @@ class Docking():
 		self.exhaust = self.parameters['exhaust']
 		self.n_models = int(self.parameters['n_models'])
 		self.n_cpus = self.parameters['n_cpus']
-
+		# Some useful directories
 		self.prot_dir = "{b_d}{p}/".format(b_d=base_dir, p=self.prot)
 		self.dock_dir = "{b_d}{p}/{d}/".format(b_d=base_dir, p=self.prot, d=self.dock)
 
 		print("---> Loaded docking parameters")
 
+	# Retrieve the list of ligands in the set
 	def get_ligset_list(self):
 		ligset_list_txt = "{b_d}ligsets/{ls}/{ls}_list.txt".format(
 			b_d=base_dir,ls=self.parameters['ligset'])
@@ -49,8 +52,8 @@ class Docking():
 			self.ligset_list = f.read().splitlines()
 		print("---> Retrieved ligset list")
 
+	# Write the script for submission of vina jobs on the cluster
 	def write_vina_submit(self):
-		### For dockings <20 models
 		template_empty =  """#BSUB -q hp12
 #BSUB -n {n_cpus}
 #BSUB -J vina_{dock}
@@ -81,8 +84,7 @@ for lig in $ligset_list; do
 	--num_modes {n_models} \\
 	--exhaustiveness {exhaust}
 done"""
-### For doing big dockings (>20 models)
-### For doing big dockings (>20 models) in serial
+### For doing big dockings (>20 models) in serial, not currently using
 # 		elif self.n_models > 20:
 # 			template_empty =  """#BSUB -q hp12
 # #BSUB -n {n_cpus}
@@ -119,7 +121,8 @@ done"""
 # done
 #
 # echo \"---> Finished docking $ligset_list\""""
-
+		# Filling in all the values except for {dock}
+		#	as to differentiate those that need batch submission
 		template_filled_no_dock = template_empty.format(
 			cluster_base_dir = cluster_base_dir,
 			n_cpus = self.n_cpus,
@@ -135,7 +138,7 @@ done"""
 			exhaust = self.exhaust,
 			dock = '{dock}'
 		)
-
+		# (no need for batch submission)
 		if self.n_models <= 20:
 			template_filled = template_filled_no_dock.format(dock=dock)
 			vina_submit_sh = "{b_d}vina_submit_shs/vina_submit_{d}.sh".format(
@@ -145,6 +148,7 @@ done"""
 			print("---> Vina submission script for docking h11 has been created. \
 				It can be found at:")
 			print("\t{}".format(vina_submit_sh))
+		# (batch submission)
 		elif self.n_models > 20:
 			vina_submits_dir = "{b_d}vina_submit_shs/vina_submits_{d}/".format(
 				b_d=base_dir, d=dock)
@@ -161,11 +165,9 @@ done"""
 			print("\t{}".format(vina_submits_dir))
 		else: print("! ! ! bad n_models")
 
+	### AFTER DOCKING
 
-
-	def write_vina_submit_gt20ligs(self):
-		pass
-
+	# Mine Vina result for data (actual mining is in parse_pdb.py, acting via the Pdb class)
 	def assemble_dic(self):
 		self.data_dic = {}
 		self.keys = []
@@ -195,10 +197,10 @@ done"""
 				}
 				self.data_dic[key] = pose_dic
 				self.keys.append(key)
-
 		self.is_assembled = True
 		print("---> Data dictionary created with data from process_VinaResult.py")
 
+	# Create a list of the binding sites previously prepared for the protein
 	def get_binding_sites_list(self):
 		if not self.is_assembled: self.assemble_dic()
 
@@ -225,6 +227,8 @@ done"""
 		self.is_bs_listed = True
 		print("---> Retrieved binding sites")
 
+	# Score the binding sites in terms of the residues they contact
+	#	relative to those contained in the reference PDB
 	def score_binding_sites(self):
 		if not self.is_assembled: self.assemble_dic()
 		if not self.is_bs_listed: self.get_binding_sites_list()
@@ -239,6 +243,9 @@ done"""
 		self.is_bs_scored = True
 		print("---> Scored binding sites")
 
+	# Score binding sites by average inter-atomic distance
+	#	and inter-centerpoint difference
+	#	Acting via aiad_icpd.py
 	def aiad_icpd_binding_sites(self):
 		if not self.is_assembled: self.assemble_dic()
 
@@ -252,6 +259,7 @@ done"""
 		self.are_aiad_icpd_calcd = True
 		print("---> Calculated AIAD and ICPD")
 
+	# Add attributes for whether the ligand contacts each residue of the protein
 	def assess_all_resis(self):
 		if not self.is_assembled: self.assemble_dic()
 
@@ -280,6 +288,7 @@ done"""
 		self.are_all_resis_assessed = True
 		print("---> Residues contacts added to data dictionary")
 
+	# Output all the data mined and analyzed into a CSV file
 	def write_alldata_csv(self):
 		if not self.is_assembled: self.assemble_dic()
 		if not self.is_bs_listed: self.get_binding_sites_list()
@@ -310,6 +319,7 @@ done"""
 		self.is_csv_written = True
 		print("---> Completed alldata.csv is located at:\n\t{}".format(self.alldata_csv))
 
+	# Write another CSV that shows the AIAD values between all ligands
 	def cluster_poses(self):
 		if not self.is_assembled: self.assemble_dic()
 
@@ -337,6 +347,7 @@ done"""
 		self.are_poses_clustered = True
 		print("   > Completed clustering.csv is located at:\n\t{}".format(self.clustering_csv))
 
+	# Save the data dictionary as a pickled file (i.e. in native python format)
 	def save_pickled_docking_obj(self):
 		self.pickled_docking_obj = "{d_d}{d}.p".format(d_d=self.dock_dir, d=dock)
 		pickle.dump(self, open(self.pickled_docking_obj, 'wb'))
