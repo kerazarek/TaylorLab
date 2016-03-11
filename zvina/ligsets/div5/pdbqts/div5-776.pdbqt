@@ -1,0 +1,36 @@
+REMARK  4 active torsions:
+REMARK  status: ('A' for Active; 'I' for Inactive)
+REMARK    1  A    between atoms: C_1  and  N_12 
+REMARK    2  A    between atoms: C_1  and  C_13 
+REMARK    3  A    between atoms: C_7  and  N_12 
+REMARK    4  A    between atoms: C_9  and  S_16 
+ROOT
+ATOM      1  C   UNN dAMED      -3.772   1.605  -2.423  0.00  0.00     0.019 A 
+ATOM      2  C   UNN dAMED      -3.080   2.234  -1.377  0.00  0.00     0.077 A 
+ATOM      3  C   UNN dAMED      -4.844   2.228  -3.062  0.00  0.00     0.015 A 
+ATOM      4  C   UNN dAMED      -5.201   3.510  -2.669  0.00  0.00     0.107 A 
+ATOM      5  C   UNN dAMED      -3.463   3.539  -1.034  0.00  0.00     0.019 A 
+ATOM      6  C   UNN dAMED      -4.515   4.189  -1.673  0.00  0.00     0.015 A 
+ENDROOT
+BRANCH   2   7
+ATOM      7  N   UNN dAMED      -2.034   1.663  -0.750  0.00  0.00    -0.264 NA
+BRANCH   7   8
+ATOM      8  C   UNN dAMED      -2.369   0.405  -0.126  0.00  0.00     0.162 C 
+ATOM      9  C   UNN dAMED      -3.031  -0.585  -1.132  0.00  0.00     0.033 C 
+ATOM     10  C   UNN dAMED      -2.583  -2.029  -0.921  0.00  0.00     0.003 C 
+ATOM     11  C   UNN dAMED      -1.335  -1.945  -0.077  0.00  0.00     0.003 C 
+ATOM     12  C   UNN dAMED      -1.097  -0.455   0.146  0.00  0.00     0.033 C 
+BRANCH   8  13
+ATOM     13  C   UNN dAMED      -3.208   0.522   1.132  0.00  0.00     0.206 C 
+ATOM     14  O   UNN dAMED      -2.702   1.197   2.069  0.00  0.00    -0.646 OA
+ATOM     15  O   UNN dAMED      -4.304  -0.103   1.077  0.00  0.00    -0.646 OA
+ENDBRANCH   8  13
+ENDBRANCH   7   8
+ENDBRANCH   2   7
+BRANCH   4  16
+ATOM     16  S   UNN dAMED      -6.536   4.342  -3.454  0.00  0.00     0.302 S 
+ATOM     17  O   UNN dAMED      -6.774   3.634  -4.698  0.00  0.00    -0.197 OA
+ATOM     18  O   UNN dAMED      -7.583   4.413  -2.450  0.00  0.00    -0.197 OA
+ATOM     19  N   UNN dAMED      -6.042   5.933  -3.829  0.00  0.00    -0.043 N 
+ENDBRANCH   4  16
+TORSDOF 4

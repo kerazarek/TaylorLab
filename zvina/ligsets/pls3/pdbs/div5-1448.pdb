@@ -1,0 +1,27 @@
+REMARK   4 XXXX COMPLIES WITH FORMAT V. 2.0
+ATOM      1  C   UNN dAMED      -0.305   1.082   0.117  0.00  0.00      div5 C  
+ATOM      2  O   UNN dAMED       0.492   0.633  -0.703  0.00  0.00      div5 O  
+ATOM      3  N   UNN dAMED      -0.190   2.152   0.912  0.00  0.00      div5 N  
+ATOM      4  C   UNN dAMED      -1.640   0.435   0.191  0.00  0.00      div5 C  
+ATOM      5  C   UNN dAMED      -2.796   1.037  -0.390  0.00  0.00      div5 C  
+ATOM      6  C   UNN dAMED      -4.007   0.298  -0.195  0.00  0.00      div5 C  
+ATOM      7  O   UNN dAMED      -2.760   2.151  -1.024  0.00  0.00      div5 O  
+ATOM      8  C   UNN dAMED      -5.250   0.775  -0.652  0.00  0.00      div5 C  
+ATOM      9  C   UNN dAMED      -4.017  -0.952   0.480  0.00  0.00      div5 C  
+ATOM     10  C   UNN dAMED      -6.439   0.074  -0.453  0.00  0.00      div5 C  
+ATOM     11  C   UNN dAMED      -6.414  -1.146   0.208  0.00  0.00      div5 C  
+ATOM     12  C   UNN dAMED      -5.205  -1.657   0.668  0.00  0.00      div5 C  
+ATOM     13  C   UNN dAMED      -2.843  -1.495   0.979  0.00  0.00      div5 C  
+ATOM     14  C   UNN dAMED      -1.653  -0.801   0.847  0.00  0.00      div5 C  
+ATOM     15  C   UNN dAMED       1.048   2.349   1.423  0.00  0.00      div5 C  
+ATOM     16  C   UNN dAMED       2.016   3.186   0.800  0.00  0.00      div5 C  
+ATOM     17  C   UNN dAMED       1.785   3.777  -0.456  0.00  0.00      div5 C  
+ATOM     18  C   UNN dAMED       3.250   3.460   1.447  0.00  0.00      div5 C  
+ATOM     19  C   UNN dAMED       2.722   4.602  -1.072  0.00  0.00      div5 C  
+ATOM     20  C   UNN dAMED       3.924   4.867  -0.436  0.00  0.00      div5 C  
+ATOM     21  C   UNN dAMED       4.179   4.301   0.808  0.00  0.00      div5 C  
+ATOM     22  C   UNN dAMED       3.498   2.897   2.710  0.00  0.00      div5 C  
+ATOM     23  C   UNN dAMED       2.558   2.075   3.320  0.00  0.00      div5 C  
+ATOM     24 Br   UNN dAMED       5.095   3.224   3.680  0.00  0.00      div5Br  
+ATOM     25  C   UNN dAMED       1.351   1.815   2.683  0.00  0.00      div5 C  
+TER      26      UNN dAMED 

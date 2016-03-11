@@ -1,0 +1,21 @@
+REMARK  0 active torsions:
+REMARK  status: ('A' for Active; 'I' for Inactive)
+ROOT
+ATOM      1  N   UNN dAMED       0.124  -0.782   0.543  0.00  0.00    -0.231 NA
+ATOM      2  N   UNN dAMED       1.188   1.497  -0.631  0.00  0.00    -0.246 NA
+ATOM      3  N   UNN dAMED      -2.062   0.131   0.334  0.00  0.00    -0.237 NA
+ATOM      4  C   UNN dAMED      -2.747  -1.178   0.248  0.00  0.00     0.078 C 
+ATOM      5  C   UNN dAMED      -4.237  -1.056  -0.047  0.00  0.00     0.019 C 
+ATOM      6  C   UNN dAMED      -4.423   0.384  -0.456  0.00  0.00     0.019 C 
+ATOM      7  C   UNN dAMED      -3.025   0.991  -0.387  0.00  0.00     0.078 C 
+ATOM      8  C   UNN dAMED       2.291  -1.673   0.770  0.00  0.00     0.021 A 
+ATOM      9  C   UNN dAMED       3.667  -1.577   0.602  0.00  0.00     0.002 A 
+ATOM     10  C   UNN dAMED       1.443  -0.655   0.363  0.00  0.00     0.100 A 
+ATOM     11  C   UNN dAMED       1.983   0.495  -0.231  0.00  0.00     0.099 A 
+ATOM     12  C   UNN dAMED       4.205  -0.442   0.015  0.00  0.00     0.002 A 
+ATOM     13  C   UNN dAMED       3.358   0.583  -0.395  0.00  0.00     0.021 A 
+ATOM     14  C   UNN dAMED      -0.677   0.227   0.143  0.00  0.00     0.133 A 
+ATOM     15  C   UNN dAMED      -0.140   1.356  -0.437  0.00  0.00     0.088 A 
+ATOM     16  C   UNN dAMED      -1.057   2.475  -0.840  0.00  0.00     0.055 C 
+ENDROOT
+TORSDOF 0

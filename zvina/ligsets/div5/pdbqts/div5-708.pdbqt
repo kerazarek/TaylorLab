@@ -1,0 +1,37 @@
+REMARK  3 active torsions:
+REMARK  status: ('A' for Active; 'I' for Inactive)
+REMARK    1  A    between atoms: C_2  and  O_19 
+REMARK    2  A    between atoms: C_4  and  N_21 
+REMARK    3  A    between atoms: C_9  and  C_18 
+REMARK       I    between atoms: C_18  and  N_21 
+ROOT
+ATOM      1  C   UNN dAMED      -1.571  -0.989  -0.651  0.00  0.00     0.008 A 
+ATOM      2  C   UNN dAMED      -3.638  -2.252  -0.550  0.00  0.00     0.000 A 
+ATOM      3  C   UNN dAMED      -0.868   0.201  -0.402  0.00  0.00     0.097 A 
+ATOM      4  C   UNN dAMED      -2.912  -1.086  -0.306  0.00  0.00     0.000 A 
+ATOM      5  C   UNN dAMED      -4.985  -2.322  -0.200  0.00  0.00     0.000 A 
+ATOM      6  C   UNN dAMED      -1.452   1.352   0.188  0.00  0.00     0.200 A 
+ATOM      7  C   UNN dAMED      -3.543   0.018   0.290  0.00  0.00     0.003 A 
+ATOM      8  C   UNN dAMED      -5.610  -1.228   0.394  0.00  0.00     0.000 A 
+ATOM      9  C   UNN dAMED      -2.810   1.188   0.521  0.00  0.00     0.042 A 
+ATOM     10  C   UNN dAMED      -4.892  -0.060   0.639  0.00  0.00     0.000 A 
+ATOM     11  O   UNN dAMED      -0.848   2.455   0.407  0.00  0.00    -0.286 OA
+ENDROOT
+BRANCH   3  12
+ATOM     12  C   UNN dAMED       0.527   0.217  -0.891  0.00  0.00     0.282 C 
+ATOM     13  O   UNN dAMED       0.691   0.506  -2.075  0.00  0.00    -0.265 OA
+ATOM     14  N   UNN dAMED       1.426  -0.108   0.047  0.00  0.00    -0.206 NA
+BRANCH  14  15
+ATOM     15  C   UNN dAMED       2.710   0.012  -0.361  0.00  0.00     0.107 A 
+ATOM     16  C   UNN dAMED       3.418   1.224  -0.345  0.00  0.00     0.112 A 
+ATOM     17  C   UNN dAMED       4.752   1.311  -0.742  0.00  0.00     0.026 A 
+ATOM     18  C   UNN dAMED       5.420   0.166  -1.160  0.00  0.00     0.002 A 
+ATOM     19  C   UNN dAMED       4.754  -1.055  -1.175  0.00  0.00     0.002 A 
+ATOM     20  C   UNN dAMED       3.418  -1.125  -0.775  0.00  0.00     0.021 A 
+BRANCH  16  21
+ATOM     21  O   UNN dAMED       2.808   2.381   0.057  0.00  0.00    -0.327 OA
+ATOM     22  C   UNN dAMED       1.526   2.327  -0.498  0.00  0.00     0.181 C 
+ENDBRANCH  16  21
+ENDBRANCH  14  15
+ENDBRANCH   3  12
+TORSDOF 3

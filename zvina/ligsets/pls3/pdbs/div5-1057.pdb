@@ -1,0 +1,25 @@
+REMARK   4 XXXX COMPLIES WITH FORMAT V. 2.0
+HETATM    1  O   UNN     0      -5.236  -3.206  -1.256  0.00  0.00      div5 O  
+HETATM    2  O   UNN     0      -1.589   1.862   0.620  0.00  0.00      div5 O  
+HETATM    3  C   UNN     0       2.792   1.650  -1.447  0.00  0.00      div5 C  
+HETATM    4  C   UNN     0       1.598   1.244  -0.552  0.00  0.00      div5 C  
+HETATM    5  C   UNN     0       3.739   0.427  -1.366  0.00  0.00      div5 C  
+HETATM    6  C   UNN     0       0.251   1.913  -0.869  0.00  0.00      div5 C  
+HETATM    7  C   UNN     0      -0.863   1.211  -0.096  0.00  0.00      div5 C  
+HETATM    8  C   UNN     0       2.885  -0.778  -0.922  0.00  0.00      div5 C  
+HETATM    9  C   UNN     0       1.449  -0.243  -0.940  0.00  0.00      div5 C  
+HETATM   10  C   UNN     0      -0.993  -0.301  -0.307  0.00  0.00      div5 C  
+HETATM   11  C   UNN     0       0.383  -0.992  -0.126  0.00  0.00      div5 C  
+HETATM   12  C   UNN     0      -2.130  -1.040   0.450  0.00  0.00      div5 C  
+HETATM   13  C   UNN     0      -3.489  -0.505   0.050  0.00  0.00      div5 C  
+HETATM   14  C   UNN     0      -4.465  -1.248  -0.488  0.00  0.00      div5 C  
+HETATM   15  C   UNN     0       0.322  -2.476  -0.524  0.00  0.00      div5 C  
+HETATM   16  C   UNN     0      -2.082  -2.504   0.046  0.00  0.00      div5 C  
+HETATM   17  C   UNN     0      -4.326  -2.568  -0.767  0.00  0.00      div5 C  
+HETATM   18  C   UNN     0      -0.766  -3.213   0.265  0.00  0.00      div5 C  
+HETATM   19  C   UNN     0      -3.128  -3.148  -0.496  0.00  0.00      div5 C  
+HETATM   20  C   UNN     0      -2.031  -0.939   1.986  0.00  0.00      div5 C  
+HETATM   21  C   UNN     0       1.949   1.484   0.932  0.00  0.00      div5 C  
+HETATM   22  C   UNN     0       3.440   3.000  -1.150  0.00  0.00      div5 C  
+HETATM   23  O   UNN     0       4.553   3.102  -0.687  0.00  0.00      div5 O  
+HETATM   24  C   UNN     0       2.641   4.251  -1.474  0.00  0.00      div5 C  

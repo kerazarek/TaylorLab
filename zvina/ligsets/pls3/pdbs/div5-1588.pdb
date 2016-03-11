@@ -1,0 +1,39 @@
+REMARK   4 XXXX COMPLIES WITH FORMAT V. 2.0
+ATOM      1 Cl   UNN dAMED      -3.372   3.235   0.129  0.00  0.00      div5Cl  
+ATOM      2  C   UNN dAMED      -1.500   3.632  -1.663  0.00  0.00      div5 C  
+ATOM      3  C   UNN dAMED      -0.602   3.318  -2.676  0.00  0.00      div5 C  
+ATOM      4  C   UNN dAMED      -2.304   2.643  -1.086  0.00  0.00      div5 C  
+ATOM      5  C   UNN dAMED      -0.515   2.016  -3.155  0.00  0.00      div5 C  
+ATOM      6  C   UNN dAMED      -2.208   1.310  -1.523  0.00  0.00      div5 C  
+ATOM      7  C   UNN dAMED      -1.299   1.023  -2.558  0.00  0.00      div5 C  
+ATOM      8  C   UNN dAMED       0.066   4.434  -3.368  0.00  0.00      div5 C  
+ATOM      9  O   UNN dAMED      -0.648   5.098  -4.119  0.00  0.00      div5 O  
+ATOM     10  N   UNN dAMED       1.376   4.542  -3.107  0.00  0.00      div5 N  
+ATOM     11  C   UNN dAMED       1.961   5.723  -3.430  0.00  0.00      div5 C  
+ATOM     12  C   UNN dAMED       1.881   6.291  -4.713  0.00  0.00      div5 C  
+ATOM     13  C   UNN dAMED       2.574   7.448  -5.067  0.00  0.00      div5 C  
+ATOM     14  C   UNN dAMED       3.418   8.041  -4.138  0.00  0.00      div5 C  
+ATOM     15  C   UNN dAMED       3.555   7.507  -2.862  0.00  0.00      div5 C  
+ATOM     16  C   UNN dAMED       4.087   9.284  -4.501  0.00  0.00      div5 C  
+ATOM     17  C   UNN dAMED       2.832   6.353  -2.525  0.00  0.00      div5 C  
+ATOM     18  N   UNN dAMED       3.433  10.420  -4.652  0.00  0.00      div5 N  
+ATOM     19  N   UNN dAMED       5.445   9.383  -4.759  0.00  0.00      div5 N  
+ATOM     20  C   UNN dAMED       4.366  11.432  -5.058  0.00  0.00      div5 C  
+ATOM     21  C   UNN dAMED       5.733  10.752  -5.123  0.00  0.00      div5 C  
+ATOM     22  H   UNN dAMED       6.086   8.608  -4.648  0.00  0.00      div5 H  
+ATOM     23  C   UNN dAMED      -3.016   0.130  -1.049  0.00  0.00      div5 C  
+ATOM     24  N   UNN dAMED      -3.528   0.197   0.183  0.00  0.00      div5 N  
+ATOM     25  O   UNN dAMED      -3.048  -0.865  -1.772  0.00  0.00      div5 O  
+ATOM     26  C   UNN dAMED      -4.884   0.265   0.255  0.00  0.00      div5 C  
+ATOM     27  C   UNN dAMED      -5.740   0.513  -0.833  0.00  0.00      div5 C  
+ATOM     28  C   UNN dAMED      -7.123   0.632  -0.685  0.00  0.00      div5 C  
+ATOM     29  C   UNN dAMED      -7.686   0.513   0.581  0.00  0.00      div5 C  
+ATOM     30  C   UNN dAMED      -6.875   0.282   1.686  0.00  0.00      div5 C  
+ATOM     31  C   UNN dAMED      -9.141   0.551   0.744  0.00  0.00      div5 C  
+ATOM     32  C   UNN dAMED      -5.493   0.170   1.515  0.00  0.00      div5 C  
+ATOM     33  N   UNN dAMED     -10.033   0.205  -0.262  0.00  0.00      div5 N  
+ATOM     34  N   UNN dAMED      -9.732   0.871   1.880  0.00  0.00      div5 N  
+ATOM     35  H   UNN dAMED      -9.729  -0.145  -1.163  0.00  0.00      div5 H  
+ATOM     36  C   UNN dAMED     -11.370   0.257   0.280  0.00  0.00      div5 C  
+ATOM     37  C   UNN dAMED     -11.150   0.722   1.718  0.00  0.00      div5 C  
+TER      38      UNN dAMED 

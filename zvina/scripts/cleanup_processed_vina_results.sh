@@ -7,17 +7,17 @@
 
 ### Required input
 dock=$1
-base_dir=$2
-# AutoDockTools Directory
-ADT_dir=$3
-# MGLTools Python binary
-MGL_py_bin=$4
-
+# Set scripts directory to the directory containing this script
+scripts_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# Set base directory to the one containing scripts_dir
+base_dir="$( cd $scripts_dir && cd .. )"
+# Source # AutoDockTools Directory and MGLTools Python binary paths from constants.py
+source $scripts_dir/constants.py
 # Location of pdbqt_to_pdb
 q2b_py="$ADT_dir/Utilities24/pdbqt_to_pdb.py"
 
-# Retrieve docking parameters
-source $base_dir\scripts/load_parameters.sh $dock $base_dir
+# Retrieve the parameters for this docking
+source $base_dir\scripts/load_parameters.sh $dock
 
 # Relevant directories
 processed_pdbqts_dir=$base_dir$prot/$dock/processed_pdbqts/

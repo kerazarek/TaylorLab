@@ -1,0 +1,29 @@
+REMARK  0 active torsions:
+REMARK  status: ('A' for Active; 'I' for Inactive)
+ROOT
+ATOM      1  C   UNN dAMED       3.168  -1.367   3.073  0.00  0.00     0.080 A 
+ATOM      2  C   UNN dAMED       3.173  -1.231   1.567  0.00  0.00     0.047 A 
+ATOM      3  C   UNN dAMED       1.583  -0.408  -1.160  0.00  0.00     0.113 C 
+ATOM      4  C   UNN dAMED       1.343  -1.911  -1.350  0.00  0.00     0.268 C 
+ATOM      5  N   UNN dAMED       2.761  -0.420   3.858  0.00  0.00    -0.063 NA
+ATOM      6  C   UNN dAMED       2.707  -0.115   1.009  0.00  0.00     0.141 A 
+ATOM      7  N   UNN dAMED       2.713   0.071  -0.348  0.00  0.00    -0.233 NA
+ATOM      8  N   UNN dAMED       2.248  -2.704  -2.179  0.00  0.00     0.142 N 
+ATOM      9  N   UNN dAMED       2.274   0.880   1.867  0.00  0.00    -0.045 N 
+ATOM     10  C   UNN dAMED       2.310   0.714   3.251  0.00  0.00     0.753 A 
+ATOM     11  C   UNN dAMED       3.615  -0.726  -1.193  0.00  0.00     0.113 C 
+ATOM     12  C   UNN dAMED       3.379  -2.229  -1.380  0.00  0.00     0.268 C 
+ATOM     13  N   UNN dAMED       1.784   2.107   1.568  0.00  0.00    -0.130 NA
+ATOM     14  N   UNN dAMED       1.849   1.814   3.818  0.00  0.00    -0.038 NA
+ATOM     15  C   UNN dAMED       1.538   2.640   2.770  0.00  0.00     0.201 A 
+ATOM     16  C   UNN dAMED       0.993   3.970   2.962  0.00  0.00     0.038 A 
+ATOM     17  C   UNN dAMED       0.706   4.439   4.247  0.00  0.00     0.004 A 
+ATOM     18  C   UNN dAMED       0.747   4.800   1.865  0.00  0.00     0.004 A 
+ATOM     19  C   UNN dAMED       0.181   5.717   4.433  0.00  0.00     0.011 A 
+ATOM     20  C   UNN dAMED       0.221   6.078   2.044  0.00  0.00     0.011 A 
+ATOM     21  C   UNN dAMED      -0.059   6.529   3.329  0.00  0.00     0.058 A 
+ATOM     22 CL   UNN dAMED      -0.707   8.102   3.553  0.00  0.00    -0.082 Cl
+ATOM     23  C   UNN dAMED       3.690  -2.647   3.661  0.00  0.00     0.053 C 
+ATOM     24  C   UNN dAMED       2.351  -2.419  -3.594  0.00  0.00     0.285 C 
+ENDROOT
+TORSDOF 0

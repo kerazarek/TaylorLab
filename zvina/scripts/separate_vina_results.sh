@@ -5,25 +5,27 @@
 # v1 3/5/16
 # v1.2 3/6/16
 # v2 3/6/16 (batch separation)
+# v3 3/11/16
 
 ### Required input
 dock=$1
-# base_dir="/Users/zarek/GitHub/TaylorLab/zvina/"
-base_dir=$2
-# AutoDockTools Directory
-ADT_dir=$3
-# MGLTools Python binary
-MGL_py_bin=$4
-
-# Location of process_VinaResult
+# Set scripts directory to the directory containing this script
+scripts_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# Set base directory to the one containing scripts_dir
+base_dir="$( cd $scripts_dir && cd .. )"
+# Source # AutoDockTools Directory and MGLTools Python binary paths from constants.py
+source $scripts_dir/constants.py
+# Location of process_VinaResult.py
 pvr_py="$ADT_dir/Utilities24/process_VinaResult.py"
 
-# Retrieve docking parameters
-source $base_dir\scripts/load_parameters.sh $dock $base_dir
+# Retrieve the parameters for this docking
+source $base_dir\scripts/load_parameters.sh $dock
 
 # Exit if already done
-if [ -d $base_dir$prot/$dock/processed_pdbqts/ ]; then
-	echo "	! Results already separated (processed_pdbqts exists), exiting this step"
+if [ -e $base_dir$prot/$dock/processed_pdbqts/ ]; then
+	echo "	! Results already separated"
+	echo "		($prot/$dock/processed_pdbqts/ exists),"
+	echo "	-> exiting this step"
 	exit 1
 fi
 
@@ -58,14 +60,14 @@ elif [[ "n_models" -gt "$batch_size" ]]; then
 	for ((b=1;b<=$n_batches;b++)); do
 		echo "	processing batch $b"
 		for lig in $ligset_list; do
-			result_pdbqt=$result_pdbqts_dir$dock\_$lig\_results_b$b.pdbqt
-			processed_pdbqt_stem=$processed_pdbqts_dir$dock\_$lig\_b$b\_m
+			result_pdbqt=$result_pdbqts_dir$dock\.$b\_$lig\_results.pdbqt
+			processed_pdbqt_stem=$processed_pdbqts_dir$dock\.$b\_$lig\_m
 			$MGL_py_bin $pvr_py -r $receptor_pdbqt \
 								-f $result_pdbqt \
 								-o $processed_pdbqt_stem
 			# Rename the processed pdbqts
 			for ((m=1;m<=$batch_size;m++)); do
-				old_processed_pdbqt=$processed_pdbqts_dir$dock.$b_$lig\_m$m.pdbqt
+				old_processed_pdbqt=$processed_pdbqts_dir$dock\.$b\_$lig\_m$m.pdbqt
 				new_m=$(bc <<< "(( $b - 1 ) * $batch_size ) + $m")
 				new_processed_pdbqt=$processed_pdbqts_dir$dock\_$lig\_m$new_m.pdbqt
 				mv $old_processed_pdbqt $new_processed_pdbqt

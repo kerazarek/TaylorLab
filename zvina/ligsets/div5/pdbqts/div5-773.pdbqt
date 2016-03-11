@@ -1,0 +1,33 @@
+REMARK  2 active torsions:
+REMARK  status: ('A' for Active; 'I' for Inactive)
+REMARK    1  A    between atoms: C_6  and  O_18 
+REMARK    2  A    between atoms: C_16  and  O_20 
+ROOT
+ATOM      1  O   UNN dAMED       0.047   4.579   0.569  0.00  0.00    -0.242 OA
+ATOM      2  N   UNN dAMED       1.111   2.552   0.242  0.00  0.00    -0.189 NA
+ATOM      3  C   UNN dAMED       1.976  -0.530   0.632  0.00  0.00     0.004 A 
+ATOM      4  C   UNN dAMED       2.984  -1.481   0.498  0.00  0.00     0.024 A 
+ATOM      5  C   UNN dAMED       1.713   0.327  -0.434  0.00  0.00     0.019 A 
+ATOM      6  C   UNN dAMED       3.713  -1.537  -0.685  0.00  0.00     0.094 A 
+ATOM      7  C   UNN dAMED       2.440   0.271  -1.620  0.00  0.00     0.004 A 
+ATOM      8  C   UNN dAMED       0.755   1.404  -0.260  0.00  0.00     0.104 A 
+ATOM      9  C   UNN dAMED      -0.612   1.498  -0.858  0.00  0.00     0.104 A 
+ATOM     10  C   UNN dAMED      -1.688   0.416  -0.747  0.00  0.00     0.019 A 
+ATOM     11  C   UNN dAMED       3.451  -0.676  -1.746  0.00  0.00     0.024 A 
+ATOM     12  C   UNN dAMED      -1.380  -0.877  -0.320  0.00  0.00     0.004 A 
+ATOM     13  C   UNN dAMED      -3.031   0.757  -0.947  0.00  0.00     0.004 A 
+ATOM     14  C   UNN dAMED      -4.049  -0.154  -0.684  0.00  0.00     0.024 A 
+ATOM     15  C   UNN dAMED      -2.390  -1.802  -0.060  0.00  0.00     0.024 A 
+ATOM     16  C   UNN dAMED      -3.714  -1.422  -0.234  0.00  0.00     0.094 A 
+ATOM     17  C   UNN dAMED       0.045   3.444   0.111  0.00  0.00     0.369 A 
+ATOM     18  N   UNN dAMED      -0.954   2.873  -0.581  0.00  0.00    -0.189 NA
+ENDROOT
+BRANCH   6  19
+ATOM     19  O   UNN dAMED       4.732  -2.435  -0.800  0.00  0.00    -0.328 OA
+ATOM     20  C   UNN dAMED       5.412  -2.064  -1.963  0.00  0.00     0.181 C 
+ENDBRANCH   6  19
+BRANCH  16  21
+ATOM     21  O   UNN dAMED      -4.711  -2.299   0.073  0.00  0.00    -0.328 OA
+ATOM     22  C   UNN dAMED      -5.675  -1.534   0.734  0.00  0.00     0.181 C 
+ENDBRANCH  16  21
+TORSDOF 2

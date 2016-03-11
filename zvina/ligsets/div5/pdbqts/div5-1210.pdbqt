@@ -1,0 +1,34 @@
+REMARK  2 active torsions:
+REMARK  status: ('A' for Active; 'I' for Inactive)
+REMARK    1  A    between atoms: C_5  and  S_19 
+REMARK    2  A    between atoms: C_9  and  S_19 
+ROOT
+ATOM      1  C   UNN dAMED       1.117  -1.623  -4.652  0.00  0.00     0.155 A 
+ATOM      2  C   UNN dAMED       0.460  -1.639  -2.316  0.00  0.00     0.011 A 
+ATOM      3  C   UNN dAMED       1.191  -1.094  -3.375  0.00  0.00     0.049 A 
+ATOM      4  C   UNN dAMED       0.556  -1.077  -1.047  0.00  0.00     0.030 A 
+ATOM      5  C   UNN dAMED       2.595  -0.056  -5.423  0.00  0.00     0.238 A 
+ATOM      6  C   UNN dAMED       2.032   0.011  -3.193  0.00  0.00     0.087 A 
+ATOM      7  C   UNN dAMED       1.394   0.017  -0.847  0.00  0.00     0.008 A 
+ATOM      8  C   UNN dAMED       2.115   0.550  -1.916  0.00  0.00     0.020 A 
+ATOM      9  N   UNN dAMED       2.733   0.531  -4.212  0.00  0.00    -0.214 NA
+ATOM     10  N   UNN dAMED       1.811  -1.121  -5.691  0.00  0.00    -0.200 NA
+ATOM     11  N   UNN dAMED       0.268  -2.744  -4.877  0.00  0.00    -0.080 NA
+ATOM     12  N   UNN dAMED       3.328   0.506  -6.509  0.00  0.00    -0.060 NA
+ENDROOT
+BRANCH   4  13
+ATOM     13  S   UNN dAMED      -0.328  -1.792   0.316  0.00  0.00    -0.087 SA
+BRANCH  13  14
+ATOM     14  C   UNN dAMED      -1.819  -0.829   0.274  0.00  0.00     0.029 A 
+ATOM     15  C   UNN dAMED      -2.910  -1.256  -0.484  0.00  0.00     0.006 A 
+ATOM     16  C   UNN dAMED      -4.096  -0.523  -0.486  0.00  0.00     0.001 A 
+ATOM     17  C   UNN dAMED      -5.190  -0.942  -1.244  0.00  0.00     0.000 A 
+ATOM     18  C   UNN dAMED      -4.193   0.653   0.288  0.00  0.00     0.000 A 
+ATOM     19  C   UNN dAMED      -6.371  -0.204  -1.236  0.00  0.00     0.000 A 
+ATOM     20  C   UNN dAMED      -6.467   0.956  -0.470  0.00  0.00     0.000 A 
+ATOM     21  C   UNN dAMED      -5.381   1.384   0.290  0.00  0.00     0.000 A 
+ATOM     22  C   UNN dAMED      -3.102   1.071   1.047  0.00  0.00     0.001 A 
+ATOM     23  C   UNN dAMED      -1.921   0.331   1.043  0.00  0.00     0.006 A 
+ENDBRANCH  13  14
+ENDBRANCH   4  13
+TORSDOF 2

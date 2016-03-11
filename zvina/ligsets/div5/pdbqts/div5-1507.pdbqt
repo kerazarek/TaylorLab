@@ -1,0 +1,36 @@
+REMARK  3 active torsions:
+REMARK  status: ('A' for Active; 'I' for Inactive)
+REMARK    1  A    between atoms: C_7  and  S_11 
+REMARK    2  A    between atoms: C_8  and  C_15 
+REMARK    3  A    between atoms: C_10  and  C_19 
+ROOT
+ATOM      1  O   UNN dAMED       1.171   1.762  -1.009  0.00  0.00    -0.303 OA
+ATOM      2  O   UNN dAMED       2.270  -0.382  -0.778  0.00  0.00    -0.303 OA
+ATOM      3  C   UNN dAMED      -1.125   2.160  -0.548  0.00  0.00     0.025 A 
+ATOM      4  C   UNN dAMED      -2.355   1.689  -0.105  0.00  0.00     0.016 A 
+ATOM      5  C   UNN dAMED      -0.047   1.282  -0.620  0.00  0.00     0.099 A 
+ATOM      6  C   UNN dAMED      -0.156  -0.063  -0.272  0.00  0.00     0.045 A 
+ATOM      7  C   UNN dAMED      -2.464   0.354   0.273  0.00  0.00     0.104 A 
+ATOM      8  C   UNN dAMED       1.040  -0.991  -0.479  0.00  0.00     0.118 C 
+ATOM      9  C   UNN dAMED      -1.387  -0.525   0.183  0.00  0.00     0.018 A 
+ATOM     10  C   UNN dAMED       2.128   0.956  -0.369  0.00  0.00     0.288 C 
+ENDROOT
+BRANCH   7  11
+ATOM     11  S   UNN dAMED      -4.051  -0.269   0.804  0.00  0.00     0.139 S 
+ATOM     12  O   UNN dAMED      -4.676  -0.601  -0.473  0.00  0.00    -0.591 OA
+ATOM     13  O   UNN dAMED      -4.628   0.868   1.514  0.00  0.00    -0.591 OA
+ATOM     14  O   UNN dAMED      -3.696  -1.407   1.647  0.00  0.00    -0.591 OA
+ENDBRANCH   7  11
+BRANCH   8  15
+ATOM     15  C   UNN dAMED       0.911  -2.554  -0.599  0.00  0.00     0.238 C 
+ATOM     16 CL   UNN dAMED      -0.239  -2.995  -1.898  0.00  0.00    -0.076 Cl
+ATOM     17 CL   UNN dAMED       0.366  -3.259   0.955  0.00  0.00    -0.076 Cl
+ATOM     18 CL   UNN dAMED       2.495  -3.306  -1.000  0.00  0.00    -0.076 Cl
+ENDBRANCH   8  15
+BRANCH  10  19
+ATOM     19  C   UNN dAMED       3.267   1.633   0.444  0.00  0.00     0.251 C 
+ATOM     20 CL   UNN dAMED       4.130   0.435   1.450  0.00  0.00    -0.078 Cl
+ATOM     21 CL   UNN dAMED       4.426   2.394  -0.678  0.00  0.00    -0.078 Cl
+ATOM     22 CL   UNN dAMED       2.594   2.883   1.530  0.00  0.00    -0.078 Cl
+ENDBRANCH  10  19
+TORSDOF 3

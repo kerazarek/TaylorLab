@@ -8,6 +8,7 @@
 from __future__ import print_function
 import csv, re, subprocess
 import cPickle as pickle
+from constants import *
 from parse_pdb import *
 from aiad_icpd import *
 
@@ -145,8 +146,7 @@ done"""
 				b_d=base_dir, d=dock)
 			with open(vina_submit_sh, 'w') as f:
 				f.write(template_filled)
-			print("---> Vina submission script for docking h11 has been created. \
-				It can be found at:")
+			print("---> Vina submission script for docking h11 has been created. It can be found at:")
 			print("\t{}".format(vina_submit_sh))
 		# (batch submission)
 		elif self.n_models > 20:
@@ -355,13 +355,9 @@ done"""
 		self.is_pickled = True
 		print("---> Pickled docking object located at:\n\t{}".format(self.pickled_docking_obj))
 
-	def __init__(self, d, b_d, c_b_d):
+	def __init__(self, d):
 		global dock
-		global base_dir
-		global cluster_base_dir
 		dock = d
-		base_dir = b_d
-		cluster_base_dir = c_b_d
 
 		self.dock = dock
 		self.load_parameters()

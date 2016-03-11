@@ -1,0 +1,27 @@
+REMARK   4 XXXX COMPLIES WITH FORMAT V. 2.0
+HETATM    1  N   UNN     0      -1.774  -2.878   0.446  0.00  0.00      div5 N  
+HETATM    2  Br  UNN     0      -6.160  -4.659   2.533  0.00  0.00      div5 B  
+HETATM    3  C   UNN     0      -1.944  -5.075   0.732  0.00  0.00      div5 C  
+HETATM    4  C   UNN     0      -2.651  -6.147   1.140  0.00  0.00      div5 C  
+HETATM    5  C   UNN     0      -2.487  -3.846   0.852  0.00  0.00      div5 C  
+HETATM    6  C   UNN     0      -3.876  -5.968   1.660  0.00  0.00      div5 C  
+HETATM    7  C   UNN     0      -3.720  -3.664   1.373  0.00  0.00      div5 C  
+HETATM    8  C   UNN     0      -4.415  -4.744   1.780  0.00  0.00      div5 C  
+HETATM    9  C   UNN     0      -4.181  -2.400   1.454  0.00  0.00      div5 C  
+HETATM   10  C   UNN     0      -3.414  -1.390   1.021  0.00  0.00      div5 C  
+HETATM   11  C   UNN     0      -2.210  -1.695   0.523  0.00  0.00      div5 C  
+HETATM   12  C   UNN     0      -2.097  -7.557   1.026  0.00  0.00      div5 C  
+HETATM   13  N   UNN     0      -2.842  -8.327   0.034  0.00  0.00      div5 N  
+HETATM   14  C   UNN     0      -2.602  -7.834  -1.313  0.00  0.00      div5 C  
+HETATM   15  C   UNN     0      -3.489  -8.529  -2.358  0.00  0.00      div5 C  
+HETATM   16  N   UNN     0      -3.720  -9.979  -2.125  0.00  0.00      div5 N  
+HETATM   17  C   UNN     0      -4.325 -10.678  -3.018  0.00  0.00      div5 C  
+HETATM   18  C   UNN     0      -3.353 -10.603  -0.827  0.00  0.00      div5 C  
+HETATM   19  C   UNN     0      -4.620 -11.988  -2.850  0.00  0.00      div5 C  
+HETATM   20  C   UNN     0      -4.740 -10.162  -4.198  0.00  0.00      div5 C  
+HETATM   21  C   UNN     0      -5.253 -12.728  -3.776  0.00  0.00      div5 C  
+HETATM   22  C   UNN     0      -5.634 -12.179  -4.935  0.00  0.00      div5 C  
+HETATM   23  C   UNN     0      -5.374 -10.882  -5.138  0.00  0.00      div5 C  
+HETATM   24  C   UNN     0      -2.478  -9.734   0.090  0.00  0.00      div5 C  
+HETATM   25  O   UNN     0      -0.699  -5.222   0.195  0.00  0.00      div5 O  
+HETATM   26  H   UNN     0      -0.347  -4.354  -0.058  0.00  0.00      div5 H  

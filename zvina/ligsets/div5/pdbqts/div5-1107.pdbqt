@@ -1,0 +1,31 @@
+REMARK  1 active torsions:
+REMARK  status: ('A' for Active; 'I' for Inactive)
+REMARK    1  A    between atoms: C_15  and  O_22 
+ROOT
+ATOM      1  O   UNN dAMED       0.480   2.563  -0.589  0.00  0.00    -0.285 OA
+ATOM      2  N   UNN dAMED      -0.012  -1.403   0.367  0.00  0.00    -0.357 N 
+ATOM      3  H   UNN dAMED      -0.015  -2.419   0.312  0.00  0.00     0.162 HD
+ATOM      4 BR   UNN dAMED      -1.276  -1.407  -2.149  0.00  0.00    -0.044 Br
+ATOM      5  H   UNN dAMED      -1.943   2.499  -0.762  0.00  0.00     0.170 HD
+ATOM      6  O   UNN dAMED      -2.642  -2.378   0.662  0.00  0.00    -0.269 OA
+ATOM      7  N   UNN dAMED      -2.179   1.540  -0.537  0.00  0.00    -0.305 N 
+ATOM      8  N   UNN dAMED      -3.288  -0.162   0.635  0.00  0.00    -0.276 N 
+ATOM      9  H   UNN dAMED      -4.125  -0.432   1.145  0.00  0.00     0.173 HD
+ATOM     10  O   UNN dAMED      -4.143   1.972   0.547  0.00  0.00    -0.247 OA
+ATOM     11  C   UNN dAMED       0.350   1.359  -0.422  0.00  0.00     0.211 C 
+ATOM     12  C   UNN dAMED      -1.024   0.760  -0.238  0.00  0.00     0.114 C 
+ATOM     13  C   UNN dAMED       1.500   0.485  -0.168  0.00  0.00     0.057 A 
+ATOM     14  C   UNN dAMED       2.790   1.006  -0.270  0.00  0.00     0.029 A 
+ATOM     15  C   UNN dAMED       3.866   0.178   0.008  0.00  0.00     0.094 A 
+ATOM     16  C   UNN dAMED      -1.133  -0.767  -0.305  0.00  0.00     0.218 C 
+ATOM     17  C   UNN dAMED       1.261  -0.854   0.172  0.00  0.00     0.057 A 
+ATOM     18  C   UNN dAMED       3.677  -1.139   0.403  0.00  0.00     0.026 A 
+ATOM     19  C   UNN dAMED      -2.401  -1.207   0.372  0.00  0.00     0.271 C 
+ATOM     20  C   UNN dAMED       2.378  -1.637   0.499  0.00  0.00     0.019 A 
+ATOM     21  C   UNN dAMED      -3.249   1.179   0.242  0.00  0.00     0.327 C 
+ENDROOT
+BRANCH  15  22
+ATOM     22  O   UNN dAMED       5.132   0.667  -0.102  0.00  0.00    -0.328 OA
+ATOM     23  C   UNN dAMED       4.996   1.886  -0.771  0.00  0.00     0.181 C 
+ENDBRANCH  15  22
+TORSDOF 1

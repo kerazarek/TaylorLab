@@ -17,3 +17,4 @@ pwp,p300,126,126,126,-8.38,25.49,1.43,Whole protein
 BOX_AAS,PROT_A,60,72,88,41.89,2.69,-1.85,active site of protein A
 BOX_AWP,PROT_A,126,126,126,41.89,2.69,-1.85,all of protein A
 BOX_BWP,PROT_B,126,126,126,4.89,-5.27,12.0,all of protein B
+g,p,sx,sy,sz,cx,cy,cz,n (Entered by new_grid_or_dock_entry.py 2016-03-11 14:46:14)
