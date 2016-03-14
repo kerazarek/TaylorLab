@@ -19,10 +19,10 @@ source $scripts_dir/constants.py
 pvr_py="$ADT_dir/Utilities24/process_VinaResult.py"
 
 # Retrieve the parameters for this docking
-source $base_dir\scripts/load_parameters.sh $dock
+source $base_dir/scripts/load_parameters.sh $dock
 
 # Exit if already done
-if [ -e $base_dir$prot/$dock/processed_pdbqts/ ]; then
+if [ -e $base_dir/$prot/$dock/processed_pdbqts/ ]; then
 	echo "	! Results already separated"
 	echo "		($prot/$dock/processed_pdbqts/ exists),"
 	echo "	-> exiting this step"
@@ -30,25 +30,25 @@ if [ -e $base_dir$prot/$dock/processed_pdbqts/ ]; then
 fi
 
 # Retrieve ligset list
-ligset_list_txt=$base_dir\ligsets/$ligset/$ligset\_list.txt
+ligset_list_txt=$base_dir/ligsets/$ligset/$ligset\_list.txt
 ligset_list=$(for l in $(cat $ligset_list_txt); do echo $l; done)
 
 # Relevant directories
-result_pdbqts_dir=$base_dir$prot/$dock/result_pdbqts/
-processed_pdbqts_dir=$base_dir$prot/$dock/processed_pdbqts/
+result_pdbqts_dir=$base_dir/$prot/$dock/result_pdbqts/
+processed_pdbqts_dir=$base_dir/$prot/$dock/processed_pdbqts/
 
 # Create a directory for processed files
 mkdir $processed_pdbqts_dir
 
 # The actual process_VinaResult step
-receptor_pdbqt=$base_dir$prot/$prot.pdbqt
+receptor_pdbqt=$base_dir/$prot/$prot.pdbqt
 batch_size=20
 # No batches
 n_models=$(echo $n_models | sed 's/[^0-9]//')
 if [[ "n_models" -le "$batch_size" ]]; then
 	for lig in $ligset_list; do
-		result_pdbqt=$result_pdbqts_dir$dock\_$lig\_results.pdbqt
-		processed_pdbqt_stem=$processed_pdbqts_dir$dock\_$lig\_m
+		result_pdbqt=$result_pdbqts_dir/$dock\_$lig\_results.pdbqt
+		processed_pdbqt_stem=$processed_pdbqts_dir/$dock\_$lig\_m
 		$MGL_py_bin $pvr_py -r $receptor_pdbqt \
 							-f $result_pdbqt \
 							-o $processed_pdbqt_stem
@@ -60,16 +60,16 @@ elif [[ "n_models" -gt "$batch_size" ]]; then
 	for ((b=1;b<=$n_batches;b++)); do
 		echo "	processing batch $b"
 		for lig in $ligset_list; do
-			result_pdbqt=$result_pdbqts_dir$dock\.$b\_$lig\_results.pdbqt
-			processed_pdbqt_stem=$processed_pdbqts_dir$dock\.$b\_$lig\_m
+			result_pdbqt=$result_pdbqts_dir/$dock\.$b\_$lig\_results.pdbqt
+			processed_pdbqt_stem=$processed_pdbqts_dir/$dock\.$b\_$lig\_m
 			$MGL_py_bin $pvr_py -r $receptor_pdbqt \
 								-f $result_pdbqt \
 								-o $processed_pdbqt_stem
 			# Rename the processed pdbqts
 			for ((m=1;m<=$batch_size;m++)); do
-				old_processed_pdbqt=$processed_pdbqts_dir$dock\.$b\_$lig\_m$m.pdbqt
+				old_processed_pdbqt=$processed_pdbqts_dir/$dock\.$b\_$lig\_m$m.pdbqt
 				new_m=$(bc <<< "(( $b - 1 ) * $batch_size ) + $m")
-				new_processed_pdbqt=$processed_pdbqts_dir$dock\_$lig\_m$new_m.pdbqt
+				new_processed_pdbqt=$processed_pdbqts_dir/$dock\_$lig\_m$new_m.pdbqt
 				mv $old_processed_pdbqt $new_processed_pdbqt
 			done
 			echo "		processed ligand $lig"

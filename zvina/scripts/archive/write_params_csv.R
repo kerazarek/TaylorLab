@@ -18,8 +18,8 @@ if(length(arg) != 2) {
 base_dir <- as.character(arg[2])
 
 ### Reference CSVs
-docks_csv <- paste0(base_dir, "Dockings.csv")
-gridboxes_csv <- paste0(base_dir, "Gridboxes.csv")
+docks_csv <- paste0(base_dir, "/Dockings.csv")
+gridboxes_csv <- paste0(base_dir, "/Gridboxes.csv")
 
 ### Import docking parameters
 # Docking CSV
@@ -60,7 +60,7 @@ parameters_df$parameter <- parameters_names_list
 parameters_df$value <- parameters_values_list
 
 ### Write parameters CSV
-parameters_csv <- paste0(base_dir, "parameters_csvs/", dock, "_parameters.csv")
+parameters_csv <- paste0(base_dir, "/parameters_csvs/", dock, "_parameters.csv")
 write.csv(parameters_df, parameters_csv, row.names = F, quote = F)
 # noquote(paste0("Parameters CSV for docking ", dock, " has been created. It can be found at:"))
 noquote(parameters_csv)

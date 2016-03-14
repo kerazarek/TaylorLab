@@ -17,7 +17,7 @@ base_dir="$( cd $scripts_dir && cd .. )"
 # Source # AutoDockTools Directory and MGLTools Python binary paths from constants.py
 source $scripts_dir/constants.py
 # CSV file with docking parameters
-dockings_csv=$base_dir\Dockings.csv
+dockings_csv=$base_dir/Dockings.csv
 
 # Define a function for looking
 function look_up {

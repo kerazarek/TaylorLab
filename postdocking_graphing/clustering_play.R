@@ -28,19 +28,29 @@ cluster_fast_greedy(clpyg)
 
 ####
 library(igraph)
+## "Mixed Case" Capitalizing - toupper( every first letter of a word ) :
+.simpleCap <- function(x) {
+  s <- strsplit(x, " ")[[1]]
+  paste(toupper(substring(s, 1, 1)), substring(s, 2),
+        sep = "", collapse = " ")
+}
+##
 clpy <- read.csv("/Users/zarek/Desktop/h11_cluster_test.csv")
 clpyg <- graph_from_data_frame(clpy, directed = F)
 
 
+# ?communities
+
 groups <- cluster_edge_betweenness(clpyg, weights=clpy$aiad)
-groups <- cluster_walktrap(clpyg, weights=clpy$aiad)
-groups <- cluster_leading_eigen(clpyg, weights=clpy$aiad)
-groups <- cluster_label_prop(clpyg, weights=clpy$aiad)
-groups <- cluster_louvain(clpyg, weights=clpy$aiad)
+# groups <- cluster_walktrap(clpyg, weights=clpy$aiad)
+# groups <- cluster_leading_eigen(clpyg, weights=clpy$aiad)
+# groups <- cluster_label_prop(clpyg, weights=clpy$aiad)
+# groups <- cluster_louvain(clpyg, weights=clpy$aiad)
 
-modularity(groups)
-
-plot(clpyg, vertex.size = 5, vertex.color = "red2", vertex.label.cex = .75,
-     vertex.label.color = "black", edge.color = "black", 
+plot.igraph(clpyg, vertex.size = 5, vertex.color = "red2", vertex.label.cex = .75,
+     vertex.label.color = "black", edge.color = "black", frame = F,
+     main = paste0("Clustering Algorithm: ", .simpleCap(algorithm(groups))),
+     sub = paste0("Number of clusters: ", length(groups), "\nModularity: ", modularity(groups)),
      edge.arrow.size = clpy$aiad,
      mark.groups = groups)
+

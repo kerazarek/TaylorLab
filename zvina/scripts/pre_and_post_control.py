@@ -73,10 +73,10 @@ def main():
 
 	if separate:
 		print("---> Processing raw Vina output PDBQTs")
-		subprocess.call(["./separate_vina_results.sh", dock])
+		subprocess.call(["{b_d}/scripts/separate_vina_results.sh".format(b_d=base_dir), dock])
 	if clean:
 		print("---> Cleaning up processed PDBQTs and converting to PDBs")
-		subprocess.call(["./cleanup_processed_vina_results.sh", dock])
+		subprocess.call(["{b_d}/scripts/cleanup_processed_vina_results.sh".format(b_d=base_dir), dock])
 
 	if vina or csv or cluster or pickle or post_proc:
 		from docking_data_assembly import Docking
@@ -92,9 +92,11 @@ def main():
 
 	if post_proc:
 		print("---> Processing raw Vina output PDBQTs")
-		subprocess.call(["./separate_vina_results.sh", dock, base_dir, ADT_dir, MGL_py_bin])
+		subprocess.call(["{b_d}/scripts/separate_vina_results.sh".format(b_d=base_dir),
+			dock, base_dir, ADT_dir, MGL_py_bin])
 		print("---> Cleaning up processed PDBQTs and converting to PDBs")
-		subprocess.call(["./cleanup_processed_vina_results.sh", dock, base_dir, ADT_dir, MGL_py_bin])
+		subprocess.call(["{b_d}/scripts/cleanup_processed_vina_results.sh".format(b_d=base_dir),
+			dock, base_dir, ADT_dir, MGL_py_bin])
 		d.write_alldata_csv()
 		d.cluster_poses()
 		d.save_pickled_docking_obj()

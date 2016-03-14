@@ -106,7 +106,7 @@ def new_docking_entry():
 
 	# If "y" is entered, write the row, otherwise don't
 	if proceed == "y":
-		dockings_csv = "{b_d}Dockings.csv".format(b_d=base_dir)
+		dockings_csv = "{b_d}/Dockings.csv".format(b_d=base_dir)
 		dockings_headers = ["Docking ID", "Date", "Protein", "Ligset", "Gridbox",
 			"Exhaustiveness", "Number of Models", "Number of CPUs", "Notes"]
 		with open(dockings_csv, 'a') as f:
@@ -206,7 +206,7 @@ def new_gridbox_entry():
 
 	# If "y" is entered, write the row, otherwise don't
 	if proceed == "y":
-		gridboxes_csv = "{b_d}Gridboxes.csv".format(b_d=base_dir)
+		gridboxes_csv = "{b_d}/Gridboxes.csv".format(b_d=base_dir)
 		gridboxes_headers = ["Gridbox Name", "Protein", "Size in x-dimension",
 			"Size in y-dimension", "Size in z-dimension", "Center in x-dimension",
 			"Center in y-dimension", "Center in z-dimension", "Notes"]

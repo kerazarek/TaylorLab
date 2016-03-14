@@ -17,12 +17,12 @@ source $scripts_dir/constants.py
 q2b_py="$ADT_dir/Utilities24/pdbqt_to_pdb.py"
 
 # Retrieve the parameters for this docking
-source $base_dir\scripts/load_parameters.sh $dock
+source $base_dir/scripts/load_parameters.sh $dock
 
 # Relevant directories
-processed_pdbqts_dir=$base_dir$prot/$dock/processed_pdbqts/
-cleanedup_processed_pdbqts_dir=$base_dir$prot/$dock/cleanedup_processed_pdbqts/
-processed_pdbs_dir=$base_dir$prot/$dock/processed_pdbs/
+processed_pdbqts_dir=$base_dir/$prot/$dock/processed_pdbqts
+cleanedup_processed_pdbqts_dir=$base_dir/$prot/$dock/cleanedup_processed_pdbqts
+processed_pdbs_dir=$base_dir/$prot/$dock/processed_pdbs
 
 # Check if already done
 if [ -d $processed_pdbs_dir ]; then
@@ -35,15 +35,15 @@ mkdir $cleanedup_processed_pdbqts_dir
 mkdir $processed_pdbs_dir
 
 # Retrieve ligset list
-ligset_list_txt=$base_dir\ligsets/$ligset/$ligset\_list.txt
+ligset_list_txt=$base_dir/ligsets/$ligset/$ligset\_list.txt
 ligset_list=$(for l in $(cat $ligset_list_txt); do echo $l; done)
 
 # The clean-up step
 for lig in $ligset_list; do
 	for ((m=1;m<=$n_models;m++)); do
-		processed_pdbqt=$processed_pdbqts_dir$dock\_$lig\_m$m.pdbqt
-		cleanedup_processed_pdbqt=$cleanedup_processed_pdbqts_dir$dock\_$lig\_m$m.pdbqt
-		processed_pdb=$processed_pdbs_dir$dock\_$lig\_m$m.pdb
+		processed_pdbqt=$processed_pdbqts_dir/$dock\_$lig\_m$m.pdbqt
+		cleanedup_processed_pdbqt=$cleanedup_processed_pdbqts_dir/$dock\_$lig\_m$m.pdbqt
+		processed_pdb=$processed_pdbs_dir/$dock\_$lig\_m$m.pdb
 
 		# The clean-up step
 		cat $processed_pdbqt | \

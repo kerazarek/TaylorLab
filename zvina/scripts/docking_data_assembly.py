@@ -6,7 +6,7 @@
 # v2 3/6/16
 
 from __future__ import print_function
-import csv, re, subprocess
+import csv, re, os, subprocess
 import cPickle as pickle
 from constants import *
 from parse_pdb import *
@@ -16,7 +16,7 @@ from aiad_icpd import *
 class Docking():
 	# Basic docking parameters are contained in CSV file in .../base/parameters_csvs/
 	def load_parameters(self):
-		parameters_csv = "{b_d}parameters_csvs/{d}_parameters.csv".format(b_d=base_dir, d=dock)
+		parameters_csv = "{b_d}/parameters_csvs/{d}_parameters.csv".format(b_d=base_dir, d=dock)
 		parameters_csv_open = open(parameters_csv, 'r')
 		parameters_csv_read = csv.reader(parameters_csv_open)
 		# Open up the parameters.csv as a dictionary
@@ -39,14 +39,16 @@ class Docking():
 		self.n_models = int(self.parameters['n_models'])
 		self.n_cpus = self.parameters['n_cpus']
 		# Some useful directories
-		self.prot_dir = "{b_d}{p}/".format(b_d=base_dir, p=self.prot)
-		self.dock_dir = "{b_d}{p}/{d}/".format(b_d=base_dir, p=self.prot, d=self.dock)
+		self.prot_dir = "{b_d}/{p}".format(b_d=base_dir, p=self.prot)
+		self.dock_dir = "{b_d}/{p}/{d}".format(b_d=base_dir, p=self.prot, d=self.dock)
+
+		dockings_csv = "{}/Dockings.csv"
 
 		print("---> Loaded docking parameters")
 
 	# Retrieve the list of ligands in the set
 	def get_ligset_list(self):
-		ligset_list_txt = "{b_d}ligsets/{ls}/{ls}_list.txt".format(
+		ligset_list_txt = "{b_d}/ligsets/{ls}/{ls}_list.txt".format(
 			b_d=base_dir,ls=self.parameters['ligset'])
 		ligset_list_txt_open = open(ligset_list_txt, 'r')
 		with ligset_list_txt_open as f:
@@ -60,11 +62,11 @@ class Docking():
 #BSUB -J vina_{dock}
 
 # Text file with list of ligands (one on each line)
-ligset_list_txt={cluster_base_dir}ligsets/{ligset}/{ligset}_list.txt
+ligset_list_txt={cluster_base_dir}/ligsets/{ligset}/{ligset}_list.txt
 
 # Create the docking and output directories
-mkdir {cluster_base_dir}{prot}/{dock}/
-mkdir {cluster_base_dir}{prot}/{dock}/result_pdbqts
+mkdir {cluster_base_dir}/{prot}/{dock}/
+mkdir {cluster_base_dir}/{prot}/{dock}/result_pdbqts
 
 # Generate the list of ligands
 ligset_list=$(for l in $(cat $ligset_list_txt); do echo $l; done)
@@ -72,9 +74,9 @@ ligset_list=$(for l in $(cat $ligset_list_txt); do echo $l; done)
 # Vina command
 for lig in $ligset_list; do
 	/share/apps/autodock/autodock_vina_1_1_2_linux_x86/bin/vina \\
-	--receptor {cluster_base_dir}{prot}/{prot}.pdbqt \\
-	--ligand {cluster_base_dir}ligsets/{ligset}/pdbqts/$lig.pdbqt \\
-	--out {cluster_base_dir}{prot}/{dock}/result_pdbqts/{dock}_$lig\_results.pdbqt \\
+	--receptor {cluster_base_dir}/{prot}/{prot}.pdbqt \\
+	--ligand {cluster_base_dir}/ligsets/{ligset}/pdbqts/$lig.pdbqt \\
+	--out {cluster_base_dir}/{prot}/{dock}/result_pdbqts/{dock}_$lig\_results.pdbqt \\
 	--center_x {box_center_x} \\
 	--center_y {box_center_y} \\
 	--center_z {box_center_z} \\
@@ -95,8 +97,7 @@ done"""
 # ligset_list_txt={ligset_list_txt}
 #
 # # Create the docking and output directories
-# mkdir {out_dir}
-# mkdir {out_dir}result_pdbqts
+# mkdir {out_dir}/{# mkdir {out_dir}/{esult_pdbqts
 #
 # # Generate the list of ligands
 # ligset_list=$(for l in $(cat $ligset_list_txt); do echo $l; done)
@@ -106,8 +107,8 @@ done"""
 # 	for lig in $ligset_list; do
 # 		/share/apps/autodock/autodock_vina_1_1_2_linux_x86/bin/vina \\
 # 		--receptor {prot_pdbqt} \\
-# 		--ligand {in_dir}$lig.pdbqt \\
-# 		--out {out_dir}result_pdbqts/{dock}_$lig\_results_b$b.pdbqt \\
+# 		--ligand {in_dir}/{lig.pdbqt \\
+# 		--out {out_dir}/{esult_pdbqts/{dock}_$lig\_results_b$b.pdbqt \\
 # 		--center_x {box_center_x} \\
 # 		--center_y {box_center_y} \\
 # 		--center_z {box_center_z} \\
@@ -137,12 +138,12 @@ done"""
 			box_size_z = self.box_size_z,
 			n_models = self.n_models,
 			exhaust = self.exhaust,
-			dock = '{dock}'
+			dock = dock
 		)
 		# (no need for batch submission)
 		if self.n_models <= 20:
 			template_filled = template_filled_no_dock.format(dock=dock)
-			vina_submit_sh = "{b_d}vina_submit_shs/vina_submit_{d}.sh".format(
+			vina_submit_sh = "{b_d}/vina_submit_shs/vina_submit_{d}.sh".format(
 				b_d=base_dir, d=dock)
 			with open(vina_submit_sh, 'w') as f:
 				f.write(template_filled)
@@ -150,14 +151,14 @@ done"""
 			print("\t{}".format(vina_submit_sh))
 		# (batch submission)
 		elif self.n_models > 20:
-			vina_submits_dir = "{b_d}vina_submit_shs/vina_submits_{d}/".format(
+			vina_submits_dir = "{b_d}/vina_submit_shs/vina_submits_{d}/".format(
 				b_d=base_dir, d=dock)
 			subprocess.call(['mkdir', vina_submits_dir])
 			n_batches = self.n_models / 20
 			for b in range(1, n_batches + 1):
 				subdock = "{d}.{b}".format(d = dock, b = b)
 				template_filled = template_filled_no_dock.format(dock = subdock)
-				vina_submit_sh = "{v_s_d}vina_submit_{sd}.sh".format(
+				vina_submit_sh = "{v_s_d}/vina_submit_{sd}.sh".format(
 					v_s_d = vina_submits_dir, sd = subdock)
 				with open(vina_submit_sh, 'w') as f:
 					f.write(template_filled)
@@ -173,28 +174,31 @@ done"""
 		self.keys = []
 		for lig in self.ligset_list:
 			for m in range(1, int(self.parameters['n_models'])+1):
-				processed_pdbqt = "{d_d}processed_pdbqts/{d}_{lig}_m{m}.pdbqt".format(
+				processed_pdbqt = "{d_d}/processed_pdbqts/{d}_{lig}_m{m}.pdbqt".format(
 					d_d=self.dock_dir, d=dock, lig=lig, m=m)
 				pose = Pdb(processed_pdbqt)
 				key = "{}_{}_m{}".format(dock, lig, m)
-				pose_dic = {
-					'key' : key,
-					'E' : pose.E,
-					'rmsd_ub' : pose.rmsd_ub,
-					'rmsd_lb' : pose.rmsd_lb,
-					'pvr_resis' : pose.pvr_resis,
-					'pvr_resis_atoms' : pose.pvr_resis_atoms,
-					'pvr_resis_objs' : pose.pvr_resis_objs,
-					'torsdof' : pose.torsdof,
-					'pvr_n_contacts' : pose.macro_close_ats,
-					'pvr_model' : pose.pvr_model,
-					'pvr_effic' : pose.pvr_effic,
-					'coords' : pose.coords,
-					'lig' : lig,
-					'model' : m,
-					'pvr_obj' : pose,
-					'pdb_address' : re.sub('pdbqt', 'pdb', processed_pdbqt)
-				}
+				try:
+					pose_dic = {
+						'key' : key,
+						'E' : pose.E,
+						'rmsd_ub' : pose.rmsd_ub,
+						'rmsd_lb' : pose.rmsd_lb,
+						'pvr_resis' : pose.pvr_resis,
+						'pvr_resis_atoms' : pose.pvr_resis_atoms,
+						'pvr_resis_objs' : pose.pvr_resis_objs,
+						'torsdof' : pose.torsdof,
+						'pvr_n_contacts' : pose.macro_close_ats,
+						'pvr_model' : pose.pvr_model,
+						'pvr_effic' : pose.pvr_effic,
+						'coords' : pose.coords,
+						'lig' : lig,
+						'model' : m,
+						'pvr_obj' : pose,
+						'pdb_address' : re.sub('pdbqt', 'pdb', processed_pdbqt)
+					}
+				except AttributeError:
+					print("! ! ! pose {} failed, check for the processed PDBQT".format(key))
 				self.data_dic[key] = pose_dic
 				self.keys.append(key)
 		self.is_assembled = True
@@ -204,7 +208,7 @@ done"""
 	def get_binding_sites_list(self):
 		if not self.is_assembled: self.assemble_dic()
 
-		binding_sites_dir = "{p_d}binding_sites/".format(p_d=self.prot_dir)
+		binding_sites_dir = "{p_d}/binding_sites/".format(p_d=self.prot_dir)
 		self.binding_sites_list = []
 		self.binding_sites_objs = {}
 		for root, dirs, files in os.walk(binding_sites_dir):
@@ -263,7 +267,7 @@ done"""
 	def assess_all_resis(self):
 		if not self.is_assembled: self.assemble_dic()
 
-		self.prot_pdbqt = "{p_d}{p}.pdbqt".format(p_d=self.prot_dir, p=self.prot)
+		self.prot_pdbqt = "{p_d}/{p}.pdbqt".format(p_d=self.prot_dir, p=self.prot)
 		self.prot_obj = Pdb(self.prot_pdbqt)
 		self.prot_resis_list = []
 # 		self.prot_resis_atoms_list = []
@@ -290,31 +294,41 @@ done"""
 
 	# Output all the data mined and analyzed into a CSV file
 	def write_alldata_csv(self):
-		if not self.is_assembled: self.assemble_dic()
-		if not self.is_bs_listed: self.get_binding_sites_list()
-		if not self.is_bs_scored: self.score_binding_sites()
-		if not self.are_aiad_icpd_calcd: self.aiad_icpd_binding_sites()
-		if not self.are_all_resis_assessed: self.assess_all_resis()
+		self.alldata_csv = "{d_d}/{d}_alldata.csv".format(d_d=self.dock_dir, d=dock)
 
-		fieldnames = ['key', 'lig', 'model', 'E', 'rmsd_lb', 'rmsd_ub',
-			'pvr_effic', 'pvr_n_contacts', 'torsdof', 'pdb_address']
-		for bs in self.binding_sites_list:
-			fieldnames.append("{}_fraction".format(bs))
-			fieldnames.append("{}_atoms_fraction".format(bs))
-			fieldnames.append("{}_aiad".format(bs))
-			fieldnames.append("{}_icpd".format(bs))
-		for res in self.prot_resis_list: fieldnames.append(res)
-# 		for atom in self.prot_resis_atoms_list: fieldnames.append(atom)
+		# If the CSV already exists, read it in as a dictionary
+		if os.path.isfile(self.alldata_csv):
+			with open(self.alldata_csv) as f:
+				reader = csv.DictReader(f)
+				self.data_dic = {}
+				for row in reader:
+					self.data_dic[row['key']] = row
+		# If it doesn't, write it
+		else:
+			if not self.is_assembled: self.assemble_dic()
+			if not self.is_bs_listed: self.get_binding_sites_list()
+			if not self.is_bs_scored: self.score_binding_sites()
+			if not self.are_aiad_icpd_calcd: self.aiad_icpd_binding_sites()
+			if not self.are_all_resis_assessed: self.assess_all_resis()
 
-		self.alldata_csv = "{d_d}{d}_alldata.csv".format(d_d=self.dock_dir, d=dock)
-		with open(self.alldata_csv, 'w') as csvfile:
-			writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-			writer.writeheader()
-			for pose in self.data_dic:
-				row = {}
-				for f in fieldnames:
-					row[f] = self.data_dic[pose][f]
-				writer.writerow(row)
+			fieldnames = ['key', 'lig', 'model', 'E', 'rmsd_lb', 'rmsd_ub',
+				'pvr_effic', 'pvr_n_contacts', 'torsdof', 'pdb_address']
+			for bs in self.binding_sites_list:
+				fieldnames.append("{}_fraction".format(bs))
+				fieldnames.append("{}_atoms_fraction".format(bs))
+				fieldnames.append("{}_aiad".format(bs))
+				fieldnames.append("{}_icpd".format(bs))
+			for res in self.prot_resis_list: fieldnames.append(res)
+			# for atom in self.prot_resis_atoms_list: fieldnames.append(atom)
+
+			with open(self.alldata_csv, 'w') as csvfile:
+				writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+				writer.writeheader()
+				for pose in self.data_dic:
+					row = {}
+					for f in fieldnames:
+						row[f] = self.data_dic[pose][f]
+					writer.writerow(row)
 
 		self.is_csv_written = True
 		print("---> Completed alldata.csv is located at:\n\t{}".format(self.alldata_csv))
@@ -323,33 +337,44 @@ done"""
 	def cluster_poses(self):
 		if not self.is_assembled: self.assemble_dic()
 
+		self.clustering_csv = "{d_d}/{d}_clustering.csv".format(d_d=self.dock_dir, d=dock)
 		self.clustering_dic = {}
-		c = 0
-		print("---> Calculating AIAD between poses (for clustering)")
-		for key1 in self.data_dic:
-			self.clustering_dic[key1] = {}
-			c += 1
-			print("\t- calculated for {:25}{:<9}of{:>9}".format(key1,c,len(self.keys)))
-			for key2 in self.data_dic:
-				aiad12 = caclulate_aiad(self.data_dic[key1]['pvr_obj'], self.data_dic[key2]['pvr_obj'])
-				self.clustering_dic[key1][key2] = aiad12
 
-		self.clustering_csv = "{d_d}{d}_clustering.csv".format(d_d=self.dock_dir, d=dock)
-		fieldnames = ['compared'] + self.keys
-		with open(self.clustering_csv, 'w') as csvfile:
-			writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-			writer.writeheader()
-			for key in self.keys:
-				row = self.clustering_dic[key]
-				row['compared'] = key
-				writer.writerow(row)
+		# If the CSV already exists, read it in as a dictionary
+		if os.path.isfile(self.clustering_csv):
+			with open(self.clustering_csv) as f:
+				reader = csv.DictReader(f)
+				for row in reader:
+					key = row['compared']
+					del row['compared']
+					self.clustering_dic[key] = row
+		# If it doesn't, write it
+		else:
+			c = 0
+			print("---> Calculating AIAD between poses (for clustering)")
+			for key1 in self.data_dic:
+				self.clustering_dic[key1] = {}
+				c += 1
+				print("\t- calculated for {:25}{:<9}of{:>9}".format(key1,c,len(self.keys)))
+				for key2 in self.data_dic:
+					aiad12 = caclulate_aiad(self.data_dic[key1]['pvr_obj'], self.data_dic[key2]['pvr_obj'])
+					self.clustering_dic[key1][key2] = aiad12
+
+			fieldnames = ['compared'] + self.keys
+			with open(self.clustering_csv, 'w') as csvfile:
+				writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+				writer.writeheader()
+				for key in self.keys:
+					row = self.clustering_dic[key]
+					row['compared'] = key
+					writer.writerow(row)
 
 		self.are_poses_clustered = True
 		print("   > Completed clustering.csv is located at:\n\t{}".format(self.clustering_csv))
 
 	# Save the data dictionary as a pickled file (i.e. in native python format)
 	def save_pickled_docking_obj(self):
-		self.pickled_docking_obj = "{d_d}{d}.p".format(d_d=self.dock_dir, d=dock)
+		self.pickled_docking_obj = "{d_d}/{d}.p".format(d_d=self.dock_dir, d=dock)
 		pickle.dump(self, open(self.pickled_docking_obj, 'wb'))
 
 		self.is_pickled = True
