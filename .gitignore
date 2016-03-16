@@ -1,11 +1,13 @@
-zvina/p300/*
-zvina/p300/*/*
-zvina/p300/*/*/*
-zvina/hepi/*
-zvina/hepi/*/*
-zvina/hepi/*/*/*
-zvina/ligsets/div5/*
-zvina/ligsets/div5/*/*
-zvina/ligsets/div5/*/*/*
+./zvina/p300/**
+./zvina/p300/*
+./zvina/p300/*/*
+./zvina/p300/*/*/*
+./zvina/hepi/**
+./zvina/hepi/*
+./zvina/hepi/*/*
+./zvina/hepi/*/*/*
+./zvina/ligsets/div5/*
+./zvina/ligsets/div5/*/*
+./zvina/ligsets/div5/*/*/*
 
 
