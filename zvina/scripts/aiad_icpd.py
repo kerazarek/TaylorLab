@@ -6,7 +6,11 @@
 
 from parse_pdb import *
 from math import sqrt
-from numpy import mean
+# from numpy import mean
+
+def mean(list):
+	list_mean = float(sum(list)) / len(list)
+	return list_mean
 
 class Molecule():
 	def list_coords(self):

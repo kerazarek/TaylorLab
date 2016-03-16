@@ -22,6 +22,7 @@ def new_docking_entry():
 	#	Docking ID
 	#	Date
 	#	Protein
+	#	Protein File
 	#	Ligset
 	#	Gridbox
 	#	Exhaustiveness
@@ -38,8 +39,11 @@ def new_docking_entry():
 	if date_input == "d": date_input = current_time.eightdigit
 	print("\t\t>>> date set to: {}\n".format(date_input))
 
-	prot_input = raw_input("\t\tProtein identifier: ")
+	prot_input = raw_input("\t\tProtein: ")
 	print("\t\t>>> prot set to: {}\n".format(prot_input))
+
+	prot_file_input = raw_input("\t\tSpecific protein file (without the .pdbqt): ")
+	print("\t\t>>> prot_file set to: {}\n".format(prot_file_input))
 
 	ligset_input = raw_input("\t\tLigset identifier: ")
 	print("\t\t>>> ligset set to: {}\n".format(ligset_input))
@@ -56,7 +60,7 @@ def new_docking_entry():
 	n_cpus_input = raw_input("\t\tNumber of CPUs: ")
 	print("\t\t>>> n_cpus set to: {}\n".format(n_cpus_input))
 
-	notes_input = raw_input("\t\tAny notes: ")
+	notes_input = raw_input("\t\tAny notes (with no commas): ")
 	if notes_input == "":
 		notes_input = "Entered by new_grid_or_dock_entry.py {}".format(current_time.display)
 	else:
@@ -69,6 +73,7 @@ def new_docking_entry():
 		'Docking ID' : dock_input,
 		'Date' : date_input,
 		'Protein' : prot_input,
+		'Protein File' : prot_file_input,
 		'Ligset' : ligset_input,
 		'Gridbox' : box_input,
 		'Exhaustiveness' : exhaust_input,
@@ -82,6 +87,7 @@ def new_docking_entry():
 		Docking ID: {dock}\n\
 		Date: {date}\n\
 		Protein: {prot}\n\
+		Protein File: {prot_file}\n\
 		Ligset: {ligset}\n\
 		Gridbox: {box}\n\
 		Exhaustiveness: {exhaust}\n\
@@ -91,6 +97,7 @@ def new_docking_entry():
 							dock = dock_input,
 							date = date_input,
 							prot = prot_input,
+							prot_file = prot_file_input,
 							ligset = ligset_input,
 							box = box_input,
 							exhaust = exhaust_input,
@@ -107,8 +114,9 @@ def new_docking_entry():
 	# If "y" is entered, write the row, otherwise don't
 	if proceed == "y":
 		dockings_csv = "{b_d}/Dockings.csv".format(b_d=base_dir)
-		dockings_headers = ["Docking ID", "Date", "Protein", "Ligset", "Gridbox",
-			"Exhaustiveness", "Number of Models", "Number of CPUs", "Notes"]
+		dockings_headers = ["Docking ID", "Date", "Protein", "Protein File",
+			"Ligset", "Gridbox", "Exhaustiveness", "Number of Models",
+			"Number of CPUs", "Notes"]
 		with open(dockings_csv, 'a') as f:
 			appender = csv.DictWriter(f, fieldnames=dockings_headers)
 			appender.writerow(new_row)
@@ -122,7 +130,7 @@ def new_gridbox_entry():
 
 	# Gridboxes.csv columns:
 	#	Gridbox Name
-	#	Protein
+	#	Protein File
 	#	Size in x-dimension
 	#	Size in y-dimension
 	#	Size in z-dimension
@@ -135,8 +143,8 @@ def new_gridbox_entry():
 	box_input = raw_input("\t\tGridbox Name: ")
 	print("\t\t>>> box set to: {}\n".format(box_input))
 
-	prot_input = raw_input("\t\tProtein: ")
-	print("\t\t>>> prot set to: {}\n".format(prot_input))
+	prot_file_input = raw_input("\t\tSpecific protein file (without the .pdbqt): ")
+	print("\t\t>>> prot_file set to: {}\n".format(prot_file_input))
 
 	box_size_x_input = raw_input("\t\tSize in x-dimension: ")
 	print("\t\t>>> box_size_x set to: {}\n".format(box_size_x_input))
@@ -157,7 +165,7 @@ def new_gridbox_entry():
 	print("\t\t>>> box_center_z set to: {}\n".format(box_center_z_input))
 
 	current_time = Timestamp()
-	notes_input = raw_input("\t\tAny notes: ")
+	notes_input = raw_input("\t\tAny notes (with no commas): ")
 	if notes_input == "":
 		notes_input = "Entered by new_grid_or_dock_entry.py {}".format(current_time.display)
 	else:
@@ -168,7 +176,7 @@ def new_gridbox_entry():
 	# New row as a dictionary
 	new_row = {
 		'Gridbox Name' : box_input,
-		'Protein' : prot_input,
+		'Protein File' : prot_file_input,
 		'Size in x-dimension' : box_size_x_input,
 		'Size in y-dimension' : box_size_y_input,
 		'Size in z-dimension' : box_size_z_input,
@@ -181,7 +189,7 @@ def new_gridbox_entry():
 	# Print confirmation of all entered variabled
 	print("\t>>> The new row will be\n\n\
 		Gridbox Name: {box}\n\
-		Protein: {prot}\n\
+		Protein File: {prot_file}\n\
 		Size in x-dimension: {box_size_x}\n\
 		Size in y-dimension: {box_size_y}\n\
 		Size in z-dimension: {box_size_z}\n\
@@ -190,7 +198,7 @@ def new_gridbox_entry():
 		Center in z-dimension: {box_center_z}\n\
 		Notes: {notes}\n".format(
 							box = box_input,
-							prot = prot_input,
+							prot_file = prot_file_input,
 							box_size_x = box_size_x_input,
 							box_size_y = box_size_y_input,
 							box_size_z = box_size_z_input,
@@ -207,7 +215,7 @@ def new_gridbox_entry():
 	# If "y" is entered, write the row, otherwise don't
 	if proceed == "y":
 		gridboxes_csv = "{b_d}/Gridboxes.csv".format(b_d=base_dir)
-		gridboxes_headers = ["Gridbox Name", "Protein", "Size in x-dimension",
+		gridboxes_headers = ["Gridbox Name", "Protein File", "Size in x-dimension",
 			"Size in y-dimension", "Size in z-dimension", "Center in x-dimension",
 			"Center in y-dimension", "Center in z-dimension", "Notes"]
 		with open(gridboxes_csv, 'a') as f:

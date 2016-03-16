@@ -52,6 +52,7 @@ function look_up {
 dock=$( look_up "Docking ID" )
 date=$( look_up "Date" )
 prot=$( look_up "Protein" )
+prot_file=$( look_up "Protein File" )
 ligset=$( look_up "Ligset" )
 box=$( look_up "Gridbox" )
 exhaust=$( look_up "Exhaustiveness" )
@@ -62,6 +63,7 @@ n_cpus=$( look_up "Number of CPUs" )
 export dock=$dock
 export date=$date
 export prot=$prot
+export prot_file=$prot_file
 export ligset=$ligset
 export box=$box
 export exhaust=$exhaust

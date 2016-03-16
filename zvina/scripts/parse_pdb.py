@@ -158,10 +158,13 @@ class Pdb:
 	def get_types(self):
 		# Detect if its been through ADT process_VinaResult.py
 		self.is_pvrd = False # by default
-		for line in self.pdb_lines:
-			if re.search('REMARK VINA RESULT: ', line):
-				self.mine_pvr_data()
-				self.is_pvrd = True
+		try:
+			for line in self.pdb_lines:
+				if re.search('REMARK VINA RESULT: ', line):
+					self.mine_pvr_data()
+					self.is_pvrd = True
+		except AttributeError:
+			print("! ! ! AttributeError while trying to read PDB lines")
 
 		# Determine file type PDB/PDBQT (they are slightly different)
 		if self.pdb_file_in[-5:] == 'pdbqt':
@@ -182,7 +185,7 @@ class Pdb:
 			with pdb_file_open as f:
 				self.pdb_lines = f.readlines()
 		except IOError:
-			print("! ! ! IOError")
+			print("! ! ! IOError while trying to read PDB lines")
 			pass
 		# Determine if PDB or PDBQT, and whether it has been through process_VinaResult.py
 		self.get_types() # this also mines the actual data

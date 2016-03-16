@@ -4,7 +4,7 @@
 # (c) Zarek Siegel
 # v1 3/6/16
 
-import argparse, subprocess
+import argparse, subprocess, os
 import new_grid_or_dock_entry
 from constants import *
 
@@ -17,11 +17,11 @@ def main():
 		help='the ID for this docking')
 
 	parser.add_argument('-nd', '--new_docking', action='store_true', default=False,
-		help='execute the R script to write the parameters.csv')
+		help='Write a new set of docking parameters to Dockings.csv')
 	parser.add_argument('-ng', '--new_gridbox', action='store_true', default=False,
-		help='execute the R script to write the parameters.csv')
-	parser.add_argument('-w', '--write_params', action='store_true', default=False,
-		help='execute the R script to write the parameters.csv')
+		help='Write a new set of grid box parameters to Gridboxes.csv')
+# 	parser.add_argument('-w', '--write_params', action='store_true', default=False,
+# 		help='execute the R script to write the parameters.csv')
 	parser.add_argument('-v', '--vina', action='store_true', default=False,
 		help='write the Vina job submission script')
 
@@ -45,7 +45,7 @@ def main():
 	#
 	new_docking = args['new_docking']
 	new_gridbox = args['new_gridbox']
-	write_params = args['write_params']
+# 	write_params = args['write_params']
 	vina = args['vina']
 	#
 	separate = args['separate']
@@ -93,10 +93,10 @@ def main():
 	if post_proc:
 		print("---> Processing raw Vina output PDBQTs")
 		subprocess.call(["{b_d}/scripts/separate_vina_results.sh".format(b_d=base_dir),
-			dock, base_dir, ADT_dir, MGL_py_bin])
+			dock, base_dir, AutoDockTools_dir, AutoDockTools_pythonsh_binary])
 		print("---> Cleaning up processed PDBQTs and converting to PDBs")
 		subprocess.call(["{b_d}/scripts/cleanup_processed_vina_results.sh".format(b_d=base_dir),
-			dock, base_dir, ADT_dir, MGL_py_bin])
+			dock, base_dir, AutoDockTools_dir, AutoDockTools_pythonsh_binary])
 		d.write_alldata_csv()
 		d.cluster_poses()
 		d.save_pickled_docking_obj()
