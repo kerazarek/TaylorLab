@@ -1,13 +1,2 @@
-/Users/zarek/GitHub/TaylorLab/zvina/p300/**
-/Users/zarek/GitHub/TaylorLab/zvina/p300/*
-/Users/zarek/GitHub/TaylorLab/zvina/p300/*/*
-/Users/zarek/GitHub/TaylorLab/zvina/p300/*/*/*
-/Users/zarek/GitHub/TaylorLab/zvina/hepi/**
-/Users/zarek/GitHub/TaylorLab/zvina/hepi/*
-/Users/zarek/GitHub/TaylorLab/zvina/hepi/*/*
-/Users/zarek/GitHub/TaylorLab/zvina/hepi/*/*/*
-/Users/zarek/GitHub/TaylorLab/zvina/ligsets/div5/*
-/Users/zarek/GitHub/TaylorLab/zvina/ligsets/div5/*/*
-/Users/zarek/GitHub/TaylorLab/zvina/ligsets/div5/*/*/*
-
-
+zvina/**/*
+zvina/h11_alldata_correls.xlsx

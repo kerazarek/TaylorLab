@@ -1,9 +1,0 @@
-lig_form=!FS! 
-lig_mw=!FS! 
-lig_smiles=!FS! 
-lig_n_atoms=!FS! 
-lig_n_bonds=!FS! 
-lig_n_rings=!FS! 
-lig_logp=!FS! 
-lig_psa=!FS! 
-lig_mr=!FS! 
