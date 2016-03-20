@@ -1,0 +1,48 @@
+Gridbox Name,Protein File,Size in x-dimension,Size in y-dimension,Size in z-dimension,Center in x-dimension,Center in y-dimension,Center in z-dimension,Notes
+BOX,PROT,60,72,88,41.89,2.69,-1.85,Same as hab2
+BOX_AAS,PROT_adph,60,72,88,41.89,2.69,-1.85,active site of protein A
+BOX_AWP,PROT_adph,126,126,126,41.89,2.69,-1.85,all of protein A
+BOX_BWP,PROT_B,126,126,126,4.89,-5.27,12.0,all of protein B
+haa,hepi_2h1h,56,58,52,44.2,9.9,4.2,ADPH (AS) [CARM+2H1H+2GT1]
+haf,hepi_2h1h,48,70,48,40.54,-1.4,-4.91,FDLA (AS) [2H1H]
+hab,hepi_2h1h,60,72,88,41.89,2.69,-1.85,ADPH+FDLA (AS) [2H1H]
+hwp,hepi_2h1h,120,120,120,46.22,0.99,5.48,Whole protein [2H1H]
+haa,hepi_2h1h_adph,56,58,52,44.2,9.9,4.2,ADPH (AS) [CARM+2H1H]
+haf,hepi_2h1h_adph,48,70,48,40.54,-1.4,-4.91,FDLA (AS) [2H1H]
+hab,hepi_2h1h_adph,60,72,88,41.89,2.69,-1.85,ADPH+FDLA (AS) [2H1H]
+hwp,hepi_2h1h_adph,120,120,120,46.22,0.99,5.48,Whole protein [2H1H]
+haa,hepi_2h1h_fdla,56,58,52,44.2,9.9,4.2,ADPH (AS) [CARM+2H1H]
+haf,hepi_2h1h_fdla,48,70,48,40.54,-1.4,-4.91,FDLA (AS) [2H1H]
+hab,hepi_2h1h_fdla,60,72,88,41.89,2.69,-1.85,ADPH+FDLA (AS) [2H1H]
+hwp,hepi_2h1h_fdla,120,120,120,46.22,0.99,5.48,Whole protein [2H1H]
+haa,hepi_2gt1,56,58,52,44.2,9.9,4.2,ADPH (AS) [CARM+2H1H+2GT1]
+haf,hepi_2gt1,48,70,48,40.54,-1.4,-4.91,FDLA (AS) [2GT1]
+hab,hepi_2gt1,60,72,88,41.89,2.69,-1.85,ADPH+FDLA (AS) [2GT1]
+hwp,hepi_2gt1,120,120,120,46.22,0.99,5.48,Whole protein [2GT1]
+haa,hepi_2gt1_adph,56,58,52,44.2,9.9,4.2,ADPH (AS) [CARM+2H1H+2GT1]
+haf,hepi_2gt1_adph,48,70,48,40.54,-1.4,-4.91,FDLA (AS) [2GT1]
+hab,hepi_2gt1_adph,60,72,88,41.89,2.69,-1.85,ADPH+FDLA (AS) [2GT1]
+hwp,hepi_2gt1_adph,120,120,120,46.22,0.99,5.48,Whole protein [2GT1]
+haa,hepi_2gt1_fdla,56,58,52,44.2,9.9,4.2,ADPH (AS) [CARM+2H1H+2GT1]
+haf,hepi_2gt1_fdla,48,70,48,40.54,-1.4,-4.91,FDLA (AS) [2GT1]
+hab,hepi_2gt1_fdla,60,72,88,41.89,2.69,-1.85,ADPH+FDLA (AS) [2GT1]
+hwp,hepi_2gt1_fdla,120,120,120,46.22,0.99,5.48,Whole protein [2GT1]
+haa_c,hepi_carm,56,58,52,44.2,9.9,4.2,ADPH (AS) [CARM+2H1H]
+haf_c,hepi_carm,48,70,48,42.6,8.8,-7.7,FDLA (AS) [CARM]
+hab_c,hepi_carm,60,72,88,43.5,8,-0.5,ADPH+FDLA (AS) [CARM]
+hwp_c,hepi_carm,126,126,126,46,6.5,0,Whole protein [CARM]
+haa_c,hepi_carm_adph,56,58,52,44.2,9.9,4.2,ADPH (AS) [CARM+2H1H+2GT1]
+haf_c,hepi_carm_adph,48,70,48,42.6,8.8,-7.7,FDLA (AS) [CARM]
+hab_c,hepi_carm_adph,60,72,88,43.5,8,-0.5,ADPH+FDLA (AS) [CARM]
+hwp_c,hepi_carm_adph,126,126,126,46,6.5,0,Whole protein [CARM]
+haa_c,hepi_carm_fdla,56,58,52,44.2,9.9,4.2,ADPH (AS) [CARM+2H1H]
+haf_c,hepi_carm_fdla,48,70,48,42.6,8.8,-7.7,FDLA (AS) [CARM]
+hab_c,hepi_carm_fdla,60,72,88,43.5,8,-0.5,ADPH+FDLA (AS) [CARM]
+hwp_c,hepi_carm_fdla,126,126,126,46,6.5,0,Whole protein [CARM]
+pac,p300,17.38,24.49,18.17,-17,12.81,1.26,Ac-CoA (AS)
+pal,p300,18.75,12.38,15.75,-19.93,28.27,2.51,Lys (AS)
+pab,p300,19.75,31.6,19.75,-17.63,15.96,1.48,Lys+Ac-CoA (AS)
+psl,p300,27.65,29.62,31.6,-22,34,4,Lys expanded/surface
+pwp,p300,126,126,126,-8.38,25.49,1.43,Whole protein
+pa2,p300,50,90,40,-18.0,18.0,1.5,old (Entered by new_grid_or_dock_entry.py 2016-03-16 14:54:35)
+pwa,p300,50,90,40,-18.0,18.0,1.5,old and not correct
