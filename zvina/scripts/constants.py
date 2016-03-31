@@ -3,7 +3,7 @@
 # v1 3/11/16
 # v2 3/15/16
 
-base_dir="/Users/zarek/GitHub/TaylorLab/zvina"
+base_dir="/Users/zarek/lab/zvina"
 AutoDockTools_dir="/Library/MGLTools/latest/MGLToolsPckgs/AutoDockTools"
 AutoDockTools_pythonsh_binary="/Library/MGLTools/latest/bin/pythonsh"
 

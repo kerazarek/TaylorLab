@@ -59,7 +59,7 @@ def get_properties(molc_in):
 	obprop_out = obprop_out.communicate()[0]
 	obprop_out = re.split('\n', obprop_out)
 
-	# name             /Users/zarek/GitHub/TaylorLab/zvina/ligsets/hls1/pdbs/ab.pdb 1
+	# name             /Users/zarek/lab/zvina/ligsets/hls1/pdbs/ab.pdb 1
 	# formula          C6H12O6
 	# mol_weight       180.156
 	# exact_mass       180.063
