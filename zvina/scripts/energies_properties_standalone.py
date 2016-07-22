@@ -100,13 +100,22 @@ def get_properties(molc_in):
 	def extract_property_value(search_str):
 		for row in obprop_out:
 			if re.search(search_str, row):
-		# 		print(row)
-				value = (re.sub(r'^(\w+)\s+(\S+)\s?\S?$', r'\2', row))
+				# print(row)
+				# value = (re.sub(r'^(\w+) +([^ ]+)$', r'\2', row))
+				if search_str == "name":
+					value = (re.sub(r'^(\w+)\s+(\S+) ?\d*$', r'\2', row))
+				elif search_str == "canonical_SMILES":
+					value = (re.sub(r'^(\w+) +(\S+)\t?\S*$', r'\2', row))
+				else:
+					value = (re.sub(r'^(\w+)\s+(\S+)\s?\S?$', r'\2', row))
+				# print(row)
+				# print(value)
+				# print()
 		return value
 
 	search_str_list = [
-		"name", "formula", "mol_weight",
-		"exact_mass", "canonical_SMILES", "num_atoms",
+		"name", "formula", "mol_weight", "exact_mass",
+		"canonical_SMILES", "InChI", "num_atoms",
 		"num_bonds", "num_rings", "logP", "PSA", "MR"
 	]
 
