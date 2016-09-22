@@ -22,16 +22,16 @@ def get_binding_sites_list(self):
 
 	self.binding_sites_list = []
 	self.binding_sites_objs = {}
-    for root, dirs, files in os.walk(binding_sites_dir):
-        for file in files:
-            if re.match(r'^(\w+).pdb$', file):
-                bs = re.sub('.pdb', '', file)
-                self.binding_sites_list.append(bs)
-                # try: self.binding_sites_objs[re.sub('.pdb', '', file)] = Pdb("{}/{}".format(root, file))
-                try:
-                    self.binding_sites_objs[bs] = BindingSite(self, bs)
-                except:
-                    print("! ! ! Error while trying to read PDB for {}".format(file))
+	for root, dirs, files in os.walk(binding_sites_dir):
+		for file in files:
+			if re.match(r'^(\w+).pdb$', file):
+				bs = re.sub('.pdb', '', file)
+				self.binding_sites_list.append(bs)
+				# try: self.binding_sites_objs[re.sub('.pdb', '', file)] = Pdb("{}/{}".format(root, file))
+				try:
+					self.binding_sites_objs[bs] = BindingSite(self, bs)
+				except:
+					print("! ! ! Error while trying to read PDB for {}".format(file))
 
 	self.bs_resis_lists = {}
 	self.bs_resis_atoms_lists = {}

@@ -76,22 +76,22 @@ def write_alldata_csv(self):
 	self.get_fieldnames()
 
 	print("---> Writing alldata.csv...")
-    with open(self.alldata_csv, 'w') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=self.alldata_fieldnames)
-        writer.writeheader()
-        for key in self.keys:
-            row = {}
-            if key in self.data_dic.keys():
-                for f in self.alldata_fieldnames:
-                    try:
-                        row[f] = self.data_dic[key][f]
-                    except KeyError:
-                        pass
-                        # print("! ! ! KeyError while trying to write {}".format(f))
-                        # row[f] = "!Err!"
-            else:
-                print("! ! ! No entry in data dictionary for {}".format(key))
-            writer.writerow(row)
+	with open(self.alldata_csv, 'w') as csvfile:
+		writer = csv.DictWriter(csvfile, fieldnames=self.alldata_fieldnames)
+		writer.writeheader()
+		for key in self.keys:
+			row = {}
+			if key in self.data_dic.keys():
+				for f in self.alldata_fieldnames:
+					try:
+						row[f] = self.data_dic[key][f]
+					except KeyError:
+						pass
+						# print("! ! ! KeyError while trying to write {}".format(f))
+						# row[f] = "!Err!"
+			else:
+				print("! ! ! No entry in data dictionary for {}".format(key))
+			writer.writerow(row)
 
 	self.is_csv_written = True
 	print("   > Completed alldata.csv is located at:\n\t{}\n".format(self.alldata_csv))
