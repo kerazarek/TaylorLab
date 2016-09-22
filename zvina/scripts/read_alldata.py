@@ -3,7 +3,7 @@
 ### Output all the data mined and analyzed into a CSV file
 # (c) Zarek Siegel
 
-import os, sys
+import os, sys, csv
 # import cPickle as pickle
 import pickle
 from create_docking_object import * # Docking

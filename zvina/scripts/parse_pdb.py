@@ -80,9 +80,51 @@ class Pdb:
 				}
 				_coords.append(_dic)
 		self.coords = _coords
+		# print(self.coords)
+
+	def get_coord_triples(self):
+		_coord_triples = []
+		for atom in self.coords:
+			_coord_triples.append(atom['xyz'])
+		self.coord_triples = _coord_triples
+		# print(self.coord_triples)
+
+	def get_residues(self):
+		self.resis = list(
+			set(
+				[
+					"{}{}".format(atom['resn'], atom['resi']) \
+						for atom in self.coords
+				]
+			)
+		)
+		# print(self.resis)
+
+		self.residues = self.resis
+		self.resis_atoms = list(
+			set(
+				[
+					"{}{}_{}".format(atom['resn'], atom['resi'], atom['atomn']) \
+						for atom in self.coords
+				]
+			)
+		)
+		# print(self.resis_atoms)
 
 	def mine_pvr_data(self): # mine data from pvrd file
 		contacts = []
+
+		# added after Dylan's error
+		self.E = None
+		self.rmsd_ub = None
+		self.rmsd_lb = None
+		self.pvr_resis = None
+		self.pvr_resis_atoms = None
+		self.pvr_resis_objs = None
+		self.torsdof = None
+		self.macro_close_ats = None
+		self.pvr_model = None
+
 		for line in self.pdb_lines:
 			# Binding Energy
 			if re.search('REMARK VINA RESULT: ', line):
@@ -143,6 +185,16 @@ class Pdb:
 		self.pvr_resis = list(set(self.pvr_resis))
 		self.pvr_resis_atoms = list(set(self.pvr_resis_atoms))
 
+		# print("{:<20}: {}".format("E", self.E))
+		# print("{:<20}: {}".format("rmsd_ub", self.rmsd_ub))
+		# print("{:<20}: {}".format("rmsd_lb", self.rmsd_lb))
+		# print("{:<20}: {}".format("pvr_resis", self.pvr_resis))
+		# print("{:<20}: {}".format("pvr_resis_atoms", self.pvr_resis_atoms))
+		# print("{:<20}: {}".format("pvr_resis_objs", self.pvr_resis_objs))
+		# print("{:<20}: {}".format("torsdof", self.torsdof))
+		# print("{:<20}: {}".format("macro_close_ats", self.macro_close_ats))
+		# print("{:<20}: {}".format("pvr_model", self.pvr_model))
+
 		self.pvr_data = {
 			'E' : self.E,
 			'rmsd_ub' : self.rmsd_ub,
@@ -161,7 +213,6 @@ class Pdb:
 		try:
 			for line in self.pdb_lines:
 				if re.search('REMARK VINA RESULT: ', line):
-					self.mine_pvr_data()
 					self.is_pvrd = True
 		except AttributeError:
 			print("! ! ! AttributeError while trying to read PDB lines")
@@ -170,9 +221,11 @@ class Pdb:
 		if self.pdb_file_in[-5:] == 'pdbqt':
 			self.get_pdbqt_coords()
 			self.file_type = 'pdbqt'
+			self.get_coord_triples() # get coordinate triples
 		elif self.pdb_file_in[-3:] == 'pdb':
 			self.get_pdb_coords()
 			self.file_type = 'pdb'
+			self.get_coord_triples() # get coordinate triples
 		else:
 			print("!!! BAD FILETYPE !!!")
 
@@ -188,8 +241,9 @@ class Pdb:
 			print("! ! ! IOError while trying to read PDB lines")
 			pass
 		# Determine if PDB or PDBQT, and whether it has been through process_VinaResult.py
-		self.get_types() # this also mines the actual data
-
+		self.get_types()
+		self.get_residues()
+		if self.is_pvrd: self.mine_pvr_data() # this mines the actual data
 
 
 

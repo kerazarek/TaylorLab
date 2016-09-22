@@ -3,8 +3,15 @@
 ###
 # (c) Zarek Siegel
 # v1 3/16/16
+# updated 7/19/16
 
-import subprocess, re, sys
+# Script requires Python 3
+import sys
+if sys.version_info[0] != 3:
+	print("This script requires Python version 3")
+	sys.exit(1)
+
+import subprocess, re
 from constants import *
 
 ##########

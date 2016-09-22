@@ -19,7 +19,7 @@ def write_vina_submit_sh(self):
 		if os.path.isfile(vina_submit_sh):
 			print(">>> Vina submission script already exists at")
 			print("\t{}".format(vina_submit_sh))
-			overwrite = raw_input("\n\t>>> Enter 'y' or enter to overwrite, 'n' to exit: ")
+			overwrite = input("\n\t>>> Enter 'y' or enter to overwrite, 'n' to exit: ")
 
 			if overwrite == "y" or \
 			   overwrite == "yes" or \
@@ -38,7 +38,7 @@ def write_vina_submit_sh(self):
 		if os.path.isdir(vina_submits_dir):
 			print(">>> Vina submission scripts already exist at")
 			print("\t{}".format(vina_submits_dir))
-			overwrite = raw_input("\n\t>>> Enter 'y' or enter to overwrite, 'n' to exit: ")
+			overwrite = input("\n\t>>> Enter 'y' or enter to overwrite, 'n' to exit: ")
 
 			if overwrite == "y" or \
 			   overwrite == "yes" or \

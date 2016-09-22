@@ -86,46 +86,7 @@ def write_energies_properties_csv(self):
 
 Docking.write_energies_properties_csv = write_energies_properties_csv
 
-# Write another CSV that shows the AIAD values between all ligands
-def cluster_poses(self):
-	if not self.is_assembled: self.assemble_dic()
 
-	self.clustering_csv = "{d_d}/{d}_clustering.csv".format(d_d=self.dock_dir, d=self.dock)
-	self.clustering_dic = {}
-
-	# If the CSV already exists, read it in as a dictionary
-	if os.path.isfile(self.clustering_csv):
-		with open(self.clustering_csv) as f:
-			reader = csv.DictReader(f)
-			for row in reader:
-				key = row['compared']
-				del row['compared']
-				self.clustering_dic[key] = row
-	# If it doesn't, write it
-	else:
-		c = 0
-		print("---> Calculating AIAD between poses (for clustering)... ")
-		for key1 in self.data_dic:
-			self.clustering_dic[key1] = {}
-			c += 1
-			print("\t- calculated for {:25}{:<9}of{:>9}".format(key1,c,len(self.keys)))
-			for key2 in self.data_dic:
-				aiad12 = caclulate_aiad(self.data_dic[key1]['pvr_obj'], self.data_dic[key2]['pvr_obj'])
-				self.clustering_dic[key1][key2] = aiad12
-
-		fieldnames = ['compared'] + self.keys
-		with open(self.clustering_csv, 'w') as csvfile:
-			writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-			writer.writeheader()
-			for key in self.keys:
-				row = self.clustering_dic[key]
-				row['compared'] = key
-				writer.writerow(row)
-
-	self.are_poses_clustered = True
-	print("   > Completed clustering.csv is located at:\n\t{}\n".format(self.clustering_csv))
-
-Docking.cluster_poses = cluster_poses
 
 
 

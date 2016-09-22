@@ -46,14 +46,25 @@ def threeD_distance(triple1, triple2):
 def caclulate_aiad(pdb1, pdb2):
 	molc1 = Molecule(pdb1)
 	molc2 = Molecule(pdb2)
-	dist_list = []
+	dist_list1 = []
 	for triple1 in molc1.coord_triples:
 		dists_from_t1 = []
 		for triple2 in molc2.coord_triples:
 			dist = threeD_distance(triple1, triple2)
 			dists_from_t1.append(dist)
-		dist_list.append(min(dists_from_t1))
-	return mean(dist_list)
+		dist_list1.append(min(dists_from_t1))
+	dist_list2 = []
+	for triple1 in molc2.coord_triples:
+		dists_from_t1 = []
+		for triple2 in molc1.coord_triples:
+			dist = threeD_distance(triple1, triple2)
+			dists_from_t1.append(dist)
+		dist_list2.append(min(dists_from_t1))
+	# for triple1 in molc1.coord_triples:
+	# 	for triple2 in molc2.coord_triples:
+	# 		dist = threeD_distance(triple1, triple2)
+	# 		dist_list.append(dist)
+	return min([mean(dist_list1), mean(dist_list2)])
 
 def calculate_icpd(pdb1, pdb2):
 	molc1 = Molecule(pdb1)

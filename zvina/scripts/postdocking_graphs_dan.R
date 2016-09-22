@@ -10,8 +10,9 @@ library(ggplot2)
 library(reshape2)
 
 ### Command line arguments
-manual <- F
-manual_dock <- "p29"
+manual <- T
+manual_dock <- "h35"
+# h29 h23 h35
 
 if(manual) {
 	base_dir <- "/Users/zarek/lab/zvina"
@@ -167,6 +168,43 @@ if(ligset == "hls1") {
 	data$lig <- factor(data$lig, levels = hls1_ordered)
 	ligset_list <- hls1_ordered
 	data$chain_length <- rep(NA, nrow(data))
+	data$chain_length[data$lig == "ab"] <- 0
+	data$chain_length[data$lig == "gb"] <- 0
+	data$chain_length[data$lig == "aam"] <- 1
+	data$chain_length[data$lig == "abm"] <- 1
+	data$chain_length[data$lig == "gam"] <- 1
+	data$chain_length[data$lig == "gbm"] <- 1
+	data$chain_length[data$lig == "ab3"] <- 3
+	data$chain_length[data$lig == "gb3"] <- 3
+	data$chain_length[data$lig == "ab6"] <- 6
+	data$chain_length[data$lig == "gb6"] <- 6
+	data$chain_length[data$lig == "ab7"] <- 7
+	data$chain_length[data$lig == "gb7"] <- 7
+	data$chain_length[data$lig == "ab8"] <- 8
+	data$chain_length[data$lig == "gb8"] <- 8
+	data$chain_length[data$lig == "aa8"] <- 8
+	data$chain_length[data$lig == "ga8"] <- 8
+	data$chain_length[data$lig == "gb8y"] <- 8
+	data$chain_length[data$lig == "ab10"] <- 10
+	data$chain_length[data$lig == "gb10"] <- 10
+	data$chain_length[data$lig == "aa10"] <- 10
+	data$chain_length[data$lig == "ga10"] <- 10
+	
+	data$E[data$E == '!Err!'] <- NA
+	data$E <- factor(data$E)
+	data$E <- as.double(as.vector(data$E))
+
+	with(data, cor.test(E, chain_length))
+		# 	Pearson's product-moment correlation
+		# 
+		# data:  E and chain_length
+		# t = -66.105, df = 8396, p-value < 2.2e-16
+		# alternative hypothesis: true correlation is not equal to 0
+		# 95 percent confidence interval:
+		#  -0.5989627 -0.5708247
+		# sample estimates:
+		#        cor 
+		# -0.5850697 
 }
 
 binding_sites_dir <- paste0(base_dir, "/binding_sites/", prot_file)
@@ -192,10 +230,10 @@ binding_sites <- sub(".pdb", "", binding_sites)
 data$E[data$E == '!Err!'] <- NA
 data$E <- factor(data$E)
 data$E <- as.double(as.vector(data$E))
-#
+# 
 # ### Create analysis data frame
 # analysis <- data.frame(row.names = ligset_list)
-#
+# 
 # #	Build column headers for averages, minimums, standard deviations, distribution fractions
 # analysis.columns <- c("AvgE", "MinE", "StdevE", paste("Num_", binding_sites, sep = ""),
 #                       paste("DistribFrac_", binding_sites, sep = ""),
@@ -203,7 +241,7 @@ data$E <- as.double(as.vector(data$E))
 # for(c in analysis.columns) {
 # 	analysis[,c] <- rep(NA, ligset_length)
 # }
-#
+# 
 # #	Fill in analysis data
 # for(l in ligset_list) {
 # 	analysis[l, "lig"] <- l
@@ -213,7 +251,7 @@ data$E <- as.double(as.vector(data$E))
 # 	DistribFrac_Denom <- 0
 # 	for(bs in binding_sites) {
 # 		bindsin_bs <- paste0("bindsin_", bs)
-#
+# 		
 # 		num_in_site <- length(data$E[data$lig == l & data[, bindsin_bs] == 1])
 # 		analysis[l, paste0("Num_", bs)] <- num_in_site # Number binding in each site
 # 		DistribFrac_Denom <- DistribFrac_Denom + num_in_site
@@ -232,10 +270,10 @@ data$E <- as.double(as.vector(data$E))
 # 			analysis[l, paste("Num_", bs, sep = "")] / DistribFrac_Denom
 # 	}
 # }
-#
+# 
 
 # analysis_csv = paste0(dock_dir, "/", dock, "_summary_from_graphing.csv")
-#
+# 
 # write.csv(analysis, file = analysis_csv)
 # print(paste0("Created summary CSV"))
 
@@ -588,8 +626,8 @@ if(prot == "hepi") {
 	hls1_ordered <- factor(hls1_ordered, levels=hls1_ordered)
 	dan.data <- read.csv("/Users/zarek/lab/Resources/Dans_Percent_Inhib_Data.csv", header = T)
 	dan.data$Ligand <- factor(dan.data$Ligand, levels = hls1_ordered)
-
-
+	
+	
 	dan_percent_inhib_barplot <- ggplot(data=dan.data, aes(x=Ligand, y=Percent.Inhibition, fill=Ligand)) +
 		geom_bar(stat="identity", color="black") +
 		scale_fill_discrete(guide=F) +
@@ -599,8 +637,18 @@ if(prot == "hepi") {
 		theme(legend.title=element_text(face="bold"))
 	dan_percent_inhib_barplot
 	ggsave("/Users/zarek/Desktop/thesis_shit/dan_percent_inhib_barplot.pdf", width=8, height=4)
-
+	
 	cor.test(dan.data$Chain.Length, dan.data$Percent.Inhibition)
+		# 	Pearson's product-moment correlation
+		# 
+		# data:  dan.data$Chain.Length and dan.data$Percent.Inhibition
+		# t = -2.895, df = 19, p-value = 0.009281
+		# alternative hypothesis: true correlation is not equal to 0
+		# 95 percent confidence interval:
+		#  -0.7950526 -0.1597034
+		# sample estimates:
+		#        cor 
+		# -0.5532483
 }
 #	p300:
 if(prot == "p300") {

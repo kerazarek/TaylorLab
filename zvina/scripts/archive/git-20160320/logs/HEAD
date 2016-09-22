@@ -1,6 +1,0 @@
-0000000000000000000000000000000000000000 c316926a27202d7aa08d88c141a41829fc806c75 Zarek Siegel <zarek.siegel@gmail.com> 1458182308 -0400	commit (initial): initial [2016-03-16 2238]
-c316926a27202d7aa08d88c141a41829fc806c75 0177a2b543d35baf4246920cd3d73202ad4a8072 Zarek Siegel <zarek.siegel@gmail.com> 1458252246 -0400	commit: created write_vina and create_dock scripts, doing away with load_params.sh
-0177a2b543d35baf4246920cd3d73202ad4a8072 d7ad71575c4ecf6ea4fa2cd95884df58b153d894 Zarek Siegel <zarek.siegel@gmail.com> 1458254007 -0400	commit: more stuff
-d7ad71575c4ecf6ea4fa2cd95884df58b153d894 34f02aee9bf422592cc3ed5966bf854f4c0b35f8 Zarek Siegel <zarek.siegel@gmail.com> 1458254507 -0400	commit: finished remodularizing for the day
-34f02aee9bf422592cc3ed5966bf854f4c0b35f8 ea414123066c5f7716fbc99d8037ba951f5dd1af Zarek Siegel <zarek.siegel@gmail.com> 1458280487 -0400	commit: Lotsa stuff end of the day 3/17
-ea414123066c5f7716fbc99d8037ba951f5dd1af 48c9567cccc36710772aff899cfb8a623e28191d Zarek Siegel <zarek.siegel@gmail.com> 1458349729 -0400	commit: minor submission script changes

@@ -4,7 +4,7 @@
 # (c) Zarek Siegel
 # v1 3/6/16
 
-# FROZEN 04/04/16 08:29
+# pre_and_post frozen 04/04/16 08:29
 
 import argparse, subprocess, os
 import new_grid_or_dock_entry
@@ -80,7 +80,6 @@ def main():
 
 	args = vars(parser.parse_args())
 
-
 	if args['new_docking']:
 		print("---> Write new set of docking parameters to Dockings.csv...")
 # 		new_grid_or_dock_entry.new_docking_entry()
@@ -91,6 +90,7 @@ def main():
 	else:
 		dock = str(args['dock'])
 		d = Docking(dock)
+		d.running_from_main = True
 		if args['print']:
 			d.print_parameters()
 		if args['vina']:

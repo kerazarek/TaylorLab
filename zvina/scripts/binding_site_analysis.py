@@ -5,9 +5,11 @@
 
 from __future__ import print_function
 import re
+from constants import *
 from operator import itemgetter
 from create_docking_object import * # Docking
-from parse_pdb import * # Pdb
+# from parse_pdb import * # Pdb
+from pdb_obj_types import *
 from aiad_icpd import *
 
 
@@ -17,13 +19,19 @@ def get_binding_sites_list(self):
 
 	binding_sites_dir = "{b_d}/binding_sites/{p_f}".format(
 		b_d=base_dir, p_f=self.prot_file)
+
 	self.binding_sites_list = []
 	self.binding_sites_objs = {}
-	for root, dirs, files in os.walk(binding_sites_dir):
-		for file in files:
-			self.binding_sites_list.append(re.sub('.pdb', '', file))
-			try: self.binding_sites_objs[re.sub('.pdb', '', file)] = Pdb("{}/{}".format(root, file))
-			except: print("! ! ! Error while trying to read PDB for {}".format(file))
+    for root, dirs, files in os.walk(binding_sites_dir):
+        for file in files:
+            if re.match(r'^(\w+).pdb$', file):
+                bs = re.sub('.pdb', '', file)
+                self.binding_sites_list.append(bs)
+                # try: self.binding_sites_objs[re.sub('.pdb', '', file)] = Pdb("{}/{}".format(root, file))
+                try:
+                    self.binding_sites_objs[bs] = BindingSite(self, bs)
+                except:
+                    print("! ! ! Error while trying to read PDB for {}".format(file))
 
 	self.bs_resis_lists = {}
 	self.bs_resis_atoms_lists = {}
@@ -40,6 +48,8 @@ def get_binding_sites_list(self):
 		if self.evaluate_resis_atoms:
 			self.bs_resis_atoms_lists[bs] = list(set(bs_resis_atoms))
 
+	# print(self.bs_resis_lists)
+
 	self.binding_sites_list_gotten = True
 	print("   > Retrieved binding sites")
 
@@ -54,19 +64,116 @@ def score_binding_sites(self):
 
 	print("   > Scoring binding sites for pose ", end="")
 	char_count = 31
-	for pose in self.keys:
+
+# 	for pose in self.keys:
+# 		if char_count <= 76:
+# 			print(pose, end=" ")
+# 			char_count = char_count + len(pose) + 1
+# 		else:
+# 			print("\n\t{}".format(pose), end = " ")
+# 			char_count = len(pose) + 1
+#
+# 		### Score binding sites using residues detected by process_VinaResult.py
+#
+# 		# Create a list of binding sites contacted by each pose (see bindsin_ below)
+# 		bindsin_list = []
+# 		for bs in self.binding_sites_list:
+# 			# The intersection between the residues contacted by the ligand
+# 			#	and the residues that constitue the binding site
+# 			bs_resis_intersection = (
+# 				set(self.bs_resis_lists[bs]) & set(self.data_dic[pose]['pvr_resis'])
+# 			)
+# 			# Fraction of binding site residues contacted
+# 			bs_resis_fraction = float(len(bs_resis_intersection)) / float(len(self.bs_resis_lists[bs]))
+# 			# Append the fraction to the data dictionary
+# 			self.data_dic[pose]["fraction_{}".format(bs)] = bs_resis_fraction
+# 			# Append a bindsin_SITE residue based on whether the fraction
+# 			#	is at/above a certain threshold (specified in constants.py)
+# 			if bs_resis_fraction >= resis_scoring_threshold:
+# 				self.data_dic[pose]["bindsin_{}".format(bs)] = 1
+# 				bindsin_list.append(bs)
+# 			else:
+# 				self.data_dic[pose]["bindsin_{}".format(bs)] = 0
+# 			# Same can be done for atoms, but not sure if it's all that useful
+# 			if self.evaluate_resis_atoms:
+# 				bs_resis_atoms_intersection = (
+# 					set(self.bs_resis_atoms_lists[bs]) & set(self.data_dic[pose]['pvr_resis_atoms'])
+# 				)
+# 				bs_resis_atoms_fraction = float(len(bs_resis_atoms_intersection)) / float(len(self.bs_resis_atoms_lists[bs]))
+# 				self.data_dic[pose]["fraction_atoms_{}".format(bs)] = bs_resis_atoms_fraction
+# 				if bs_resis_atom_fraction >= resis_atoms_scoring_threshold:
+# 					self.data_dic[pose]["bindsin_atoms_{}".format(bs)] = 1
+# 				else:
+# 					self.data_dic[pose]["bindsin_atoms_{}".format(bs)] = 0
+# 		self.data_dic[pose]["bindsin_list"] = bindsin_list
+# 		bindsin_list_str = str(bindsin_list)
+# 		bindsin_list_str = re.sub('[\'|\[|\]|,]', '', bindsin_list_str)
+# 		bindsin_list_str = re.sub(' ', ' + ', bindsin_list_str)
+# 		self.data_dic[pose]["bindsin_allsites"] = bindsin_list_str
+
+	for pose in self.poses:
 		if char_count <= 76:
-			print(pose, end=" ")
-			char_count = char_count + len(pose) + 1
+			print(pose.key, end=" ")
+			char_count = char_count + len(pose.key) + 1
 		else:
-			print("\n\t{}".format(pose), end = " ")
-			char_count = len(pose) + 1
+			print("\n\t{}".format(pose.key), end = " ")
+			char_count = len(pose.key) + 1
+
+		### Score binding sites using residues detected by process_VinaResult.py
+
+		# Create a list of binding sites contacted by each pose.key (see bindsin_ below)
+		bindsin_list = []
+		pose.binding_sites = []
+		pose.binding_site_fractions = {}
+		pose.binds_in = {}
+		# (atoms)
+		bindsin_atoms_list = []
+		pose.binding_sites_atoms = []
+		pose.binding_site_atoms_fractions = {}
+		pose.binds_in_atoms = {}
 		for bs in self.binding_sites_list:
-			resis_union = ( set(self.bs_resis_lists[bs]) & set(self.data_dic[pose]['pvr_resis']) )
-			self.data_dic[pose]["{}_fraction".format(bs)] = float(len(resis_union)) / float(len(self.bs_resis_lists[bs]))
+			# The intersection between the residues contacted by the ligand
+			#	and the residues that constitue the binding site
+			bs_resis_intersection = (
+				set(self.bs_resis_lists[bs]) & set(pose.pvr_resis)
+			)
+			# Fraction of binding site residues contacted
+			bs_resis_fraction = float(len(bs_resis_intersection)) / float(len(self.bs_resis_lists[bs]))
+			pose.binding_site_fractions[bs] = bs_resis_fraction
+			# Append the fraction to the data dictionary
+			self.data_dic[pose.key]["fraction_{}".format(bs)] = bs_resis_fraction
+			# Append a bindsin_SITE residue based on whether the fraction
+			#	is at/above a certain threshold (specified in constants.py)
+			if bs_resis_fraction >= resis_scoring_threshold:
+				self.data_dic[pose.key]["bindsin_{}".format(bs)] = 1
+				pose.binds_in[bs] = True
+				bindsin_list.append(bs)
+				pose.binding_sites.append(bs)
+			else:
+				self.data_dic[pose.key]["bindsin_{}".format(bs)] = 0
+				pose.binds_in[bs] = False
+			# Same can be done for atoms, but not sure if it's all that useful
 			if self.evaluate_resis_atoms:
-				resis_atoms_union = ( set(self.bs_resis_atoms_lists[bs]) & set(self.data_dic[pose]['pvr_resis_atoms']) )
-				self.data_dic[pose]["{}_atoms_fraction".format(bs)] = float(len(resis_atoms_union)) / float(len(self.bs_resis_atoms_lists[bs]))
+				bs_resis_atoms_intersection = (
+					set(self.bs_resis_atoms_lists[bs]) & set(pose.pvr_resis_atoms)
+				)
+				bs_resis_atoms_fraction = float(len(bs_resis_atoms_intersection)) / float(len(self.bs_resis_atoms_lists[bs]))
+				pose.binding_site_atoms_fractions[bs] = bs_resis_atoms_fraction
+				self.data_dic[pose.key]["fraction_atoms_{}".format(bs)] = bs_resis_atoms_fraction
+				if bs_resis_atom_fraction >= resis_atoms_scoring_threshold:
+					self.data_dic[pose.key]["bindsin_atoms_{}".format(bs)] = 1
+					pose.binds_in_atoms[bs] = True
+					bindsin_atoms_list.append(bs)
+					pose.binding_sites_atoms.append(bs)
+				else:
+					self.data_dic[pose.key]["bindsin_atoms_{}".format(bs)] = 0
+					pose.binds_in_atoms.append(bs)
+		self.data_dic[pose.key]["bindsin_list"] = bindsin_list
+		bindsin_list_str = str(bindsin_list)
+		bindsin_list_str = re.sub('[\'|\[|\]|,]', '', bindsin_list_str)
+		bindsin_list_str = re.sub(' ', ' + ', bindsin_list_str)
+		self.data_dic[pose.key]["bindsin_allsites"] = bindsin_list_str
+
 
 	self.binding_sites_scored = True
 	print("\n   > Done scoring binding sites\n")
@@ -80,20 +187,29 @@ def aiad_icpd_binding_sites(self):
 	if not self.binding_sites_list_gotten: self.get_binding_sites_list()
 
 	print("---> Scoring poses against binding sites by AIAD and ICPD...")
-	print("   > Scoring AIAD and ICPD for pose ", end="")
+	print("   > Scoring AIAD and ICPD for pose")
 	char_count = 31
-	for pose in self.keys:
+	for pose in self.poses:
+		if pose.model == 1: message = "\n\t> {} #1 ".format(pose.lig)
+		else: message = str(pose.model)
+		# if char_count <= 76:
+		# 	print(pose.key, end=" ")
+		# 	char_count = char_count + len(pose.key) + 1
+		# else:
+		# 	print("\n\t{}".format(pose.key), end = " ")
+		# 	char_count = len(pose.key) + 1
 		if char_count <= 76:
-			print(pose, end=" ")
-			char_count = char_count + len(pose) + 1
+			print(message, end=" ")
+			char_count = 0
 		else:
-			print("\n\t{}".format(pose), end = " ")
-			char_count = len(pose) + 1
+			print("\n\t{}".format(message), end = " ")
+		char_count += len(message) + 1
+
 		for bs, bso in self.binding_sites_objs.items():
-			aiad = caclulate_aiad(self.data_dic[pose]['pvr_obj'], bso)
-			self.data_dic[pose]["{}_aiad".format(bs)] = aiad
-			icpd = calculate_icpd(self.data_dic[pose]['pvr_obj'], bso)
-			self.data_dic[pose]["{}_icpd".format(bs)] = icpd
+			aiad = caclulate_aiad(pose, bso)
+			self.data_dic[pose.key]["aiad_{}".format(bs)] = aiad
+			icpd = calculate_icpd(pose, bso)
+			self.data_dic[pose.key]["icpd_{}".format(bs)] = icpd
 
 	self.aiad_icpd_calcd = True
 	print("\n   > Done calculating AIAD and ICPD for binding sites\n")

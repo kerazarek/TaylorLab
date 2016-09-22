@@ -90,7 +90,7 @@ class Docking():
 	#Create blank alldata dictionary
 	def create_data_dic(self):
 		self.data_dic = {}
-		self.keys = []
+		# self.keys = []
 		for lig in self.ligset_list:
 			for m in range(1, self.n_models + 1):
 				key = "{}_{}_m{}".format(self.dock, lig, m)
@@ -99,7 +99,7 @@ class Docking():
 					'lig' : lig,
 					'model' : m
 				}
-				self.keys.append(key)
+				# self.keys.append(key)
 
 		self.is_data_dic_created = True
 		print("   > Created empty data dictionary")
@@ -159,6 +159,7 @@ class Docking():
 		self.binding_sites_scored = False
 		self.aiad_icpd_calcd = False
 		self.all_resis_assessed = False
+		self.is_summary_written = False
 
 		self.is_csv_written = False
 		self.energies_props_gotten = False
@@ -176,8 +177,5 @@ class Docking():
 		self.create_data_dic()
 
 		print("")
-
-
-
 
 

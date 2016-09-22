@@ -135,7 +135,7 @@ files (probably best not to put anything else in this folder but what's indicate
 			with use input
 \end{easylist}
 
-\subsection{Complete listing of included files}
+\subsubsection{Complete listing of included files}
 
 \begin{easylist}
 & \textbf{Notes}:
@@ -272,7 +272,7 @@ files (probably best not to put anything else in this folder but what's indicate
 						[[...graphs...]]
 \end{lstlisting}
 
-\subsection{Example Dockings.csv file}
+\subsubsection{Example Dockings.csv file}
 
 \begin{lstlisting}
 Docking ID,Date,Protein,Ligset,Grid box,Exhaustiveness,Number of Models,Number of CPUs,Notes
@@ -300,7 +300,7 @@ B1,20160308,PROTB,LIGS3,BWP,8,20,1,initial docking of whole protein B
 \addcontentsline{lot}{section}{Example Dockings.csv file}
 
 
-\subsection{Example Gridboxes.csv file}
+\subsubsection{Example Gridboxes.csv file}
 
 \begin{lstlisting}
 Gridbox Name,Protein,Size in x-dimension,Size in y-dimension,Size in z-dimension,Center in x-dimension,Center in y-dimension,Center in z-dimension,Notes
@@ -331,26 +331,174 @@ BWP,PROTB,126,126,126,4.89,-5.27,12.0,all of protein B
 \section{Scripts}
 
 \begin{easylist} \myitemize
-& constants.py (^{\@fnsymbol{1}},^{\@fnsymbol{1}}^{\@fnsymbol{1}})
-& new_grid_or_dock_entry.py (^{\@fnsymbol{1}})
-& create_docking_object.py (^{\@fnsymbol{1}})
-& write_vina_submit_sh.py (^{\@fnsymbol{1}})
-& read_alldata.py (^{\@fnsymbol{1}})
-& cleanup_processed_vina_results.sh [pr]
-& separate_vina_results.sh [pr]
-& parse_pdb.py (^{\@fnsymbol{1}},sa)
-& mine_vina_data.py (^{\@fnsymbol{1}})
-& aiad_icpd.py (^{\@fnsymbol{1}},sa)
-& binding_site_analysis.py (^{\@fnsymbol{1}})
-& energies_properties.py (^{\@fnsymbol{1}},sa)
-& get_pose_energies_properties.py (^{\@fnsymbol{1}})
-& write_alldata.py (^{\@fnsymbol{1}})
-& correlations.py (^{\@fnsymbol{1}})
-& [postdocking_summary.R]
-& postdocking_graphs.R (nc)
-& pre_and_post_control.py
-\end{itemize}
+& constants.py (*,**)
+& new\_grid\_or\_dock\_entry.py (*)
+& create\_docking\_object.py (*)
+& write\_vina\_submit\_sh.py (*)
+& read\_alldata.py (*)
+& cleanup\_processed\_vina\_results.sh [pr]
+& separate\_vina\_results.sh [pr]
+& parse\_pdb.py (*, sa)
+& mine\_vina\_data.py (*)
+& aiad\_icpd.py (*, sa)
+& binding\_site\_analysis.py (*)
+& energies\_properties.py (*, sa)
+& get\_pose\_energies\_properties.py (*)
+& write\_alldata.py (*)
+& correlations.py (*)
+& [postdocking\_summary.R]
+& postdocking\_graphs.R (nc)
+& pre\_and\_post\_control.py
+\end{easylist}
 
+
+%constants.py
+%new\_grid\_or\_dock\_entry.py
+%create\_docking\_object.py
+%write\_vina\_submit\_sh.py
+%read\_alldata.py
+%cleanup\_processed\_vina\_results.sh
+%separate\_vina\_results.sh
+%parse\_pdb.py
+%mine\_vina\_data.py
+%aiad\_icpd.py
+%binding\_site\_analysis.py
+%energies\_properties.py
+%get\_pose\_energies\_properties.py
+%write\_alldata.py
+%correlations.py
+%[postdocking\_summary.R]
+%postdocking\_graphs.R
+%pre\_and\_post\_control.py
+%
+%[postdocking\_summary.R]
+
+
+%\newpage
+\subsection{\texttt{constants.py}}
+%\paragraph{Function}
+Transcompiler picojava pseudolanguage java ee regular expression syntactic sugar eclipse rust bug. Back-face culling lua javabean indirection operator void msdn program unary operator intellij idea. Bug tracking library softwar
+% \lstinputlisting[language=Python]{/Users/zarek/lab/zvina/scripts/constants.py}
+
+%\newpage
+\subsection{\texttt{new\_grid\_or\_dock\_entry.py}}
+%\paragraph{Function}
+Transcompiler picojava pseudolanguage java ee regular expression syntactic sugar eclipse rust bug. Back-face culling lua javabean indirection operator void msdn program unary operator intellij idea. Bug tracking library softwar
+% \lstinputlisting[language=Python]{/Users/zarek/lab/zvina/scripts/new_grid_or_dock_entry.py}
+
+%\newpage
+\subsection{\texttt{create\_docking\_object.py}}
+%\paragraph{Function}
+Transcompiler picojava pseudolanguage java ee regular expression syntactic sugar eclipse rust bug. Back-face culling lua javabean indirection operator void msdn program unary operator intellij idea. Bug tracking library softwar
+% \lstinputlisting[language=Python]{/Users/zarek/lab/zvina/scripts/create_docking_object.py}
+
+%\newpage
+\subsection{\texttt{write\_vina\_submit\_sh.py}}
+%\paragraph{Function}
+Transcompiler picojava pseudolanguage java ee regular expression syntactic sugar eclipse rust bug. Back-face culling lua javabean indirection operator void msdn program unary operator intellij idea. Bug tracking library softwar
+% \lstinputlisting[language=Python]{/Users/zarek/lab/zvina/scripts/write_vina_submit_sh.py}
+
+%\newpage
+\subsection{\texttt{read\_alldata.py}}
+%\paragraph{Function}
+Transcompiler picojava pseudolanguage java ee regular expression syntactic sugar eclipse rust bug. Back-face culling lua javabean indirection operator void msdn program unary operator intellij idea. Bug tracking library softwar
+% \lstinputlisting[language=Python]{/Users/zarek/lab/zvina/scripts/read_alldata.py}
+
+%\newpage
+\subsection{\texttt{cleanup\_processed\_vina\_results.sh}}
+%\paragraph{Function}
+Transcompiler picojava pseudolanguage java ee regular expression syntactic sugar eclipse rust bug. Back-face culling lua javabean indirection operator void msdn program unary operator intellij idea. Bug tracking library softwar
+% \lstinputlisting[language=bash]{/Users/zarek/lab/zvina/scripts/cleanup_processed_vina_results.sh}
+
+%\newpage
+\subsection{\texttt{separate\_vina\_results.sh}}
+%\paragraph{Function}
+Transcompiler picojava pseudolanguage java ee regular expression syntactic sugar eclipse rust bug. Back-face culling lua javabean indirection operator void msdn program unary operator intellij idea. Bug tracking library softwar
+% \lstinputlisting[language=bash]{/Users/zarek/lab/zvina/scripts/separate_vina_results.sh}
+
+%\newpage
+\subsection{\texttt{parse\_pdb.py}}
+%\paragraph{Function}
+Transcompiler picojava pseudolanguage java ee regular expression syntactic sugar eclipse rust bug. Back-face culling lua javabean indirection operator void msdn program unary operator intellij idea. Bug tracking library softwar
+% \lstinputlisting[language=Python]{/Users/zarek/lab/zvina/scripts/parse_pdb.py}
+
+%\newpage
+\subsection{\texttt{mine\_vina\_data.py}}
+%\paragraph{Function}
+Transcompiler picojava pseudolanguage java ee regular expression syntactic sugar eclipse rust bug. Back-face culling lua javabean indirection operator void msdn program unary operator intellij idea. Bug tracking library softwar
+% \lstinputlisting[language=Python]{/Users/zarek/lab/zvina/scripts/mine_vina_data.py}
+
+%\newpage
+\subsection{\texttt{aiad\_icpd.py}}
+%\paragraph{Function}
+Transcompiler picojava pseudolanguage java ee regular expression syntactic sugar eclipse rust bug. Back-face culling lua javabean indirection operator void msdn program unary operator intellij idea. Bug tracking library softwar
+% \lstinputlisting[language=Python]{/Users/zarek/lab/zvina/scripts/aiad_icpd.py}
+
+%\newpage
+\subsection{\texttt{binding\_site\_analysis.py}}
+%\paragraph{Function}
+Transcompiler picojava pseudolanguage java ee regular expression syntactic sugar eclipse rust bug. Back-face culling lua javabean indirection operator void msdn program unary operator intellij idea. Bug tracking library softwar
+% \lstinputlisting[language=Python]{/Users/zarek/lab/zvina/scripts/binding_site_analysis.py}
+
+%\newpage
+\subsection{\texttt{energies\_properties.py}}
+%\paragraph{Function}
+Transcompiler picojava pseudolanguage java ee regular expression syntactic sugar eclipse rust bug. Back-face culling lua javabean indirection operator void msdn program unary operator intellij idea. Bug tracking library softwar
+% \lstinputlisting[language=Python]{/Users/zarek/lab/zvina/scripts/energies_properties.py}
+
+%\newpage
+\subsection{\texttt{get\_pose\_energies\_properties.py}}
+%\paragraph{Function}
+Transcompiler picojava pseudolanguage java ee regular expression syntactic sugar eclipse rust bug. Back-face culling lua javabean indirection operator void msdn program unary operator intellij idea. Bug tracking library softwar
+% \lstinputlisting[language=Python]{/Users/zarek/lab/zvina/scripts/get_pose_energies_properties.py}
+
+%\newpage
+\subsection{\texttt{write\_alldata.py}}
+%\paragraph{Function}
+Transcompiler picojava pseudolanguage java ee regular expression syntactic sugar eclipse rust bug. Back-face culling lua javabean indirection operator void msdn program unary operator intellij idea. Bug tracking library softwar
+% \lstinputlisting[language=Python]{/Users/zarek/lab/zvina/scripts/write_alldata.py}
+
+%\newpage
+\subsection{\texttt{correlations.py}}
+%\paragraph{Function}
+Transcompiler picojava pseudolanguage java ee regular expression syntactic sugar eclipse rust bug. Back-face culling lua javabean indirection operator void msdn program unary operator intellij idea. Bug tracking library softwar
+% \lstinputlisting[language=Python]{/Users/zarek/lab/zvina/scripts/correlations.py}
+
+%\newpage
+\subsection{\texttt{postdocking\_graphs.R}}
+%\paragraph{Function}
+Transcompiler picojava pseudolanguage java ee regular expression syntactic sugar eclipse rust bug. Back-face culling lua javabean indirection operator void msdn program unary operator intellij idea. Bug tracking library softwar
+% \lstinputlisting[language=R]{/Users/zarek/lab/zvina/scripts/postdocking_graphs.R}
+
+%\newpage
+\subsection{\texttt{pre\_and\_post\_control.py}}
+%\paragraph{Function}
+Transcompiler picojava pseudolanguage java ee regular expression syntactic sugar eclipse rust bug. Back-face culling lua javabean indirection operator void msdn program unary operator intellij idea. Bug tracking library softwar
+% \lstinputlisting[language=R]{/Users/zarek/lab/zvina/scripts/pre_and_post_control.py}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%\\subsection{\\texttt{\1}}
+%\\subsubsection{Function}
+%Transcompiler picojava pseudolanguage java ee regular expression syntactic sugar eclipse rust bug. Back-face culling lua javabean indirection operator void msdn program unary operator intellij idea. Bug tracking library softwar
+%\\lstinputlisting[language=Python]{\\basedir/\1}
 
 %
 %\subsection{\texttt{constants.py}}

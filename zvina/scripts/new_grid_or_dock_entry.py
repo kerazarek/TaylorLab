@@ -31,36 +31,36 @@ def new_docking_entry():
 	#	Notes
 
 	# Going through each variable, taking user input
-	dock_input = raw_input("\t\tDocking identifier: ")
+	dock_input = input("\t\tDocking identifier: ")
 	print("\t\t>>> dock set to: {}\n".format(dock_input))
 
 	current_time = Timestamp()
-	date_input = raw_input("\t\tDate (enter 'd' to default to {}): ".format(current_time.eightdigit))
+	date_input = input("\t\tDate (enter 'd' to default to {}): ".format(current_time.eightdigit))
 	if date_input == "d": date_input = current_time.eightdigit
 	print("\t\t>>> date set to: {}\n".format(date_input))
 
-	prot_input = raw_input("\t\tProtein: ")
+	prot_input = input("\t\tProtein: ")
 	print("\t\t>>> prot set to: {}\n".format(prot_input))
 
-	prot_file_input = raw_input("\t\tSpecific protein file (without the .pdbqt): ")
+	prot_file_input = input("\t\tSpecific protein file (without the .pdbqt): ")
 	print("\t\t>>> prot_file set to: {}\n".format(prot_file_input))
 
-	ligset_input = raw_input("\t\tLigset identifier: ")
+	ligset_input = input("\t\tLigset identifier: ")
 	print("\t\t>>> ligset set to: {}\n".format(ligset_input))
 
-	box_input = raw_input("\t\tGridbox identifier: ")
+	box_input = input("\t\tGridbox identifier: ")
 	print("\t\t>>> box set to: {}\n".format(box_input))
 
-	exhaust_input = raw_input("\t\tExhaustiveness: ")
+	exhaust_input = input("\t\tExhaustiveness: ")
 	print("\t\t>>> exhaust set to: {}\n".format(exhaust_input))
 
-	n_models_input = raw_input("\t\tNumber of models: ")
+	n_models_input = input("\t\tNumber of models: ")
 	print("\t\t>>> n_models set to: {}\n".format(n_models_input))
 
-	n_cpus_input = raw_input("\t\tNumber of CPUs: ")
+	n_cpus_input = input("\t\tNumber of CPUs: ")
 	print("\t\t>>> n_cpus set to: {}\n".format(n_cpus_input))
 
-	notes_input = raw_input("\t\tAny notes (with no commas): ")
+	notes_input = input("\t\tAny notes (with no commas): ")
 	if notes_input == "":
 		notes_input = "Entered by new_grid_or_dock_entry.py {}".format(current_time.display)
 	else:
@@ -108,7 +108,7 @@ def new_docking_entry():
 	)
 
 	# Don't write row without confirmation
-	proceed = raw_input("\tWrite this as a new docking entry? [y/n] ")
+	proceed = input("\tWrite this as a new docking entry? [y/n] ")
 # 	print("\t{}".format(new_row))
 
 	# If "y" is entered, write the row, otherwise don't
@@ -140,32 +140,32 @@ def new_gridbox_entry():
 	#	Notes
 
 	# Going through each variable, taking user input
-	box_input = raw_input("\t\tGridbox Name: ")
+	box_input = input("\t\tGridbox Name: ")
 	print("\t\t>>> box set to: {}\n".format(box_input))
 
-	prot_file_input = raw_input("\t\tSpecific protein file (without the .pdbqt): ")
+	prot_file_input = input("\t\tSpecific protein file (without the .pdbqt): ")
 	print("\t\t>>> prot_file set to: {}\n".format(prot_file_input))
 
-	box_size_x_input = raw_input("\t\tSize in x-dimension: ")
+	box_size_x_input = input("\t\tSize in x-dimension: ")
 	print("\t\t>>> box_size_x set to: {}\n".format(box_size_x_input))
 
-	box_size_y_input = raw_input("\t\tSize in y-dimension: ")
+	box_size_y_input = input("\t\tSize in y-dimension: ")
 	print("\t\t>>> box_size_y set to: {}\n".format(box_size_y_input))
 
-	box_size_z_input = raw_input("\t\tSize in z-dimension: ")
+	box_size_z_input = input("\t\tSize in z-dimension: ")
 	print("\t\t>>> box_size_z set to: {}\n".format(box_size_z_input))
 
-	box_center_x_input = raw_input("\t\tCenter in x-dimension: ")
+	box_center_x_input = input("\t\tCenter in x-dimension: ")
 	print("\t\t>>> box_center_x set to: {}\n".format(box_center_x_input))
 
-	box_center_y_input = raw_input("\t\tCenter in y-dimension: ")
+	box_center_y_input = input("\t\tCenter in y-dimension: ")
 	print("\t\t>>> box_center_y set to: {}\n".format(box_center_y_input))
 
-	box_center_z_input = raw_input("\t\tCenter in z-dimension: ")
+	box_center_z_input = input("\t\tCenter in z-dimension: ")
 	print("\t\t>>> box_center_z set to: {}\n".format(box_center_z_input))
 
 	current_time = Timestamp()
-	notes_input = raw_input("\t\tAny notes (with no commas): ")
+	notes_input = input("\t\tAny notes (with no commas): ")
 	if notes_input == "":
 		notes_input = "Entered by new_grid_or_dock_entry.py {}".format(current_time.display)
 	else:
@@ -210,7 +210,7 @@ def new_gridbox_entry():
 	)
 
 	# Don't write row without confirmation
-	proceed = raw_input("\tWrite this as a new grid box entry? [y/n] ")
+	proceed = input("\tWrite this as a new grid box entry? [y/n] ")
 
 	# If "y" is entered, write the row, otherwise don't
 	if proceed == "y":
